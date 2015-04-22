@@ -1,4 +1,3 @@
-// approximate coordinates of team stadiums
 var teams = {
   "raiders": {
     coords: {
@@ -322,43 +321,7 @@ var teams = {
   }
 }
 
-function drawMap(map){
-    var mapData = topojson.feature(map, map.objects.states).features;
-
-    var width = 960;
-    var height = 600;
-    var scale = 1200;
-    var margin = {
-        top: 75,
-        right: 75,
-        bottom: 75,
-        left: 75
-    };
-
-    var projection = d3.geo.albersUsa()
-        .scale(scale)
-        .translate([width / 2, height / 2]);
-
-    var path = d3.geo.path()
-        .projection(projection);
-
-    var svg = d3.select('body').append('svg')
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom);
-    
-    var country = svg.append("g")
-        .datum(mapData)
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        .classed("country", true);
-
-    var states = country.append("g").selectAll("g.state")
-            .data(function(d){ return d;})
-        .enter().append("g")
-            .classed("state", true)
-            .append("path")
-                .classed("outline", true)
-                .attr("d", path);
-
+function drawStadiums(map, projection){
     var teamsArray = [];
     for ( var key in teams ) {
         var obj = teams[key];
@@ -366,42 +329,26 @@ function drawMap(map){
         teamsArray.push(obj);
     }
 
-    country.append("g").selectAll("g.team")
-            .data(teamsArray)
-        .enter().append("g")
-            .classed("team", true)
-            .attr("transform", function(d){
-                var coords = projection([d.coords.long, d.coords.lat]);
-                return "translate(" + coords[0] + "," + coords[1] + ")";
+    map.append("g")
+      .classed("teams", true)
+      .selectAll("g.team")
+        .data(teamsArray)
+      .enter().append("g")
+        .classed("team", true)
+        .attr("transform", function(d){
+            var coords = projection([d.coords.long, d.coords.lat]);
+            return "translate(" + coords[0] + "," + coords[1] + ")";
+        })
+        .attr("title", function(d){
+            return d.name;
+        })
+        .append("circle")
+            .attr("r", 8)
+            .style("fill", function(d){
+              return d.colors.primary;
             })
-            .attr("title", function(d){
-                return d.name;
+            .style("stroke", function(d){
+              return d.colors.secondary;
             })
-            .append("circle")
-                .attr("r", 8)
-                .style("fill", function(d){
-                  return d.colors.primary;
-                })
-                .style("stroke", function(d){
-                  return d.colors.secondary;
-                })
-                .style("stroke-width", 2);
+            .style("stroke-width", 2);
 }
-
-/*
-function connect(svg){
-    var defs = svg.append("svg:defs");
-    defs.append("svg:marker")
-        .attr("id", "arrowhead")
-        .attr("markerHeight", 15)
-        .attr("markerWidth", 15)
-        .append("path")
-            .attr("d", "M2,2 L2,11 L10,6 L2,2");
-
-    function arrow(start, end){
-
-    }
-
-    return arrow;
-}
-*/
