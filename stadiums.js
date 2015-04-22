@@ -1,132 +1,324 @@
 // approximate coordinates of team stadiums
 var teams = {
   "raiders": {
-    "long": -122.2,
-    "lat": 37.75
+    coords: {
+      "long": -122.2,
+      "lat": 37.75
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "lions": {
-    "long": -83.03,
-    "lat": 42.33
+    coords: {
+      "long": -83.03,
+      "lat": 42.33
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "saints": {
-    "long": -90.07,
-    "lat": 29.95
+    coords: {
+      "long": -90.07,
+      "lat": 29.95
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "bills": {
-    "long": -78.78,
-    "lat": 42.77
+    coords: {
+      "long": -78.78,
+      "lat": 42.77
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "buccaneers": {
-    "long": -82.5,
-    "lat": 27.97
+    coords: {
+      "long": -82.5,
+      "lat": 27.97
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "chargers": {
-    "long": -117.12,
-    "lat": 32.77
+    coords: {
+      "long": -117.12,
+      "lat": 32.77
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "redskins": {
-    "long": -76.85,
-    "lat": 38.9
+    coords: {
+      "long": -76.85,
+      "lat": 38.9
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "broncos": {
-    "long": -105.02,
-    "lat": 39.73
+    coords: {
+      "long": -105.02,
+      "lat": 39.73
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "steelers": {
-    "long": -80.0,
-    "lat": 40.43
+    coords: {
+      "long": -80.0,
+      "lat": 40.43
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "patriots": {
-    "long": -71.25,
-    "lat": 42.08
+    coords: {
+      "long": -71.25,
+      "lat": 42.08
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "dolphins": {
-    "long": -80.23,
-    "lat": 25.95
+    coords: {
+      "long": -80.23,
+      "lat": 25.95
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "falcons": {
-    "long": -84.4,
-    "lat": 33.75
+    coords: {
+      "long": -84.4,
+      "lat": 33.75
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "cowboys": {
-    "long": -97.08,
-    "lat": 32.73
+    coords: {
+      "long": -97.08,
+      "lat": 32.73
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "packers": {
-    "long": -88.05,
-    "lat": 44.5
+    coords: {
+      "long": -88.05,
+      "lat": 44.5
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "jaguars": {
-    "long": -81.63,
-    "lat": 30.32
+    coords: {
+      "long": -81.63,
+      "lat": 30.32
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "jets": {
-    "long": -73.7,
-    "lat": 40.8
+    coords: {
+      "long": -73.7,
+      "lat": 40.8
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "rams": {
-    "long": -90.18,
-    "lat": 38.62
+    coords: {
+      "long": -90.18,
+      "lat": 38.62
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "49ers": {
-    "long": -121.97,
-    "lat": 37.4
+    coords: {
+      "long": -121.97,
+      "lat": 37.4
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "eagles": {
-    "long": -75.17,
-    "lat": 39.9
+    coords: {
+      "long": -75.17,
+      "lat": 39.9
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "bengals": {
-    "long": -84.5,
-    "lat": 39.08
+    coords: {
+      "long": -84.5,
+      "lat": 39.08
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "vikings": {
-    "long": -93.22,
-    "lat": 44.97
+    coords: {
+      "long": -93.22,
+      "lat": 44.97
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "panthers": {
-    "long": -80.85,
-    "lat": 35.22
+    coords: {
+      "long": -80.85,
+      "lat": 35.22
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "ravens": {
-    "long": -76.62,
-    "lat": 39.27
+    coords: {
+      "long": -76.62,
+      "lat": 39.27
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "texans": {
-    "long": -95.4,
-    "lat": 29.68
+    coords: {
+      "long": -95.4,
+      "lat": 29.68
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "giants": {
-    "long": -74.3,
-    "lat": 40.8
+    coords: {
+      "long": -74.3,
+      "lat": 40.8
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "bears": {
-    "long": -87.62,
-    "lat": 41.85
+    coords: {
+      "long": -87.62,
+      "lat": 41.85
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "browns": {
-    "long": -81.68,
-    "lat": 41.5
+    coords: {
+      "long": -81.68,
+      "lat": 41.5
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "colts": {
-    "long": -86.15,
-    "lat": 39.75
+    coords: {
+      "long": -86.15,
+      "lat": 39.75
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "seahawks": {
-    "long": -122.32,
-    "lat": 47.58
+    coords: {
+      "long": -122.32,
+      "lat": 47.58
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "chiefs": {
-    "long": -94.48,
-    "lat": 39.03
+    coords: {
+      "long": -94.48,
+      "lat": 39.03
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "titans": {
-    "long": -86.77,
-    "lat": 36.15
+    coords: {
+      "long": -86.77,
+      "lat": 36.15
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   },
   "cardinals": {
-    "long": -112.25,
-    "lat": 33.52
+    coords: {
+      "long": -112.25,
+      "lat": 33.52
+    },
+    colors: {
+      primary: undefined,
+      secondary: undefined
+    }
   }
 }
 
@@ -184,7 +376,7 @@ function drawMap(map){
         .enter().append("g")
             .classed("team", true)
             .attr("transform", function(d){
-                var coords = projection([d.long, d.lat]);
+                var coords = projection([d.coords.long, d.coords.lat]);
                 return "translate(" + coords[0] + "," + coords[1] + ")";
             })
             .attr("title", function(d){
@@ -192,4 +384,20 @@ function drawMap(map){
             })
             .append("circle")
                 .attr("r", 5)
+}
+
+function connect(svg){
+    var defs = svg.append("svg:defs");
+    defs.append("svg:marker")
+        .attr("id", "arrowhead")
+        .attr("markerHeight", 15)
+        .attr("markerWidth", 15)
+        .append("path")
+            .attr("d", "M2,2 L2,11 L10,6 L2,2");
+
+    function arrow(start, end){
+
+    }
+
+    return arrow;
 }
