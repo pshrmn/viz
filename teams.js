@@ -2,7 +2,7 @@ var teams = {
   "raiders": {
     coords: {
       "long": -122.2,
-      "lat": 37.75
+      "lat": 37.9
     },
     colors: {
       primary: "#C4C8CB",
@@ -62,7 +62,7 @@ var teams = {
   "redskins": {
     coords: {
       "long": -76.85,
-      "lat": 38.9
+      "lat": 38.4
     },
     colors: {
       primary: "#773141",
@@ -151,7 +151,7 @@ var teams = {
   },
   "jets": {
     coords: {
-      "long": -73.7,
+      "long": -73.4,
       "lat": 40.8
     },
     colors: {
@@ -172,7 +172,7 @@ var teams = {
   "49ers": {
     coords: {
       "long": -121.97,
-      "lat": 37.4
+      "lat": 37.1
     },
     colors: {
       primary: "#AF1E2C",
@@ -241,7 +241,7 @@ var teams = {
   },
   "giants": {
     coords: {
-      "long": -74.3,
+      "long": -74.5,
       "lat": 40.8
     },
     colors: {

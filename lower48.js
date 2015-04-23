@@ -11,7 +11,6 @@ function usmap(map){
       left: 75
   };
   var scale = 1200;
-  var holder = "body";
 
   var svg;
   var projection = d3.geo.albersUsa()
@@ -21,7 +20,7 @@ function usmap(map){
     .projection(projection);
   var stateData = topojson.feature(map, map.objects.states).features;
 
-  function mapper(){
+  function mapper(holder){
     svg = d3.select(holder).append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -85,14 +84,6 @@ function usmap(map){
       return scale;
     }
     scale = s;
-    return mapper;
-  };
-
-  mapper.holder = function(h){
-    if ( !arguments.length ) {
-      return holder;
-    }
-    holder = h;
     return mapper;
   };
 
