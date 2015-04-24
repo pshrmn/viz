@@ -1,0 +1,2946 @@
+{
+  "49ers": [
+    {
+      "location": "49ers",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "49ers",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "steelers",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "cardinals",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "49ers",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "giants",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "49ers",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "49ers",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "rams",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "49ers",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "49ers",
+      "type": "bye",
+      "week": 10
+    },
+    {
+      "location": "seahawks",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "49ers",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "bears",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "browns",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "49ers",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "lions",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "49ers",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "bears": [
+    {
+      "location": "bears",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "bears",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "bears",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "seahawks",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "bears",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "chiefs",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "lions",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "bears",
+      "type": "bye",
+      "week": 7
+    },
+    {
+      "location": "bears",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "chargers",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "rams",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "bears",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "packers",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "bears",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "bears",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "vikings",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "buccaneers",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "bears",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "bengals": [
+    {
+      "location": "bengals",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "raiders",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "bengals",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "ravens",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "bengals",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "bengals",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "bills",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "bengals",
+      "type": "bye",
+      "week": 7
+    },
+    {
+      "location": "steelers",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "bengals",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "bengals",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "cardinals",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "bengals",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "browns",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "bengals",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "49ers",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "broncos",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "bengals",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "bills": [
+    {
+      "location": "bills",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "bills",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "bills",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "dolphins",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "bills",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "titans",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "bills",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "london",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "bills",
+      "type": "bye",
+      "week": 8
+    },
+    {
+      "location": "bills",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "jets",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "patriots",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "chiefs",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "bills",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "eagles",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "redskins",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "bills",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "bills",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "broncos": [
+    {
+      "location": "broncos",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "broncos",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "chiefs",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "lions",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "broncos",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "raiders",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "browns",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "broncos",
+      "type": "bye",
+      "week": 7
+    },
+    {
+      "location": "broncos",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "colts",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "broncos",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "bears",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "broncos",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "chargers",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "broncos",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "steelers",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "broncos",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "broncos",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "browns": [
+    {
+      "location": "browns",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "jets",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "browns",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "browns",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "chargers",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "ravens",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "browns",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "rams",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "browns",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "bengals",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "steelers",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "browns",
+      "type": "bye",
+      "week": 11
+    },
+    {
+      "location": "browns",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "browns",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "browns",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "seahawks",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "chiefs",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "browns",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "buccaneers": [
+    {
+      "location": "buccaneers",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "buccaneers",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "saints",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "texans",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "buccaneers",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "buccaneers",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "buccaneers",
+      "type": "bye",
+      "week": 6
+    },
+    {
+      "location": "redskins",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "falcons",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "buccaneers",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "buccaneers",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "eagles",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "colts",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "buccaneers",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "buccaneers",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "rams",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "buccaneers",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "panthers",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "cardinals": [
+    {
+      "location": "cardinals",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "cardinals",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "bears",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "cardinals",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "cardinals",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "lions",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "steelers",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "cardinals",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "browns",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "cardinals",
+      "type": "bye",
+      "week": 9
+    },
+    {
+      "location": "seahawks",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "cardinals",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "49ers",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "rams",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "cardinals",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "eagles",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "cardinals",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "cardinals",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "chargers": [
+    {
+      "location": "chargers",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "chargers",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "bengals",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "vikings",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "chargers",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "chargers",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "packers",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "chargers",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "ravens",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "chargers",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "chargers",
+      "type": "bye",
+      "week": 10
+    },
+    {
+      "location": "chargers",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "jaguars",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "chargers",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "chiefs",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "chargers",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "raiders",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "broncos",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "chiefs": [
+    {
+      "location": "chiefs",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "texans",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "chiefs",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "packers",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "bengals",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "chiefs",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "vikings",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "chiefs",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "london",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "chiefs",
+      "type": "bye",
+      "week": 9
+    },
+    {
+      "location": "broncos",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "chargers",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "chiefs",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "raiders",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "chiefs",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "ravens",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "chiefs",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "chiefs",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "colts": [
+    {
+      "location": "colts",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "bills",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "colts",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "titans",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "colts",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "texans",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "colts",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "colts",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "panthers",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "colts",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "colts",
+      "type": "bye",
+      "week": 10
+    },
+    {
+      "location": "falcons",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "colts",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "steelers",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "jaguars",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "colts",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "dolphins",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "colts",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "cowboys": [
+    {
+      "location": "cowboys",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "cowboys",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "eagles",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "cowboys",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "saints",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "cowboys",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "cowboys",
+      "type": "bye",
+      "week": 6
+    },
+    {
+      "location": "giants",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "cowboys",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "cowboys",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "buccaneers",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "dolphins",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "cowboys",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "redskins",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "packers",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "cowboys",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "bills",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "cowboys",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "dolphins": [
+    {
+      "location": "dolphins",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "redskins",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "jaguars",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "dolphins",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "london",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "dolphins",
+      "type": "bye",
+      "week": 5
+    },
+    {
+      "location": "titans",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "dolphins",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "patriots",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "bills",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "eagles",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "dolphins",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "jets",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "dolphins",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "dolphins",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "chargers",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "dolphins",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "dolphins",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "eagles": [
+    {
+      "location": "eagles",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "falcons",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "eagles",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "jets",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "redskins",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "eagles",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "eagles",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "panthers",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "eagles",
+      "type": "bye",
+      "week": 8
+    },
+    {
+      "location": "cowboys",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "eagles",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "eagles",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "lions",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "patriots",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "eagles",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "eagles",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "eagles",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "giants",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "falcons": [
+    {
+      "location": "falcons",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "falcons",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "giants",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "cowboys",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "falcons",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "falcons",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "saints",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "titans",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "falcons",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "49ers",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "falcons",
+      "type": "bye",
+      "week": 10
+    },
+    {
+      "location": "falcons",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "falcons",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "buccaneers",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "panthers",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "jaguars",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "falcons",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "falcons",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "giants": [
+    {
+      "location": "giants",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "cowboys",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "giants",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "giants",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "bills",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "giants",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "eagles",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "giants",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "saints",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "buccaneers",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "giants",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "giants",
+      "type": "bye",
+      "week": 11
+    },
+    {
+      "location": "redskins",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "giants",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "dolphins",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "giants",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "vikings",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "giants",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "jaguars": [
+    {
+      "location": "jaguars",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "jaguars",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "jaguars",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "patriots",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "colts",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "buccaneers",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "jaguars",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "london",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "jaguars",
+      "type": "bye",
+      "week": 8
+    },
+    {
+      "location": "jets",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "ravens",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "jaguars",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "jaguars",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "titans",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "jaguars",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "jaguars",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "saints",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "texans",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "jets": [
+    {
+      "location": "jets",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "jets",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "colts",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "jets",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "london",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "jets",
+      "type": "bye",
+      "week": 5
+    },
+    {
+      "location": "jets",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "patriots",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "raiders",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "jets",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "jets",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "texans",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "jets",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "giants",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "jets",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "cowboys",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "jets",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "bills",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "lions": [
+    {
+      "location": "lions",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "chargers",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "vikings",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "lions",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "seahawks",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "lions",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "lions",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "lions",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "london",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "lions",
+      "type": "bye",
+      "week": 9
+    },
+    {
+      "location": "packers",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "lions",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "lions",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "lions",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "rams",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "saints",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "lions",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "bears",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "packers": [
+    {
+      "location": "packers",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "bears",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "packers",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "packers",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "49ers",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "packers",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "packers",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "packers",
+      "type": "bye",
+      "week": 7
+    },
+    {
+      "location": "broncos",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "panthers",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "packers",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "vikings",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "packers",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "lions",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "packers",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "raiders",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "cardinals",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "packers",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "panthers": [
+    {
+      "location": "panthers",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "jaguars",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "panthers",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "panthers",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "buccaneers",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "panthers",
+      "type": "bye",
+      "week": 5
+    },
+    {
+      "location": "seahawks",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "panthers",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "panthers",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "panthers",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "titans",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "panthers",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "cowboys",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "saints",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "panthers",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "giants",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "falcons",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "panthers",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "patriots": [
+    {
+      "location": "patriots",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "patriots",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "bills",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "patriots",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "patriots",
+      "type": "bye",
+      "week": 4
+    },
+    {
+      "location": "cowboys",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "colts",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "patriots",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "patriots",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "patriots",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "giants",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "patriots",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "broncos",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "patriots",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "texans",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "patriots",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "jets",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "dolphins",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "raiders": [
+    {
+      "location": "raiders",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "raiders",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "raiders",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "browns",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "bears",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "raiders",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "raiders",
+      "type": "bye",
+      "week": 6
+    },
+    {
+      "location": "chargers",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "raiders",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "steelers",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "raiders",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "lions",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "titans",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "raiders",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "broncos",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "raiders",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "raiders",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "chiefs",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "rams": [
+    {
+      "location": "rams",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "rams",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "redskins",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "rams",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "cardinals",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "packers",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "rams",
+      "type": "bye",
+      "week": 6
+    },
+    {
+      "location": "rams",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "rams",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "vikings",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "rams",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "ravens",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "bengals",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "rams",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "rams",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "rams",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "seahawks",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "49ers",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "ravens": [
+    {
+      "location": "ravens",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "broncos",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "raiders",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "ravens",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "steelers",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "ravens",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "49ers",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "cardinals",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "ravens",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "ravens",
+      "type": "bye",
+      "week": 9
+    },
+    {
+      "location": "ravens",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "ravens",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "browns",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "dolphins",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "ravens",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "ravens",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "ravens",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "bengals",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "redskins": [
+    {
+      "location": "redskins",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "redskins",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "redskins",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "giants",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "redskins",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "falcons",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "jets",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "redskins",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "redskins",
+      "type": "bye",
+      "week": 8
+    },
+    {
+      "location": "patriots",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "redskins",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "panthers",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "redskins",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "redskins",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "bears",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "redskins",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "eagles",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "cowboys",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "saints": [
+    {
+      "location": "saints",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "cardinals",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "saints",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "panthers",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "saints",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "eagles",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "saints",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "colts",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "saints",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "saints",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "redskins",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "saints",
+      "type": "bye",
+      "week": 11
+    },
+    {
+      "location": "texans",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "saints",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "buccaneers",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "saints",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "saints",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "falcons",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "seahawks": [
+    {
+      "location": "seahawks",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "rams",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "packers",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "seahawks",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "seahawks",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "bengals",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "seahawks",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "49ers",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "cowboys",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "seahawks",
+      "type": "bye",
+      "week": 9
+    },
+    {
+      "location": "seahawks",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "seahawks",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "seahawks",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "vikings",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "ravens",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "seahawks",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "seahawks",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "cardinals",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "steelers": [
+    {
+      "location": "steelers",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "patriots",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "steelers",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "rams",
+      "type": "away",
+      "week": 3
+    },
+    {
+      "location": "steelers",
+      "type": "home",
+      "week": 4
+    },
+    {
+      "location": "chargers",
+      "type": "away",
+      "week": 5
+    },
+    {
+      "location": "steelers",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "chiefs",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "steelers",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "steelers",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "steelers",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "steelers",
+      "type": "bye",
+      "week": 11
+    },
+    {
+      "location": "seahawks",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "steelers",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "bengals",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "steelers",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "ravens",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "browns",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "texans": [
+    {
+      "location": "texans",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "texans",
+      "type": "home",
+      "week": 1
+    },
+    {
+      "location": "panthers",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "texans",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "falcons",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "texans",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "jaguars",
+      "type": "away",
+      "week": 6
+    },
+    {
+      "location": "dolphins",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "texans",
+      "type": "home",
+      "week": 8
+    },
+    {
+      "location": "texans",
+      "type": "bye",
+      "week": 9
+    },
+    {
+      "location": "bengals",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "texans",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "texans",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "bills",
+      "type": "away",
+      "week": 13
+    },
+    {
+      "location": "texans",
+      "type": "home",
+      "week": 14
+    },
+    {
+      "location": "colts",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "titans",
+      "type": "away",
+      "week": 16
+    },
+    {
+      "location": "texans",
+      "type": "home",
+      "week": 17
+    }
+  ],
+  "titans": [
+    {
+      "location": "titans",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "buccaneers",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "browns",
+      "type": "away",
+      "week": 2
+    },
+    {
+      "location": "titans",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "titans",
+      "type": "bye",
+      "week": 4
+    },
+    {
+      "location": "titans",
+      "type": "home",
+      "week": 5
+    },
+    {
+      "location": "titans",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "titans",
+      "type": "home",
+      "week": 7
+    },
+    {
+      "location": "texans",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "saints",
+      "type": "away",
+      "week": 9
+    },
+    {
+      "location": "titans",
+      "type": "home",
+      "week": 10
+    },
+    {
+      "location": "jaguars",
+      "type": "away",
+      "week": 11
+    },
+    {
+      "location": "titans",
+      "type": "home",
+      "week": 12
+    },
+    {
+      "location": "titans",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "jets",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "patriots",
+      "type": "away",
+      "week": 15
+    },
+    {
+      "location": "titans",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "colts",
+      "type": "away",
+      "week": 17
+    }
+  ],
+  "vikings": [
+    {
+      "location": "vikings",
+      "type": "home",
+      "week": 0
+    },
+    {
+      "location": "49ers",
+      "type": "away",
+      "week": 1
+    },
+    {
+      "location": "vikings",
+      "type": "home",
+      "week": 2
+    },
+    {
+      "location": "vikings",
+      "type": "home",
+      "week": 3
+    },
+    {
+      "location": "broncos",
+      "type": "away",
+      "week": 4
+    },
+    {
+      "location": "vikings",
+      "type": "bye",
+      "week": 5
+    },
+    {
+      "location": "vikings",
+      "type": "home",
+      "week": 6
+    },
+    {
+      "location": "lions",
+      "type": "away",
+      "week": 7
+    },
+    {
+      "location": "bears",
+      "type": "away",
+      "week": 8
+    },
+    {
+      "location": "vikings",
+      "type": "home",
+      "week": 9
+    },
+    {
+      "location": "raiders",
+      "type": "away",
+      "week": 10
+    },
+    {
+      "location": "vikings",
+      "type": "home",
+      "week": 11
+    },
+    {
+      "location": "falcons",
+      "type": "away",
+      "week": 12
+    },
+    {
+      "location": "vikings",
+      "type": "home",
+      "week": 13
+    },
+    {
+      "location": "cardinals",
+      "type": "away",
+      "week": 14
+    },
+    {
+      "location": "vikings",
+      "type": "home",
+      "week": 15
+    },
+    {
+      "location": "vikings",
+      "type": "home",
+      "week": 16
+    },
+    {
+      "location": "packers",
+      "type": "away",
+      "week": 17
+    }
+  ]
+}
