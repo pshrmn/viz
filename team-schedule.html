@@ -12,10 +12,6 @@
             stroke: #222;
             stroke-width: 1px;
         }
-
-        .bye{
-            opacity: 0.5;
-        }
     </style>
 </head>
 <body>
@@ -39,6 +35,23 @@
                 console.log(error);
                 return;
             }
+            var scheduleHolder = d3.select("body").append("div")
+                .attr("id", "scheduleHolder");
+            var teamNames = Object.keys(teams).sort();
+            var select = scheduleHolder.append("div").append("select")
+                .on("change", function(){
+                    currentTeam = select.property("value");
+                    if ( currentTeam === "all" ) {
+                        currentTeam = undefined;
+                    }
+                    week = 0;
+                });
+            select.selectAll("option")
+                    .data(["all"].concat(teamNames))
+                .enter().append("option")
+                    .text(function(d){ return capitalize(d); })
+                    .attr("value", function(d){ return d; });
+
             var width = 800;
             var height = 500;
             var scale = 1200;
@@ -49,7 +62,7 @@
                 .height(height)
                 .scale(scale);
 
-            map("body");
+            map("#scheduleHolder");
             svg = map.svg();
             proj = map.projection();
 
@@ -61,10 +74,9 @@
             }
             stadiums["london"] = [width+50, 250]
 
-            var teamNames = Object.keys(teams);
-
             var nfl = svg.append("g")
                 .classed({"nfl": true});
+
 
             var teamLines = nfl.selectAll("line.trip")
                     .data(teamNames)
@@ -105,9 +117,14 @@
                         })
                     .style("stroke-width", 2);
 
+            function setup(){
+
+            }
+
 
             // 0-17
             var week = 0;
+            var currentTeam = undefined;
             var weekText = svg.append("g")
                 .attr("transform", function(){
                     return "translate(400, 0)";
@@ -119,26 +136,23 @@
                     .style("text-anchor", "middle");
 
             setInterval(function(){
-                update(week);
-                weekText.text(function(){
-                    if ( week === 0 ){
-                        return "Offseason";
-                    } else {
-                        return "Week " + week;
-                    }
-                });
+                update(week, currentTeam);
                 week = (week+1)%18;
             }, 2500);
 
-            function update(week){
+            function update(week, team){
                 teamCircles
-                    .classed({"bye": false})
                     .transition()
                     .duration(1000)
                     .ease("in-out")
                     .attr("transform", function(d){
                         var game = games[d][week];
-                        // at game
+                        // only animate specified team and its opponent
+                        if ( team && d !== team && game.opponent !== team ) {
+                            var long = stadiums[d][0];
+                            var lat = stadiums[d][1];
+                            return "translate(" + long + "," + lat + ")";
+                        }
                         var long = stadiums[game.location][0];
                         var lat = stadiums[game.location][1];
                         if ( game.type === "away") {
@@ -146,10 +160,13 @@
                         }
                         return "translate(" + long + "," + lat + ")";
                     })
-                    .each("end", function(d){
-                        if ( games[d][week].type === "bye" ) {
-                            this.classList.add("bye");
+                    .attr("r", function(d){
+                        var game = games[d][week];
+                        // only animate specified team and its opponent
+                        if ( team && d !== team && game.opponent !== team ) {
+                            return 3;
                         }
+                        return 7;
                     });
 
                 teamLines
@@ -158,15 +175,45 @@
                     .ease("in-out")
                     .attr("x2", function(d){
                         var game = games[d][week];
+                        if ( team && d !== team && game.opponent !== team ) {
+                            return stadiums[d][0];
+                        }
                         var long = game.type === "away" ? stadiums[game.location][0] - 17 :
                             stadiums[game.location][0];
                         return long;
                     })
                     .attr("y2", function(d){
+                        var game = games[d][week];
+                        if ( team && d !== team && game.opponent !== team ) {
+                            return stadiums[d][1];
+                        }
                         return stadiums[games[d][week].location][1];
                     })
+
+                weekText.text(function(){
+                    if ( week === 0 ){
+                        return "Offseason";
+                    }
+                    if ( currentTeam ) {
+                        var game = games[currentTeam][week];
+                        
+                        if ( game.type === "bye"){
+                            return "Week " + week + ": Bye";
+                        } else {
+                            var type = game["type"] === "home" ? "vs." : "@";
+                            return "Week " + week + ": " + type + " " + capitalize(game.opponent);
+                        }
+                        
+                    } else {
+                        return "Week " + week;
+                    }
+                });
             }
         });
+
+    function capitalize(str){
+        return str.charAt(0).toUpperCase() + str.substr(1);
+    }
 
 </script>
 </body>

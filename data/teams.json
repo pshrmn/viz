@@ -151,8 +151,8 @@
   },
   "jets": {
     "coords": {
-      "long": -73.4,
-      "lat": 40.8
+      "long": -74.07,
+      "lat": 41.5
     },
     "colors": {
       "primary": "#FFFFFF",
@@ -241,8 +241,8 @@
   },
   "giants": {
     "coords": {
-      "long": -74.5,
-      "lat": 40.8
+      "long": -74.07,
+      "lat": 40.7
     },
     "colors": {
       "primary": "#192F6B",
