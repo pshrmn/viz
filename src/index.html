@@ -26,7 +26,7 @@
      * texture - 618 by 200 pixel image
      * scale
      */
-    function planet(name, texture, scale){
+    function makePlanet(name, texture, scale){
         scale = scale || 1;
         var pattern;
         var patternWidth = 618
@@ -46,6 +46,9 @@
             .attr('height', patternHeight);
 
         planet = svg.append('circle')
+            .classed({
+                'planet': true
+            })
             .attr('r', 100)
             .attr('cx', 100)
             .attr('cy', 100)
@@ -81,8 +84,18 @@
         };
     }
 
-    var earth = planet('earth', 'static/img/textures/earth.png');
-    var mercury = planet('mercury', 'static/img/textures/mercury.png', 0.25);
+    d3.json('/static/data/planets.json', function(error, planets) {
+        var max = d3.max(planets, function(d){
+            return d.radius;
+        });
+        planets.forEach(function(planet){
+            planet.scale = planet.radius / max;
+            makePlanet(planet.name, planet.texture, planet.scale);
+        });
+        
+
+    });
+
 </script>
 </body>
 </html>
