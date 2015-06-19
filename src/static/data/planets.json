@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Earth",
+        "radius": 6378,
+        "texture": "static/img/texture/earth.png'"
+    },
+    {
+        "name": "Mercury",
+        "radius": 2440,
+        "texture": "static/img/texture/mercury.png'"
+    }
+]

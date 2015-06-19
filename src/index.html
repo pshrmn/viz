@@ -26,14 +26,14 @@
      * texture - 618 by 200 pixel image
      * scale
      */
-    function planet(texture, scale){
+    function planet(name, texture, scale){
         scale = scale || 1;
         var pattern;
         var patternWidth = 618
         var patternHeight = 200;
         var planet;
         pattern = defs.append('svg:pattern')
-            .attr('id', 'earth')
+            .attr('id', name)
             .attr('width', patternWidth)
             .attr('height', patternHeight)
             .attr('y', 0)
@@ -50,8 +50,10 @@
             .attr('cx', 100)
             .attr('cy', 100)
             .attr('transform', 'scale(' + scale + ')')
-            .style('fill', 'url(#earth)')
+            .style('fill', 'url(#' + name + ')')
             .on('click', rotate);
+        planet.append('svg:title')
+            .text(name);
 
         var rotating = false;
         function rotate(){
@@ -79,8 +81,8 @@
         };
     }
 
-    var earth = planet('static/img/textures/earth.png');
-
+    var earth = planet('earth', 'static/img/textures/earth.png');
+    var mercury = planet('mercury', 'static/img/textures/mercury.png', 0.25);
 </script>
 </body>
 </html>
