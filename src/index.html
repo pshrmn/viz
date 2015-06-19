@@ -2,8 +2,85 @@
 <html>
 <head>
     <title>Scale</title>
+    <style type="text/css">
+        body {
+            background: #000;
+        }
+    </style>
 </head>
 <body>
+<div class="content"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+    var holder = d3.select('.content');
+    var svg = holder.append('svg')
+        .attr('width', 1000)
+        .attr('height', 1000);
+
+    var defs = svg.append('svg:defs');
+
+    /*
+     * create a circle representing a planet
+     * the radius of the planet is 100
+     * texture - 618 by 200 pixel image
+     * scale
+     */
+    function planet(texture, scale){
+        scale = scale || 1;
+        var pattern;
+        var patternWidth = 618
+        var patternHeight = 200;
+        var planet;
+        pattern = defs.append('svg:pattern')
+            .attr('id', 'earth')
+            .attr('width', patternWidth)
+            .attr('height', patternHeight)
+            .attr('y', 0)
+            .attr('x', Math.random()*patternWidth)
+            .attr('patternUnits', 'userSpaceOnUse');
+
+        pattern.append('image')
+            .attr('xlink:href', texture)
+            .attr('width', patternWidth)
+            .attr('height', patternHeight);
+
+        planet = svg.append('circle')
+            .attr('r', 100)
+            .attr('cx', 100)
+            .attr('cy', 100)
+            .attr('transform', 'scale(' + scale + ')')
+            .style('fill', 'url(#earth)')
+            .on('click', rotate);
+
+        var rotating = false;
+        function rotate(){
+            if ( rotating ) {
+                pattern.transition();
+            } else {
+                var x = pattern.attr('x');
+                pattern.transition()
+                    .duration(5000)
+                    .ease('linear')
+                    .attr('x', x - patternWidth);
+            }
+            rotating = !rotating;
+        }
+
+        function rescale(newScale){
+            scale = newScale;
+            planet.transition()
+                .duration(250)
+                .attr('transform', 'scale(' + scale + ')');
+        }
+        return {
+            rotate: rotate,
+            rescale: rescale
+        };
+    }
+
+    var earth = planet('static/img/textures/earth.png');
+
+</script>
 </body>
 </html>
