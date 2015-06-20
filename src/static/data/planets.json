@@ -2,21 +2,31 @@
     {
         "name": "Mercury",
         "radius": 2440,
-        "texture": "static/img/textures/mercury.png"
+        "texture": "static/img/textures/mercury.png",
+        "distance": 57
     },
     {
         "name": "Venus",
         "radius": 6052,
-        "texture": "static/img/textures/venus.png"
+        "texture": "static/img/textures/venus.png",
+        "distance": 108
     },
     {
         "name": "Earth",
         "radius": 6378,
-        "texture": "static/img/textures/earth.png"
+        "texture": "static/img/textures/earth.png",
+        "distance": 150
     },
     {
         "name": "Mars",
         "radius": 3397,
-        "texture": "static/img/textures/mars.png"
+        "texture": "static/img/textures/mars.png",
+        "distance": 228
+    },
+    {
+        "name": "Jupiter",
+        "radius": 71492,
+        "texture": "static/img/textures/jupiter.png",
+        "distance": 779
     }
 ]

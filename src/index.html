@@ -4,7 +4,7 @@
     <title>Scale</title>
     <style type="text/css">
         body {
-            background: #000;
+            background: #222233;
         }
     </style>
 </head>
@@ -23,12 +23,19 @@
     d3.json('/static/data/planets.json', function(error, planetData) {
         var patternWidth = 618
         var patternHeight = 200;
-        var max = d3.max(planetData, function(d){
+        var biggest = d3.max(planetData, function(d){
             return d.radius;
         });
+        var longest = d3.max(planetData, function(d){
+            return d.distance;
+        });
+        var xScale = d3.scale.linear()
+            .domain([0, longest])
+            .range([0, 900]);
+
 
         planetData.forEach(function(planet){
-            planet.scale = planet.radius / max;
+            planet.scale = planet.radius / biggest;
         });
 
         var patterns = defs.selectAll('pattern')
@@ -50,7 +57,6 @@
             .classed({
                 'solar-system': true
             });
-        var offset = 100;
         var planets = solarSystem.selectAll('g.planet')
                 .data(planetData)
             .enter().append('g')
@@ -58,11 +64,7 @@
                     'planet': true
                 })
                 .attr('transform', function(d, i){
-                    var scaledRadius = (100*d.scale);
-                    offset += scaledRadius;
-                    var trans = 'translate(' + offset + ',100)';
-                    offset += scaledRadius + 100;
-                    return trans;
+                    return 'translate(' + xScale(d.distance) + ',100)';
                 })
                 .style('fill', function(d){
                     return 'url(#' + d.name + ')';
