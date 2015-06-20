@@ -6,14 +6,33 @@
     <style type="text/css">
         body {
             background: #222233;
-        }
-        svg text {
             font-family: 'Press Start 2P', cursive;
+        }
+
+        .toggleable {
+            padding: 4px;
+            display: inline-block;
+            color: rgb(228, 213, 106);
+            border: 2px solid rgb(228, 213, 106);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .toggleable input {
+            display: none;
+        }
+
+        .toggleable.active {
+            background: rgb(228, 213, 106);
+            color: #222233;
         }
     </style>
 </head>
 <body>
-<div class="content"></div>
+<div class="content">
+    <svg></svg>
+    <div class="controls"></div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
 <script src="/static/js/planets.js" type="text/javascript"></script>
 </body>

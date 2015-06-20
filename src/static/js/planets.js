@@ -1,22 +1,22 @@
-var holder = d3.select('.content');
-var svg = holder.append('svg')
+var svg = d3.select('.content svg')
     .attr('width', 750)
     .attr('height', 750);
+var controls = d3.select('.controls');
 
 var defs = svg.append('svg:defs');
 
 d3.json('/static/data/planets.json', function(error, planetData) {
     var patternWidth = 618
     var patternHeight = 200;
-    /*
-     * useful for drawing planets relative to one another's sizes
+
+    // useful for drawing planets relative to one another's sizes
     var biggest = d3.max(planetData, function(d){
         return d.radius;
     });
     planetData.forEach(function(planet){
         planet.scale = planet.radius / biggest;
     });
-    */
+
     /*
      * useful for drawing based on their distance from the sun
     var longest = d3.max(planetData, function(d){
@@ -47,7 +47,7 @@ d3.json('/static/data/planets.json', function(error, planetData) {
         .classed({
             'solar-system': true
         });
-    var planets = solarSystem.selectAll('g.planet')
+    var planetHolders = solarSystem.selectAll('g.planet')
             .data(planetData)
         .enter().append('g')
             .classed({
@@ -62,9 +62,10 @@ d3.json('/static/data/planets.json', function(error, planetData) {
             .style('fill', function(d){
                 return 'url(#' + d.name + ')';
             });
-    planets.append('circle')
+    var planets = planetHolders.append('circle')
         .attr('r', 100);
-    planets.append('text')
+
+    planetHolders.append('text')
         .text(function(d){ return d.name; })
         .attr('x', 0)
         .attr('y', 125)
@@ -72,12 +73,45 @@ d3.json('/static/data/planets.json', function(error, planetData) {
         .style('fill', 'rgb(228, 213, 106)');
 
     function rotate(){
-        patterns.attr('x', 0);
         patterns.transition()
             .duration(5000)
             .ease('linear')
-            .attr('x', -640)
+            .attr('x', function(d){
+                return d3.select(this).attr('x') -640;
+            })
             .each('end', rotate);
     }
+
+    var byRadius = false;
+    var radiusToggle = controls.append('label')
+        .classed({
+            'toggleable': true,
+            'active': byRadius
+        })
+        .text('By Radius');
+    radiusToggle.append('input')
+        .attr('type', 'checkbox')
+        .property('checked', false)
+        .on('change', function(d){
+            byRadius = this.checked;
+            redrawPlanets();        
+        });
+
+    function redrawPlanets(){
+        radiusToggle.classed({
+            'active': byRadius
+        });
+
+        planets.transition()
+            .duration(1000)
+            .attr('transform', function(d){
+                if ( byRadius ) {
+                    return 'scale(' + d.scale + ')';
+                } else {
+                    return '';
+                }
+            });
+    }
+
     rotate();
 });
