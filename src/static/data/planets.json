@@ -1,12 +1,22 @@
 [
     {
+        "name": "Mercury",
+        "radius": 2440,
+        "texture": "static/img/textures/mercury.png"
+    },
+    {
+        "name": "Venus",
+        "radius": 6052,
+        "texture": "static/img/textures/venus.png"
+    },
+    {
         "name": "Earth",
         "radius": 6378,
         "texture": "static/img/textures/earth.png"
     },
     {
-        "name": "Mercury",
-        "radius": 2440,
-        "texture": "static/img/textures/mercury.png"
+        "name": "Mars",
+        "radius": 3397,
+        "texture": "static/img/textures/mars.png"
     }
 ]

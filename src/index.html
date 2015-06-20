@@ -20,80 +20,77 @@
 
     var defs = svg.append('svg:defs');
 
-    /*
-     * create a circle representing a planet
-     * the radius of the planet is 100
-     * texture - 618 by 200 pixel image
-     * scale
-     */
-    function makePlanet(name, texture, scale){
-        scale = scale || 1;
-        var pattern;
+    d3.json('/static/data/planets.json', function(error, planetData) {
         var patternWidth = 618
         var patternHeight = 200;
-        var planet;
-        pattern = defs.append('svg:pattern')
-            .attr('id', name)
-            .attr('width', patternWidth)
-            .attr('height', patternHeight)
-            .attr('y', 0)
-            .attr('x', Math.random()*patternWidth)
-            .attr('patternUnits', 'userSpaceOnUse');
+        var max = d3.max(planetData, function(d){
+            return d.radius;
+        });
 
-        pattern.append('image')
-            .attr('xlink:href', texture)
+        planetData.forEach(function(planet){
+            planet.scale = planet.radius / max;
+        });
+
+        var patterns = defs.selectAll('pattern')
+                .data(planetData)
+            .enter().append('svg:pattern')
+                .attr('id', function(d){ return d.name; })
+                .attr('width', patternWidth)
+                .attr('height', patternHeight)
+                .attr('y', patternHeight/2)
+                .attr('x', Math.random()*patternWidth)
+                .attr('patternUnits', 'userSpaceOnUse');
+
+        patterns.append('image')
+            .attr('xlink:href', function(d){ return d.texture; })
             .attr('width', patternWidth)
             .attr('height', patternHeight);
 
-        planet = svg.append('circle')
+        var solarSystem = svg.append('g')
             .classed({
-                'planet': true
-            })
-            .attr('r', 100)
-            .attr('cx', 100)
-            .attr('cy', 100)
-            .attr('transform', 'scale(' + scale + ')')
-            .style('fill', 'url(#' + name + ')')
-            .on('click', rotate);
-        planet.append('svg:title')
-            .text(name);
+                'solar-system': true
+            });
+        var offset = 100;
+        var planets = solarSystem.selectAll('g.planet')
+                .data(planetData)
+            .enter().append('g')
+                .classed({
+                    'planet': true
+                })
+                .attr('transform', function(d, i){
+                    var scaledRadius = (100*d.scale);
+                    offset += scaledRadius;
+                    var trans = 'translate(' + offset + ',100)';
+                    offset += scaledRadius + 100;
+                    return trans;
+                })
+                .style('fill', function(d){
+                    return 'url(#' + d.name + ')';
+                })
+                .append('circle')
+                    .attr('r', 100)
+                    .attr('transform', function(d){
+                        return 'scale(' + d.scale + ')';
+                    })
+                    .on('click', rotate);
 
-        var rotating = false;
-        function rotate(){
-            if ( rotating ) {
-                pattern.transition();
+        var rotating = planetData.map(function(){ return false; });
+        function rotate(planet, i){
+            var matchingPattern = patterns.filter(function(d, index){
+                return index === i;
+            });
+            if ( rotating[i] ) {
+                matchingPattern.transition();
             } else {
-                var x = pattern.attr('x');
-                pattern.transition()
+                var start = matchingPattern.attr('x');
+                var end = start - patternWidth;
+                matchingPattern.transition()
                     .duration(5000)
                     .ease('linear')
-                    .attr('x', x - patternWidth);
+                    .attr('x', end);
             }
-            rotating = !rotating;
+            rotating[i] = !rotating[i];
         }
-
-        function rescale(newScale){
-            scale = newScale;
-            planet.transition()
-                .duration(250)
-                .attr('transform', 'scale(' + scale + ')');
-        }
-        return {
-            rotate: rotate,
-            rescale: rescale
-        };
-    }
-
-    d3.json('/static/data/planets.json', function(error, planets) {
-        var max = d3.max(planets, function(d){
-            return d.radius;
-        });
-        planets.forEach(function(planet){
-            planet.scale = planet.radius / max;
-            makePlanet(planet.name, planet.texture, planet.scale);
-        });
-        
-
     });
 
 </script>
