@@ -15,8 +15,8 @@
 <script type="text/javascript">
     var holder = d3.select('.content');
     var svg = holder.append('svg')
-        .attr('width', 1000)
-        .attr('height', 1000);
+        .attr('width', 1500)
+        .attr('height', 250);
 
     var defs = svg.append('svg:defs');
 
@@ -31,7 +31,7 @@
         });
         var xScale = d3.scale.linear()
             .domain([0, longest])
-            .range([0, 900]);
+            .range([0, 1400]);
 
 
         planetData.forEach(function(planet){
@@ -64,7 +64,7 @@
                     'planet': true
                 })
                 .attr('transform', function(d, i){
-                    return 'translate(' + xScale(d.distance) + ',100)';
+                    return 'translate(' + xScale(d.distance) + ',125)';
                 })
                 .style('fill', function(d){
                     return 'url(#' + d.name + ')';
@@ -89,7 +89,10 @@
                 matchingPattern.transition()
                     .duration(5000)
                     .ease('linear')
-                    .attr('x', end);
+                    .attr('x', end)
+                    .each('end', function(){
+                        rotating[i] = false;
+                    })
             }
             rotating[i] = !rotating[i];
         }

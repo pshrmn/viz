@@ -28,5 +28,23 @@
         "radius": 71492,
         "texture": "static/img/textures/jupiter.png",
         "distance": 779
+    },
+    {
+        "name": "Saturn",
+        "radius": 60268,
+        "texture": "static/img/textures/saturn.png",
+        "distance": 1430
+    },
+    {
+        "name": "Uranus",
+        "radius": 25559,
+        "texture": "static/img/textures/uranus.png",
+        "distance": 2880  
+    },
+    {
+        "name": "Neptune",
+        "radius": 24766,
+        "texture": "static/img/textures/neptune.png",
+        "distance": 4500  
     }
 ]
