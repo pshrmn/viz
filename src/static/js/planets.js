@@ -52,6 +52,7 @@ d3.json('/static/data/planets.json', function(error, planetData) {
         .classed({
             'solar-system': true
         });
+
     var planetHolders = solarSystem.selectAll('g.planet')
             .data(planetData)
         .enter().append('g')
@@ -100,17 +101,9 @@ d3.json('/static/data/planets.json', function(error, planetData) {
             }
         });
 
-
-    function rotate(){
-        patterns.transition()
-            .duration(5000)
-            .ease('linear')
-            .attr('x', function(d){
-                return d3.select(this).attr('x') -640;
-            })
-            .each('end', rotate);
-    }
-
+    /*
+     * control elements
+     */
     var byRadius = false;
     var radiusToggle = controls.append('label')
         .classed({
@@ -126,6 +119,24 @@ d3.json('/static/data/planets.json', function(error, planetData) {
             redrawPlanets();        
         });
 
+    var toRotate = false;
+    var rotateToggle = controls.append('label')
+        .classed({
+            'toggleable': true,
+            'active': toRotate
+        })
+        .text('Rotate Planets');
+    rotateToggle.append('input')
+        .attr('type', 'checkbox')
+        .property('checked', false)
+        .on('change', function(d){
+            toRotate = this.checked;
+            rotatePlanets();
+        })
+
+    /*
+     * control logic
+     */
     function redrawPlanets(){
         radiusToggle.classed({
             'active': byRadius
@@ -142,5 +153,24 @@ d3.json('/static/data/planets.json', function(error, planetData) {
             });
     }
 
-    rotate();
+    function rotatePlanets(){
+        rotateToggle.classed({
+            'active': toRotate
+        });
+        if ( toRotate ) {
+            recursiveRotate();
+        } else {
+            patterns.transition();
+        }
+    }
+
+    function recursiveRotate(){
+        patterns.transition()
+            .duration(5000)
+            .ease('linear')
+            .attr('x', function(d){
+                return d3.select(this).attr('x') -640;
+            })
+            .each('end', recursiveRotate);
+    }
 });
