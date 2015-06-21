@@ -1,6 +1,11 @@
+var width = 750;
+var height = 750;
+var margin = 25;
 var svg = d3.select('.content svg')
-    .attr('width', 750)
-    .attr('height', 750);
+    .attr('width', width + margin*2)
+    .attr('height', height + margin*2)
+    .append('g')
+        .attr('transform', 'translate(' + margin + ',' + margin + ')');
 var controls = d3.select('.controls');
 
 var defs = svg.append('svg:defs');
@@ -14,7 +19,7 @@ d3.json('/static/data/planets.json', function(error, planetData) {
         return d.radius;
     });
     planetData.forEach(function(planet){
-        planet.scale = planet.radius / biggest;
+        planet.scale = (planet.radius / biggest)/2;
     });
 
     /*
@@ -63,14 +68,38 @@ d3.json('/static/data/planets.json', function(error, planetData) {
                 return 'url(#' + d.name + ')';
             });
     var planets = planetHolders.append('circle')
-        .attr('r', 100);
+        .attr('r', 100)
+        .attr('transform', 'scale(0.5)');
 
     planetHolders.append('text')
         .text(function(d){ return d.name; })
         .attr('x', 0)
-        .attr('y', 125)
+        .attr('y', 75)
         .style('text-anchor', 'middle')
         .style('fill', 'rgb(228, 213, 106)');
+
+    var selectedPlanet;
+    var highlights = planetHolders.append('rect')
+        .classed({
+            'selected': false
+        })
+        .attr('x', -100)
+        .attr('y', -100)
+        .attr('width', 200)
+        .attr('height', 200)
+        .on('click', function(d, i){
+            if ( this.classList.contains('selected') ) {
+                this.classList.remove('selected');
+                selectedPlanet = undefined;
+            } else {
+                if ( selectedPlanet ) {
+                    selectedPlanet.classList.remove('selected');
+                }
+                this.classList.add('selected');
+                selectedPlanet = this;
+            }
+        });
+
 
     function rotate(){
         patterns.transition()
@@ -108,7 +137,7 @@ d3.json('/static/data/planets.json', function(error, planetData) {
                 if ( byRadius ) {
                     return 'scale(' + d.scale + ')';
                 } else {
-                    return '';
+                    return 'scale(0.5)';
                 }
             });
     }
