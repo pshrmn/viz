@@ -3,12 +3,16 @@ var height = 750;
 var margin = 25;
 var svg = d3.select('.content svg')
     .attr('width', width + margin*2)
-    .attr('height', height + margin*2)
-    .append('g')
-        .attr('transform', 'translate(' + margin + ',' + margin + ')');
+    .attr('height', height + margin*2);
+        
 var controls = d3.select('.controls');
 
 var defs = svg.append('svg:defs');
+var solarSystem = svg.append('g')
+    .classed({
+        'solar-system': true
+    })
+    .attr('transform', 'translate(' + margin + ',' + margin + ')');
 
 d3.json('/static/data/planets.json', function(error, planetData) {
     var patternWidth = 618
@@ -47,11 +51,6 @@ d3.json('/static/data/planets.json', function(error, planetData) {
         .attr('xlink:href', function(d){ return d.texture; })
         .attr('width', patternWidth)
         .attr('height', patternHeight);
-
-    var solarSystem = svg.append('g')
-        .classed({
-            'solar-system': true
-        });
 
     var planetHolders = solarSystem.selectAll('g.planet')
             .data(planetData)
