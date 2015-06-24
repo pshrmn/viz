@@ -1,5 +1,8 @@
-var width = 750;
-var height = 750;
+// determine the layout based on the screen size
+var cellSize = 250;
+var size = rowsAndColumns();
+var width = size.columns * cellSize;
+var height = size.rows * cellSize;
 var margin = 25;
 var svg = d3.select('.content svg')
     .attr('width', width + margin*2)
@@ -13,6 +16,20 @@ var solarSystem = svg.append('g')
         'solar-system': true
     })
     .attr('transform', 'translate(' + margin + ',' + margin + ')');
+
+// calculate the number of columns that can fit in the window,
+// and calculate the number of rows based on that
+function rowsAndColumns(){
+    var viewerWidth = window.innerWidth;
+    var maxWidth = viewerWidth > 1000 ? 1000 : viewerWidth;
+    var columnCount = Math.floor(maxWidth / 250);
+    // hard coded for 8 planets
+    var rowCount = Math.ceil(8/columnCount);
+    return {
+        columns: columnCount,
+        rows: rowCount
+    };
+}
 
 d3.json('/static/data/planets.json', function(error, planetData) {
     var patternWidth = 618
@@ -36,6 +53,38 @@ d3.json('/static/data/planets.json', function(error, planetData) {
         .range([0, 1400]);
     */
 
+    function getPosition(index){
+        var row = Math.floor(index / size.columns);
+        var column = index % size.columns;
+        return 'translate(' + (100 + column * 250) + ',' + (100 + row * 250) + ')';
+    }
+
+    // restrict how often the resize event listener does something 
+    var last = new Date();
+    window.addEventListener('resize', function(event){
+        var now = new Date();
+        if ( now - last > 100 ) {
+            resize();
+            last = now;
+        }
+    })
+
+    function resize(){
+        var newSize = rowsAndColumns();
+        // hard coded for 8 planets
+        if ( newSize.columns !== size.columns ) {
+            size = newSize;
+            width = size.columns * cellSize;
+            height = size.rows * cellSize;
+            svg
+                .attr('width', width + margin*2)
+                .attr('height', height + margin*2);
+            planetHolders.attr('transform', function(d, i){
+                return getPosition(i);
+            })
+            
+        }
+    }
 
     var patterns = defs.selectAll('pattern')
             .data(planetData)
@@ -59,10 +108,7 @@ d3.json('/static/data/planets.json', function(error, planetData) {
                 'planet': true
             })
             .attr('transform', function(d, i){
-                // row and column are 1-based
-                var row = Math.floor(i/3);
-                var column = i % 3;
-                return 'translate(' + (100 + column * 250) + ',' + (100 + row * 250) + ')';
+                return getPosition(i);
             })
             .style('fill', function(d){
                 return 'url(#' + d.name + ')';
