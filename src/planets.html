@@ -37,6 +37,17 @@
             stroke-width: 2px;
         }
 
+        .info {
+            color: #222233;
+            line-height: 1.5em;
+            border-radius: 15px;
+            background-color: #28606F;
+        }
+
+        .info.active {
+            padding: 15px;
+        }
+
     </style>
 </head>
 <body>
@@ -47,6 +58,7 @@
         </p>
     </div>
     <svg></svg>
+    <div class="info"></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
 <script src="/static/js/planets.js" type="text/javascript"></script>

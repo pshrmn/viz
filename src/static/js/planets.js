@@ -9,6 +9,7 @@ var svg = d3.select('.content svg')
     .attr('height', height + margin*2);
         
 var controls = d3.select('.controls');
+var infoHolder = d3.select('.info');
 
 var defs = svg.append('svg:defs');
 var solarSystem = svg.append('g')
@@ -137,12 +138,18 @@ d3.json('/static/data/planets.json', function(error, planetData) {
             if ( this.classList.contains('selected') ) {
                 this.classList.remove('selected');
                 selectedPlanet = undefined;
+                infoHolder
+                    .classed('active', false)
+                    .text('');
             } else {
                 if ( selectedPlanet ) {
                     selectedPlanet.classList.remove('selected');
                 }
                 this.classList.add('selected');
                 selectedPlanet = this;
+                infoHolder
+                    .classed('active', true)
+                    .text(planetData[i].info);
             }
         });
 
@@ -218,4 +225,5 @@ d3.json('/static/data/planets.json', function(error, planetData) {
             })
             .each('end', recursiveRotate);
     }
+
 });

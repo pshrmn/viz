@@ -3,48 +3,56 @@
         "name": "Mercury",
         "radius": 2440,
         "texture": "static/img/textures/mercury.png",
-        "distance": 57
+        "distance": 57,
+        "info": "Mercury is the smallest planet in our solar system as well as the closest to the sun, with an average distance of 35 million miles to it, 48 million miles closer than the Earth. The temperatures reflect this as the planet can get as hot as 700 Kelvin (800 F), 370 degrees hotter than Earth's max recorded temperature of 330 K (134 F). Of course planets rotate and the dark side of the planet is much more reasonable sounding 110 degrees, until you realize that that temperature is in Kelvin and converts to -262 F."
     },
     {
         "name": "Venus",
         "radius": 6052,
         "texture": "static/img/textures/venus.png",
-        "distance": 108
+        "distance": 108,
+        "info": ""
     },
     {
         "name": "Earth",
         "radius": 6378,
         "texture": "static/img/textures/earth.png",
-        "distance": 150
+        "distance": 150,
+        "info": ""
     },
     {
         "name": "Mars",
         "radius": 3397,
         "texture": "static/img/textures/mars.png",
-        "distance": 228
+        "distance": 228,
+        "info": ""
     },
     {
         "name": "Jupiter",
         "radius": 71492,
         "texture": "static/img/textures/jupiter.png",
-        "distance": 779
+        "distance": 779,
+        "info": ""
     },
     {
         "name": "Saturn",
         "radius": 60268,
         "texture": "static/img/textures/saturn.png",
-        "distance": 1430
+        "distance": 1430,
+        "info": ""
     },
     {
         "name": "Uranus",
         "radius": 25559,
         "texture": "static/img/textures/uranus.png",
-        "distance": 2880  
+        "distance": 2880,
+        "info": "" 
     },
     {
         "name": "Neptune",
         "radius": 24766,
         "texture": "static/img/textures/neptune.png",
-        "distance": 4500  
+        "distance": 4500,
+        "info": "" 
     }
 ]
