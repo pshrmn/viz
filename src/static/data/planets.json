@@ -4,14 +4,14 @@
         "radius": 2440,
         "texture": "static/img/textures/mercury.png",
         "distance": 57,
-        "info": "Mercury is the smallest planet in our solar system, as well as the closest to the sun, with an average distance of 57 million kilometers to it. That is 93 million kilometers closer than the Earth's average. The temperatures reflect this as the planet can get as hot as 700 Kelvin (800 F), 370 degrees hotter than Earth's max recorded temperature of 330 K (134 F). Of course planets rotate and the dark side of the planet is much more reasonable sounding 110 degrees, until you realize that that temperature is in Kelvin and converts to -262 F."
+        "info": "Although Mercury is much closer to the Sun than Earth, its minimum and maximum distances from the Sun (46-70 million kms) fluctuate much more than Earth does (24 million km compared to 5 million km)."
     },
     {
         "name": "Venus",
         "radius": 6052,
         "texture": "static/img/textures/venus.png",
         "distance": 108,
-        "info": ""
+        "info": "While Venus is relatively close to Earth, don't plan a vacation there. The atmospheric pressure on Venus' surface is equivalent to being 1 kilometer under the ocean surface on Earth."
     },
     {
         "name": "Earth",
@@ -25,34 +25,34 @@
         "radius": 3397,
         "texture": "static/img/textures/mars.png",
         "distance": 228,
-        "info": ""
+        "info": "The closest Mars gets to Earth is approximately 55 million kilometers. Traveling at a constant speed of 100 km/H, it would take you nearly 63 years to reach Mars."
     },
     {
         "name": "Jupiter",
         "radius": 71492,
         "texture": "static/img/textures/jupiter.png",
         "distance": 779,
-        "info": ""
+        "info": "Jupiter's radius is over 11x larger than Earth's. A person who is 6 feet tall on Earth scaled up to the same ratio would be over 67 feet tall on Jupiter."
     },
     {
         "name": "Saturn",
         "radius": 60268,
         "texture": "static/img/textures/saturn.png",
         "distance": 1430,
-        "info": ""
+        "info": "While Saturn's circumference is nearly 9.5x larger than Earth's, it takes Saturn only 10 hours 39 minutes to rotate. For every day on Earth, there are 2.25 days on Saturn."
     },
     {
         "name": "Uranus",
         "radius": 25559,
         "texture": "static/img/textures/uranus.png",
         "distance": 2880,
-        "info": "" 
+        "info": "F5 tornadoes, the strongest scale of tornadoes, can reach speeds of 420-511 km/h. That might feel calm compared to Uranus, where wind speeds can reach 900 km/h." 
     },
     {
         "name": "Neptune",
         "radius": 24766,
         "texture": "static/img/textures/neptune.png",
         "distance": 4500,
-        "info": "" 
+        "info": "Neptune takes nearly 165 years to orbit the sun. In their lifetime, most humans barely make it to their half Neptune-birthday."
     }
 ]
