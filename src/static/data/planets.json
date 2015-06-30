@@ -4,7 +4,7 @@
         "radius": 2440,
         "texture": "static/img/textures/mercury.png",
         "distance": 57,
-        "info": "Mercury is the smallest planet in our solar system as well as the closest to the sun, with an average distance of 35 million miles to it, 48 million miles closer than the Earth. The temperatures reflect this as the planet can get as hot as 700 Kelvin (800 F), 370 degrees hotter than Earth's max recorded temperature of 330 K (134 F). Of course planets rotate and the dark side of the planet is much more reasonable sounding 110 degrees, until you realize that that temperature is in Kelvin and converts to -262 F."
+        "info": "Mercury is the smallest planet in our solar system, as well as the closest to the sun, with an average distance of 57 million kilometers to it. That is 93 million kilometers closer than the Earth's average. The temperatures reflect this as the planet can get as hot as 700 Kelvin (800 F), 370 degrees hotter than Earth's max recorded temperature of 330 K (134 F). Of course planets rotate and the dark side of the planet is much more reasonable sounding 110 degrees, until you realize that that temperature is in Kelvin and converts to -262 F."
     },
     {
         "name": "Venus",
