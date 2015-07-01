@@ -157,8 +157,8 @@ d3.json('/static/data/planets.json', function(error, planetData) {
     var commas = d3.format(',');
     function showInfo(planet) {
         planetName.text(planet.name);
-        planetRadius.text(commas(planet.radius) + ' KM');
-        planetDistance.text(commas(planet.distance * 1000000) + ' KM');
+        planetRadius.text(commas(planet.radius) + ' km');
+        planetDistance.text(commas(planet.distance * 1000000) + ' km');
         planetInfo.text(planet.info);
         infoHolder.classed('active', true);
     }
