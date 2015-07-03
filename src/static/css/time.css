@@ -1,0 +1,32 @@
+body {
+    background: #222233;
+    font-family: 'Press Start 2P', cursive;
+    color: rgb(228, 213, 106);
+}
+
+.content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.toggleable {
+    padding: 4px;
+    margin: 0 5px 0;
+    display: inline-block;
+    border: 2px solid rgb(228, 213, 106);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.toggleable input {
+    display: none;
+}
+
+.toggleable.active {
+    background: rgb(228, 213, 106);
+    color: #222233;
+}
+
+.human {
+    fill: rgb(228, 213, 106);;
+}
