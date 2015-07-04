@@ -28,6 +28,8 @@ function drawHuman(holder, pos, scale) {
         .attr('width', 3)
         .attr('y', 9)
         .attr('height', 11);
+
+    return human;
 }
 
 var width = 600;
@@ -58,4 +60,32 @@ function fillSVGWithHumans(scale) {
 
 }
 
-fillSVGWithHumans(scale);
+// fillSVGWithHumans(scale);
+
+function expandableHuman(scale, x, y) {
+    var humanWidth = 14 * scale;
+    var humanHeight = 29 * scale;
+    var padding = 2*scale;
+    var human = drawHuman(svg, [x,y], scale);
+    human.on('click', function(){
+        svg.selectAll('g.clone').remove();
+        var clones = d3.range(Math.floor(Math.random()*10)).map(function(d){
+            var pos = d+1;
+            var newX = x + pos * (padding + humanWidth);
+            var clone = drawHuman(svg, [x, y], scale);
+            clone
+                .classed('clone', true)
+                .datum([newX, y]);
+        })
+        
+        svg.selectAll('g.clone').transition()
+            .duration(250)
+            .ease('linear')
+            .attr('transform', function(d){
+                return 'translate(' + d[0] + ',' + d[1] + ')scale(' + scale + ')'
+            });
+
+    });
+}
+
+var clonable = expandableHuman(scale, 25, 25);
