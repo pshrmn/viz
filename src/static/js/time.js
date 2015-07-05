@@ -47,7 +47,47 @@ function stickFigure(){
 
     draw.height = function(){
         return 2*headSize + Math.max(bodyLength, armLength);;
-    }
+    };
+
+    draw.headSize = function(x){
+        if ( !arguments.length ) {
+            return headSize;
+        }
+        headSize = x;
+        return draw;
+    };
+
+    draw.armWidth = function(x){
+        if ( !arguments.length ) {
+            return armWidth;
+        }
+        armWidth = x;
+        return draw;
+    };
+
+    draw.armLength = function(x){
+        if ( !arguments.length ) {
+            return armLength;
+        }
+        armLength = x;
+        return draw;
+    };
+
+    draw.bodyWidth = function(x){
+        if ( !arguments.length ) {
+            return bodyWidth;
+        }
+        bodyWidth = x;
+        return draw;
+    };
+
+    draw.bodyLength = function(x){
+        if ( !arguments.length ) {
+            return bodyLength;
+        }
+        bodyLength = x;
+        return draw;
+    };
 
     return draw;
 }
@@ -57,7 +97,8 @@ var height = 400;
 var svg = d3.select('.content svg')
     .attr('width', width)
     .attr('height', height);
-var drawAHuman = stickFigure();
+var drawAHuman = stickFigure()
+    .headSize(10);
 
 /*
 function fillSVGWithHumans(scale) {
