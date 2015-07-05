@@ -1,35 +1,55 @@
 /*
- * Draw a rudimentary human figure using circle and rects.
- * The base size is 29 pixels tall and 14 pixels wide
+ * draw a humanesque block figure
  */
-function drawHuman(holder, pos, scale) {
-    var human = holder.append('g')
-        .classed({
-            'human': true
-        })
-        .attr('transform', 'translate(' + pos[0] + ',' + pos[1] + ')scale(' + scale + ')');
-    var head = human.append('circle')
-        .attr('r', 5)
-        .attr('cy', 5);
-    var body = human.append('rect')
-        .attr('x', -4)
-        .attr('width', 8)
-        .attr('y', 9)
-        .attr('height', 20);
+function stickFigure(){
+    var headSize = 5;
+    var armWidth = 3;
+    var armLength = 11;
+    var bodyWidth = 8;
+    var bodyLength = 20;
 
-    var leftArm = human.append('rect')
-        .attr('x', -7)
-        .attr('width', 3)
-        .attr('y', 9)
-        .attr('height', 11);
+    function draw(holder, pos){
+        var halfBody = 0.5 * bodyWidth;
+        var headOffset = 2 * headSize;
+        var human = holder.append('g')
+            .classed({
+                'human': true
+            })
+            .attr('transform', 'translate(' + pos[0] + ',' + pos[1] + ')');
+        var head = human.append('circle')
+            .attr('r', headSize)
+            .attr('cy', headSize);
+        var body = human.append('rect')
+            .attr('x', -1 * halfBody)
+            .attr('width', bodyWidth)
+            .attr('y', headOffset)
+            .attr('height', bodyLength);
 
-    var rightArm = human.append('rect')
-        .attr('x', 4)
-        .attr('width', 3)
-        .attr('y', 9)
-        .attr('height', 11);
+        var leftArm = human.append('rect')
+            .attr('x', -1 * (halfBody + armWidth ))
+            .attr('width', armWidth)
+            .attr('y', headOffset)
+            .attr('height', 11);
 
-    return human;
+        var rightArm = human.append('rect')
+            .attr('x', halfBody)
+            .attr('width', armWidth)
+            .attr('y', headOffset)
+            .attr('height',armLength);
+
+        return human;
+    }
+
+    // width and height use Math.max for abnormally sized stickFigures
+    draw.width = function(){
+        return Math.max(bodyWidth + 2 * armWidth, 2*headSize);
+    };
+
+    draw.height = function(){
+        return 2*headSize + Math.max(bodyLength, armLength);;
+    }
+
+    return draw;
 }
 
 var width = 600;
@@ -37,9 +57,9 @@ var height = 400;
 var svg = d3.select('.content svg')
     .attr('width', width)
     .attr('height', height);
+var drawAHuman = stickFigure();
 
-var scale = 1;
-
+/*
 function fillSVGWithHumans(scale) {
     var humanWidth = 14 * scale;
     var humanHeight = 29 * scale;
@@ -61,18 +81,18 @@ function fillSVGWithHumans(scale) {
 }
 
 // fillSVGWithHumans(scale);
+*/
 
-function expandableHuman(scale, x, y) {
-    var humanWidth = 14 * scale;
-    var humanHeight = 29 * scale;
-    var padding = 2*scale;
-    var human = drawHuman(svg, [x,y], scale);
+function expandableHuman(x, y) {
+    var padding = 2;
+    var human = drawAHuman(svg, [x,y]);
+    var humanWidth = drawAHuman.width();
     human.on('click', function(){
         svg.selectAll('g.clone').remove();
         var clones = d3.range(Math.floor(Math.random()*10)).map(function(d){
             var pos = d+1;
             var newX = x + pos * (padding + humanWidth);
-            var clone = drawHuman(svg, [x, y], scale);
+            var clone = drawAHuman(svg, [x, y]);
             clone
                 .classed('clone', true)
                 .datum([newX, y]);
@@ -82,10 +102,10 @@ function expandableHuman(scale, x, y) {
             .duration(250)
             .ease('linear')
             .attr('transform', function(d){
-                return 'translate(' + d[0] + ',' + d[1] + ')scale(' + scale + ')'
+                return 'translate(' + d[0] + ',' + d[1] + ')';
             });
 
     });
 }
 
-var clonable = expandableHuman(scale, 25, 25);
+var clonable = expandableHuman(25, 25);
