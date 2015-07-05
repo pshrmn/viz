@@ -29,7 +29,7 @@ function stickFigure(){
             .attr('x', -1 * (halfBody + armWidth ))
             .attr('width', armWidth)
             .attr('y', headOffset)
-            .attr('height', 11);
+            .attr('height', armLength);
 
         var rightArm = human.append('rect')
             .attr('x', halfBody)
@@ -98,13 +98,13 @@ var svg = d3.select('.content svg')
     .attr('width', width)
     .attr('height', height);
 var drawAHuman = stickFigure()
-    .headSize(10);
+    .headSize(10)
+    .armLength(3);
 
-/*
-function fillSVGWithHumans(scale) {
-    var humanWidth = 14 * scale;
-    var humanHeight = 29 * scale;
-    var padding = 2*scale;
+function fillSVGWithHumans() {
+    var padding = 2
+    var humanWidth = drawAHuman.width();
+    var humanHeight = drawAHuman.height();
     var colCount = Math.floor(width / (humanWidth + 2*padding));
     var rowCount = Math.floor(height / (humanHeight + 2*padding));
     for ( var row = 0; row < rowCount; row++ ) {
@@ -115,14 +115,13 @@ function fillSVGWithHumans(scale) {
             // offset for previous column, and slize over half a human so the first column
             // isn't cut off
             var colPos = (2*col*padding) + padding + (col*humanWidth) + (humanWidth/2);
-            drawHuman(svg, [colPos, rowPos], scale);
+            drawAHuman(svg, [colPos, rowPos]);
         }
     }
 
 }
 
-// fillSVGWithHumans(scale);
-*/
+fillSVGWithHumans();
 
 function expandableHuman(x, y) {
     var padding = 2;
@@ -149,4 +148,4 @@ function expandableHuman(x, y) {
     });
 }
 
-var clonable = expandableHuman(25, 25);
+// var clonable = expandableHuman(25, 25);
