@@ -2,4 +2,4 @@ cssselect==0.9.1
 gatherer==1.1.0
 lxml==3.4.4
 requests==2.8.1
-wikinfo==0.0.1
+wikinfo==0.1.1
