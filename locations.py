@@ -10,8 +10,13 @@ import argparse
 from gatherer import Page, Fetch, Cache
 from wikinfo.geo import city
 
+# load the rules to get a roster's players' position & hometown
 with open("roster.json") as fp:
     roster_rules = json.load(fp)
+
+# load a dict with the urls for all of the FBS D1-A teams' roster urls
+with open("team_pages.json") as fp:
+    teams = json.load(fp)
 
 cache = Cache("cache")
 wiki_city = city.City(city.city_rule_set, {
@@ -75,21 +80,23 @@ def team_coordinates(url):
     }
 
 
-def get_team(filename, url):
+def get_team(name):
+    # teams are saved as lower case
+    lower_name = name.lower()
+    if lower_name not in teams:
+        print("could not find team: {}".format(name))
+        return
+    url = teams[lower_name]
     team = team_coordinates(url)
     if not team:
         return
-    with open("data/{}".format(filename), "w") as fp:
+    filename = lower_name.replace(" ", "_")
+    with open("data/{}.json".format(filename), "w") as fp:
         json.dump(team, fp, indent=2)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-url', dest='url',
+    parser.add_argument('-team', dest='team',
                         help='espn.com url for team roster')
-    parser.add_argument('-filename', dest='filename',
-                        help='location to save data')
     args = parser.parse_args()
-    url = args.url
-    filename = args.filename or "output.json"
-    get_team(filename, url)
-
+    get_team(args.team)
