@@ -42,9 +42,11 @@ def get_coordinates(hometown):
         return KNOWN_CITIES[hometown]
     else:
         city, state = map(str.strip, hometown.split(",", 1))
-        coords = wiki_city.coordinates(city, state)
-        KNOWN_CITIES[hometown] = coords
-        return coords
+        longitude, latitude = wiki_city.coordinates(city, state)
+        if longitude is not None and latitude is not None:
+            coords = (longitude, latitude)
+            KNOWN_CITIES[hometown] = coords
+            return coords
 
 
 def team_coordinates(url):
