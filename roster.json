@@ -1,0 +1,66 @@
+{
+  "selector": "body",
+  "spec": {
+    "type": "single",
+    "value": 0
+  },
+  "rules": [],
+  "optional": false,
+  "children": [
+    {
+      "selector": "table",
+      "spec": {
+        "type": "single",
+        "value": 0
+      },
+      "rules": [],
+      "optional": false,
+      "children": [
+        {
+          "selector": "tr",
+          "spec": {
+            "type": "all",
+            "value": "players"
+          },
+          "rules": [],
+          "optional": false,
+          "children": [
+            {
+              "selector": "td",
+              "spec": {
+                "type": "single",
+                "value": 2
+              },
+              "rules": [
+                {
+                  "attr": "text",
+                  "name": "position",
+                  "type": "string"
+                }
+              ],
+              "optional": false,
+              "children": []
+            },
+            {
+              "selector": "td",
+              "spec": {
+                "type": "single",
+                "value": 6
+              },
+              "rules": [
+                {
+                  "attr": "text",
+                  "name": "hometown",
+                  "type": "string"
+                }
+              ],
+              "optional": false,
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "name": "roster"
+}
