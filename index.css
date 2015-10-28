@@ -1,3 +1,26 @@
+.map-holder, .teams-holder {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.teams-holder {
+  width: 250px;
+}
+
+.teams-holder label {
+  display: inline-block;
+  padding: 3px 5px;
+  margin-bottom: 3px;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  width: 200px;
+  font-size: 1.5em;
+}
+
+.teams-holder label input {
+  float: right;
+}
+
 select {
   display: block;
 }
@@ -42,7 +65,7 @@ circle.school {
 }
 
 .mean {
-  opacity: 0.1;
+  opacity: 0.15;
 }
 
 .location {
@@ -51,5 +74,5 @@ circle.school {
 }
 
 .median {
-  opacity: 0.1;
+  opacity: 0.15;
 }

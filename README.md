@@ -7,3 +7,5 @@ python -m http.server
 ```
 
 then go to `http://localhost:8000`
+
+Live version at [pshrmn.com/projects/recruiting](http://www.pshrmn.com/projects/recruiting)

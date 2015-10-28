@@ -10,17 +10,17 @@ queue()
 
     // setup
     var margin = {top: 15, right: 15, bottom: 15, left: 15};
-    var width = 1200;
-    var height = 800;
-    var scale = 1400;
+    var width = 800;
+    var height = 600;
+    var scale = 1000;
     var projection = d3.geo.albersUsa()
       .scale(scale)
       .translate([width/2, height/2]);
     var path = d3.geo.path()
       .projection(projection);
 
-    var opacity = 0.25;
-    var radius = 5;
+    var opacity = 0.5;
+    var radius = 3;
 
     var drawSchools = true;
     var drawMedians = true;
@@ -75,20 +75,29 @@ queue()
 
     // create the svg and projection
     var holder = d3.select("#content");
+    var svg = holder.append("div")
+      .classed({
+        "map-holder": true
+      })
+      .append("svg")
+        .attr("width", width + margin.right + margin.left)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var teamSelector = holder.append("div")
+      .classed({
+        "teams-holder": true
+      });
 
-    // controls
+    // controls to change how the data is rendered
     var controls = holder.append("div")
       .classed({
         controls: true
       })
 
     // not really a form ;)
-    var form = controls.append("div")
-      .classed({
-        "teams-holder": true
-      });
 
-    form.selectAll("label")
+    teamSelector.selectAll("label")
         .data(teams)
       .enter().append("label")
         .text(function(d) {
@@ -118,6 +127,10 @@ queue()
 
     // control opacity/radius
     var visInputs = controls.append("div")
+
+    /*
+     * control the radius/opacity of players circles
+     */
     var ranges = visInputs.append("div")
       .classed({
         "range-controls": true
@@ -149,57 +162,56 @@ queue()
           players.style("opacity", this.value);
         });
 
-    function mediansText() {
-      return drawMedians ? "Hide Medians" : "Show Medians";
-    }
-    function meansText() {
-      return drawMeans ? "Hide Means" : "Show Means";
-    }
-    function schoolsText() {
-      return drawSchools ? "Hide Schools" : "Show Schools";
-    }
-
-    var buttons = visInputs.append("div")
+    /*
+     * toggle the visibility of school, median, and mean circles
+     */
+    var toggles = visInputs.append("div")
       .classed({
         "sub-form": true
       });
 
-    buttons.append("h3")
+    toggles.append("h3")
       .text("Toggle Indicators:");
 
-    buttons.append("button")
-      .text(schoolsText)
-      .on("click", function(d) {
-        // toggle means layer visibility
-        drawSchools = !drawSchools;
-        this.textContent = schoolsText();
-        schoolsLayer.classed({
-          "hidden": !drawSchools
-        })
-      });
+    toggles.append("label")
+      .text("Show Schools")
+      .append("input")
+        .attr("type", "checkbox")
+        .attr("checked", drawSchools)
+        .on("change", function(d) {
+          drawSchools = !drawSchools;
+          schoolsLayer.classed({
+            "hidden": !drawSchools
+          })
+        });
 
-    buttons.append("button")
-      .text(mediansText)
-      .on("click", function(d) {
-        // toggle means layer visibility
-        drawMedians = !drawMedians;
-        this.textContent = mediansText();
-        mediansLayer.classed({
-          "hidden": !drawMedians
-        })
-      });
+    toggles.append("label")
+      .text("Show Medians")
+      .append("input")
+        .attr("type", "checkbox")
+        .attr("checked", drawMedians)
+        .on("change", function(d) {
+          drawMedians = !drawMedians;
+          mediansLayer.classed({
+            "hidden": !drawMedians
+          })
+        });
 
-    buttons.append("button")
-      .text(meansText)
-      .on("click", function(d) {
-        // toggle means layer visibility
-        drawMeans = !drawMeans;
-        this.textContent = meansText();
-        meansLayer.classed({
-          "hidden": !drawMeans
-        })
-      });
+    toggles.append("label")
+      .text("Show Means")
+      .append("input")
+        .attr("type", "checkbox")
+        .attr("checked", drawMeans)
+        .on("change", function(d) {
+          drawMeans = !drawMeans;
+          meansLayer.classed({
+            "hidden": !drawMeans
+          })
+        });
 
+    /*
+     * control the position of player circles
+     */
     var locationForm = controls.append("div")
       .classed({
         "sub-form": true
@@ -246,11 +258,6 @@ queue()
      *     medians
      *     means
      */
-    var svg = holder.append("svg")
-      .attr("width", width + margin.right + margin.left)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     /*
      * layers are created here, move them around here to determine
