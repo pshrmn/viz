@@ -12,9 +12,24 @@ select {
   display: none;
 }
 
-label, button {
-  margin-right: 25px;
+label {
+  margin-right: 15px;
   cursor: pointer;
+}
+
+button {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.sub-form {
+  border: 1px solid #ccc;
+  margin: 5px;
+  padding: 5px;
+}
+
+.sub-form h3 {
+  margin: 3px 0;
 }
 
 circle.player {

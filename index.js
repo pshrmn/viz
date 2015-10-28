@@ -122,10 +122,6 @@ queue()
       .classed({
         "range-controls": true
       });
-    var buttons = visInputs.append("div")
-      .classed({
-        "button-controls": true
-      });
 
     ranges.append("span")
       .text("Radius")
@@ -163,6 +159,14 @@ queue()
       return drawSchools ? "Hide Schools" : "Show Schools";
     }
 
+    var buttons = visInputs.append("div")
+      .classed({
+        "sub-form": true
+      });
+
+    buttons.append("h3")
+      .text("Toggle Indicators:");
+
     buttons.append("button")
       .text(schoolsText)
       .on("click", function(d) {
@@ -195,6 +199,43 @@ queue()
           "hidden": !drawMeans
         })
       });
+
+    var locationForm = controls.append("div")
+      .classed({
+        "sub-form": true
+      });
+
+    locationForm.append("h3")
+      .text("Render Hometown Locations:")
+
+    locationForm.append("label")
+      .text("By correct location")
+      .append("input")
+        .attr("type", "radio")
+        .property("checked", true)
+        .attr("name", "location")
+        .on("change", function() {
+          byRealLocation(players);
+        });
+
+    locationForm.append("label")
+      .text("By longitude")
+      .append("input")
+        .attr("type", "radio")
+        .attr("name", "location")
+        .on("change", function() {
+          byLongitude(players);
+        });
+
+    locationForm.append("label")
+      .text("By latitude")
+      .append("input")
+        .attr("type", "radio")
+        .attr("name", "location")
+        .on("change", function() {
+          byLatitude(players);
+        });
+
 
     /*
      * The map
@@ -325,6 +366,27 @@ queue()
       .text(function(d) { return d.name + " mean distance: " + d.meanMiles + " miles"; });
   });
 
+
+function byLongitude(players) {
+  players.transition()
+    .duration(1000)
+    .attr("cy", 0)
+    .attr("cx", function(d){ return d[0]; });
+}
+
+function byLatitude(players) {
+  players.transition()
+    .duration(1000)
+    .attr("cy", function(d){ return d[1]; })
+    .attr("cx", 0);
+}
+
+function byRealLocation(players) {
+  players.transition()
+    .duration(1000)
+    .attr("cy", function(d){ return d[1]; })
+    .attr("cx", function(d){ return d[0]; });
+}
 
 /*
  * Functions for determining distances
