@@ -18,8 +18,13 @@ queue()
       .translate([width/2, height/2]);
     var path = d3.geo.path()
       .projection(projection);
+
     var opacity = 0.25;
     var radius = 5;
+
+    var drawSchools = true;
+    var drawMedians = true;
+    var drawMeans = true;
 
 
     // setup additional info for the teams
@@ -97,14 +102,32 @@ queue()
           })
           .on("change", function(d) {
             d.selected = this.checked;
-            teamHolders.classed({
-              hidden: function(d) { return !d.selected; }
-            });
+            playersLayer.classed({
+                hidden: function(d) { return !d.selected; }
+              });
+            schools.classed({
+                hidden: function(d) { return !d.selected; }
+              });
+            medians.classed({
+                hidden: function(d) { return !d.selected; }
+              });
+            means.classed({
+                hidden: function(d) { return !d.selected; }
+              });
           });
 
     // control opacity/radius
     var visInputs = controls.append("div")
-    visInputs.append("span")
+    var ranges = visInputs.append("div")
+      .classed({
+        "range-controls": true
+      });
+    var buttons = visInputs.append("div")
+      .classed({
+        "button-controls": true
+      });
+
+    ranges.append("span")
       .text("Radius")
       .append("input")
         .attr("type", "range")
@@ -117,7 +140,7 @@ queue()
           players.attr("r", this.value);
         });
 
-    visInputs.append("span")
+    ranges.append("span")
       .text("Opacity")
       .append("input")
         .attr("type", "range")
@@ -130,9 +153,57 @@ queue()
           players.style("opacity", this.value);
         });
 
+    function mediansText() {
+      return drawMedians ? "Hide Medians" : "Show Medians";
+    }
+    function meansText() {
+      return drawMeans ? "Hide Means" : "Show Means";
+    }
+    function schoolsText() {
+      return drawSchools ? "Hide Schools" : "Show Schools";
+    }
+
+    buttons.append("button")
+      .text(schoolsText)
+      .on("click", function(d) {
+        // toggle means layer visibility
+        drawSchools = !drawSchools;
+        this.textContent = schoolsText();
+        schoolsLayer.classed({
+          "hidden": !drawSchools
+        })
+      });
+
+    buttons.append("button")
+      .text(mediansText)
+      .on("click", function(d) {
+        // toggle means layer visibility
+        drawMedians = !drawMedians;
+        this.textContent = mediansText();
+        mediansLayer.classed({
+          "hidden": !drawMedians
+        })
+      });
+
+    buttons.append("button")
+      .text(meansText)
+      .on("click", function(d) {
+        // toggle means layer visibility
+        drawMeans = !drawMeans;
+        this.textContent = meansText();
+        meansLayer.classed({
+          "hidden": !drawMeans
+        })
+      });
 
     /*
      * The map
+     * Layers:
+     *     states
+     *     players
+     *     schools
+     *     medians
+     *     means
      */
     var svg = holder.append("svg")
       .attr("width", width + margin.right + margin.left)
@@ -140,22 +211,29 @@ queue()
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // draw the map
-    var stateData = topojson.feature(states, states.objects.states).features;
-    var states = svg.append("g")
-      .classed("country", true)
-      .selectAll("g.state")
-          .data(stateData)
-        .enter().append("g")
-          .classed("state", true)
-          .append("path")
-            .classed("outline", true)
-            .attr("d", path);
+    /*
+     * layers are created here, move them around here to determine
+     * rendering order
+     */
 
-    // draw the player locations
-    var teamHolders = svg.append("g")
+    var stateLayer = svg.append("g")
       .classed({
-        "teams": true
+        country: true
+      });
+
+    var meansLayer = svg.append("g")
+      .classed({
+        means: true
+      });
+
+    var mediansLayer = svg.append("g")
+      .classed({
+        medians: true
+      });
+
+    var playersLayer = svg.append("g")
+      .classed({
+        teams: true
       })
       .selectAll("g.team")
           .data(teams)
@@ -163,22 +241,32 @@ queue()
           .classed({
             team: true,
             hidden: function(d) { return !d.selected }
-          })
-          .style("fill", function(d) { return d.color; })
-
-    var schools = teamHolders.append("g")
+          });
+      
+    var schoolsLayer = svg.append("g")
       .classed({
-        school: true
+        schools: true
       });
 
-    var players = teamHolders.append("g")
-      .classed({
-        "players": true
-      })
-      .selectAll("circle.player")
-        .data(function(d){
-          return d.points
-        })
+    /*
+     * STATE LAYER
+     */
+    var stateData = topojson.feature(states, states.objects.states).features;
+    stateLayer.selectAll("g.state")
+          .data(stateData)
+        .enter().append("g")
+          .classed("state", true)
+          .append("path")
+            .classed("outline", true)
+            .attr("d", path);
+
+    /*
+     * PLAYERS LAYER
+     */
+    playersLayer.style("fill", function(d) { return d.color; })
+
+    var players = playersLayer.selectAll("circle.player")
+        .data(function(d){ return d.points })
       .enter().append("circle")
         .classed({
           player: true
@@ -188,48 +276,53 @@ queue()
         .attr("cx", function(d){ return d[0]; })
         .attr("cy", function(d){ return d[1]; });
 
-    // mean recruiting distance
-    schools.append("circle")
-      .classed({
-        mean: true
-      })
-      .attr("r", function(d) {
-        return d.mean;
-      })
-      .attr("cx", function(d) {
-        return d.schoolCoords[0];
-      })
-      .attr("cy", function(d) {
-        return d.schoolCoords[1];
-      });
+    /*
+     * SCHOOLS LAYER
+     */
+    var schools = schoolsLayer.selectAll("circle.school")
+        .data(teams)
+      .enter().append("circle")
+        .classed({
+          school: true,
+          hidden: function(d) { return !d.selected }
+        })
+        .style("fill", function(d) { return d.color; })
+        .attr("r", 5)
+        .attr("cx", function(d) { return d.schoolCoords[0]; })
+        .attr("cy", function(d) { return d.schoolCoords[1]; })
+    schools.append("title").text(function(d) { return d.name; });
 
-    // mean recruiting distance
-    schools.append("circle")
-      .classed({
-        median: true
-      })
-      .attr("r", function(d) {
-        return d.median;
-      })
-      .attr("cx", function(d) {
-        return d.schoolCoords[0];
-      })
-      .attr("cy", function(d) {
-        return d.schoolCoords[1];
-      })
-
-    // the location of the school
-    schools.append("circle")
-      .classed({
-        location: true
-      })
-      .attr("r", 5)
-      .attr("cx", function(d) {
-        return d.schoolCoords[0];
-      })
-      .attr("cy", function(d) {
-        return d.schoolCoords[1];
-      });
+    /*
+     * MEDIANS LAYER
+     */
+    var medians = mediansLayer.selectAll("circle.median")
+        .data(teams)
+      .enter().append("circle")
+        .classed({
+          median: true,
+          hidden: function(d) { return !d.selected }
+        })
+      .attr("r", function(d) { return d.median; })
+      .attr("cx", function(d) { return d.schoolCoords[0]; })
+      .attr("cy", function(d) { return d.schoolCoords[1]; })
+    medians.append("title")
+      .text(function(d) { return d.name + " median distance: " + d.medianMiles + " miles"; });
+  
+    /*
+     * MEANS LAYER
+     */
+    var means = meansLayer.selectAll("circle.mean")
+        .data(teams)
+      .enter().append("circle")
+        .classed({
+          mean: true,
+          hidden: function(d) { return !d.selected }
+        })
+        .attr("r", function(d) { return d.mean; })
+        .attr("cx", function(d) { return d.schoolCoords[0]; })
+        .attr("cy", function(d) { return d.schoolCoords[1]; });
+    means.append("title")
+      .text(function(d) { return d.name + " mean distance: " + d.meanMiles + " miles"; });
   });
 
 
@@ -243,7 +336,8 @@ function distance(start, end) {
 }
 
 function haversine(start, end){
-  var R = 3963.1676
+  // equatorial radius
+  var R = 3963.1906;
   var start_lat = toRads(start[1]);
   var start_cos = Math.cos(start_lat);
 

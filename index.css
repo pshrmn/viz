@@ -8,17 +8,22 @@ select {
   stroke-width: 1px;
 }
 
-g.hidden {
+.hidden {
   display: none;
 }
 
-label {
+label, button {
   margin-right: 25px;
   cursor: pointer;
 }
 
 circle.player {
   stroke-width: 0;
+}
+
+circle.school {
+  stroke: #fff;
+  stroke-width: 1;
 }
 
 .mean {
