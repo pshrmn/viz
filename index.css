@@ -16,3 +16,20 @@ label {
   margin-right: 25px;
   cursor: pointer;
 }
+
+circle.player {
+  stroke-width: 0;
+}
+
+.mean {
+  opacity: 0.1;
+}
+
+.location {
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.median {
+  opacity: 0.1;
+}
