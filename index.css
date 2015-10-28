@@ -1,3 +1,7 @@
+select {
+  display: block;
+}
+
 .state path {
   fill: #fff;
   stroke: #999;
