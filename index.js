@@ -9,9 +9,9 @@ queue()
 
     // create the svg and projection
     var margin = {top: 15, right: 15, bottom: 15, left: 15};
-    var width = 600;
-    var height = 400;
-    var scale = 700;
+    var width = 1200;
+    var height = 800;
+    var scale = 1400;
     var projection = d3.geo.albersUsa()
       .scale(scale)
       .translate([width/2, height/2]);
@@ -40,18 +40,20 @@ queue()
     var locs = roster.coords.map(function(spot) {
       return projection(spot);
     });
-    var players = svg.append("g")
+    svg.append("g")
       .classed({
-        "players": true
-      });
-    players.selectAll("circle.player")
-        .data(locs)
-      .enter().append("circle")
-        .classed({
-          "player": true
-        })
-        .attr("r", 2)
-        .attr("transform", function(d){
-          return "translate(" + d[0] + "," + d[1] + ")";
-        })
-  })
+        "team": true
+      })
+      .selectAll("circle.player")
+          .data(locs)
+        .enter().append("circle")
+          .classed({
+            "player": true
+          })
+          .attr("r", 10)
+          .style("fill", "#C41E3A")
+          .style("opacity", 0.15)
+          .attr("transform", function(d){
+            return "translate(" + d[0] + "," + d[1] + ")";
+          });
+  });
