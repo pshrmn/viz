@@ -53,7 +53,7 @@ queue()
       });
 
 
-    teamFilter.selectAll("label")
+    teamFilter.append("div").selectAll("label")
         .data(["All", "ACC", "Big 12", "Big Ten", "Pac-12", "SEC"])
       .enter().append("label")
         .text(function(d){ return d; })
@@ -64,15 +64,39 @@ queue()
             return i === 0;
           })
           .on("change", function(d) {
-            var teamsArray = []
+            filteredTeams = []
             if ( d === "All" ) {
-              teamsArray = teams;
+              filteredTeams = teams;
             } else {
               var filter = filterConference(d);
-              teamsArray = filter(teams);
+              filteredTeams = filter(teams);
             }
-            setTeams(teamSelector, teamsArray)
+            setTeams(teamSelector, filteredTeams)
           });
+
+    var filterButtons = teamFilter.append("div");
+    /*
+     * select all filtered teams
+     */
+    filterButtons.append("button")
+      .text("Select All Teams")
+      .on("click", function() {
+        selectAllTeams(filteredTeams);
+        setTeams(teamSelector, filteredTeams);
+        rerender();
+      });
+
+    /*
+     * deselect all filtered teams
+     */
+    filterButtons.append("button")
+      .text("Deselect All Teams")
+      .on("click", function() {
+        deselectAllTeams(filteredTeams);
+        setTeams(teamSelector, filteredTeams);
+        rerender();
+      });
+
 
     // controls to change how the data is rendered
     var controls = holder.append("div")
@@ -354,21 +378,25 @@ queue()
           })
           .on("change", function(d) {
             d.selected = this.checked;
-            playersLayer.classed({
-                hidden: function(d) { return !d.selected; }
-              });
-            schools.classed({
-                hidden: function(d) { return !d.selected; }
-              });
-            medians.classed({
-                hidden: function(d) { return !d.selected; }
-              });
-            means.classed({
-                hidden: function(d) { return !d.selected; }
-              });
+            rerender();
           });
 
         shownTeams.exit().remove();
+    }
+
+    function rerender() {
+      playersLayer.classed({
+          hidden: function(d) { return !d.selected; }
+        });
+      schools.classed({
+          hidden: function(d) { return !d.selected; }
+        });
+      medians.classed({
+          hidden: function(d) { return !d.selected; }
+        });
+      means.classed({
+          hidden: function(d) { return !d.selected; }
+        });
     }
 
     // initial render
@@ -484,6 +512,18 @@ function byRealLocation(players) {
     .duration(1000)
     .attr("cy", function(d){ return d[1]; })
     .attr("cx", function(d){ return d[0]; });
+}
+
+function selectAllTeams(teams){
+  teams.forEach(function(team) {
+    team.selected = true;
+  });
+}
+
+function deselectAllTeams(teams){
+  teams.forEach(function(team) {
+    team.selected = false;
+  });
 }
 
 /*
