@@ -1,13 +1,14 @@
 queue()
   .defer(d3.json, "./data/us.json")
-  .defer(d3.json, "./data/pac12teams.json")
-  .defer(d3.json, "./data/pac12.json")
+  //.defer(d3.json, "./data/teams.json")
+  //.defer(d3.json, "./data/rosters.json")
+  .defer(d3.json, "./data/accteams.json")
+  .defer(d3.json, "./data/acc.json")
   .await(function(error, states, teams, rosters) {
     if ( error !== null ) {
       console.error(error);
       return;
     }
-    console.log(teams, rosters);
     // setup
     var margin = {top: 15, right: 15, bottom: 15, left: 15};
     var width = 800;
