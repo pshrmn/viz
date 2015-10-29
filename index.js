@@ -7,7 +7,10 @@ queue()
       console.error(error);
       return;
     }
-    // setup
+
+    /*
+     * SETUP
+     */
     var margin = {top: 15, right: 15, bottom: 15, left: 15};
     var width = 800;
     var height = 500;
@@ -18,59 +21,14 @@ queue()
     var path = d3.geo.path()
       .projection(projection);
 
+    var teams = setupTeams(teams, rosters, projection);
+    var filteredTeams = teams;
+
     var opacity = 0.5;
     var radius = 3;
-
     var drawSchools = true;
     var drawMedians = true;
     var drawMeans = true;
-
-
-    // setup additional info for the teams
-    teams.forEach(function(team, index) {
-      // roster points, converted from coordinates to points in the projection
-      var key = team.name.toLowerCase();
-      team.coords = rosters[key];
-      team.points = team.coords.map(function(spot) {
-        return projection(spot);
-      });
-
-      team.selected = index === 0;
-
-      // determine the mean and median distance for each player from the school
-      // using the projected distances
-      var universityLocation = [team.longitude, team.latitude];
-      team.schoolCoords = projection(universityLocation);
-      var distances = team.points.map(function(spot) {
-        return distance(spot, team.schoolCoords)
-      })
-      // sort for the median
-      distances.sort(function(a, b) { return a-b;});
-
-      // determine the mean distance from each player's hometown to the school
-      var mean = distances.reduce(function(oldSum, newVal) {
-        return oldSum + newVal;
-      }, 0) / distances.length;
-
-      // determine the median distance from each player's hometown to the school
-      var half = Math.floor(distances.length / 2);
-      var median = (half % 2 === 0) ?
-        (distances[half] + distances[half-1]) / 2 :
-        distances[half];
-
-      team.median = median;
-      team.mean = mean;
-
-      // find a point the mean/median distance away in the projection, invert it
-      // to get coordinates, then use haversine to determine the real world distance
-      var meanPoint = [team.schoolCoords[0] + mean, team.schoolCoords[1]];
-      var medianPoint = [team.schoolCoords[0] + median, team.schoolCoords[1]];
-      var meanCoordinates = projection.invert(meanPoint);
-      var medianCoordinates = projection.invert(medianPoint);
-
-      team.meanMiles = haversine(meanCoordinates, universityLocation);
-      team.medianMiles = haversine(medianCoordinates, universityLocation);
-    });
 
     // create the svg and projection
     var holder = d3.select("#content");
@@ -83,57 +41,62 @@ queue()
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var teamFilter = holder.append("div")
+      .classed({
+        "team-filter": true
+      });
+
     var teamSelector = holder.append("div")
       .classed({
         "teams-holder": true
       });
+
+
+    teamFilter.selectAll("label")
+        .data(["All", "ACC", "Big 12", "Big Ten", "Pac-12", "SEC"])
+      .enter().append("label")
+        .text(function(d){ return d; })
+        .append("input")
+          .attr("type", "radio")
+          .attr("name", "conference")
+          .property("checked", function(d, i) {
+            return i === 0;
+          })
+          .on("change", function(d) {
+            var teamsArray = []
+            if ( d === "All" ) {
+              teamsArray = teams;
+            } else {
+              var filter = filterConference(d);
+              teamsArray = filter(teams);
+            }
+            setTeams(teamSelector, teamsArray)
+          });
 
     // controls to change how the data is rendered
     var controls = holder.append("div")
       .classed({
         controls: true
       })
+    controls.append("h2")
+      .text("Controls");
 
-    // not really a form ;)
-
-    teamSelector.selectAll("label")
-        .data(teams)
-      .enter().append("label")
-        .text(function(d) {
-          return d.name
-        })
-        .append("input")
-          .attr("type", "checkbox")
-          .attr("name", "team")
-          .property("checked", function(d) {
-            return d.selected;
-          })
-          .on("change", function(d) {
-            d.selected = this.checked;
-            playersLayer.classed({
-                hidden: function(d) { return !d.selected; }
-              });
-            schools.classed({
-                hidden: function(d) { return !d.selected; }
-              });
-            medians.classed({
-                hidden: function(d) { return !d.selected; }
-              });
-            means.classed({
-                hidden: function(d) { return !d.selected; }
-              });
-          });
 
     // control opacity/radius
     var visInputs = controls.append("div")
+
 
     /*
      * control the radius/opacity of players circles
      */
     var ranges = visInputs.append("div")
       .classed({
-        "range-controls": true
+        "sub-form": true
       });
+
+    ranges.append("h3")
+      .text("Control Hometown Markers");
 
     ranges.append("span")
       .text("Radius")
@@ -154,7 +117,7 @@ queue()
         .attr("type", "range")
         .attr("value", opacity)
         .attr("step", 0.05)
-        .attr("min", 0.05)
+        .attr("min", 0)
         .attr("max", 1)
         .on("change", function() {
           opacity = this.value;
@@ -370,9 +333,138 @@ queue()
         .attr("cy", function(d) { return d.schoolCoords[1]; });
     means.append("title")
       .text(function(d) { return d.name + " mean distance: " + d.meanMiles + " miles"; });
+
+
+    /*
+     * render the specified teams
+     */
+    function setTeams(holder, teams) {
+      var shownTeams = holder.selectAll("label")
+        .data(teams)
+      shownTeams.enter().append("label")
+      shownTeams
+        .text(function(d) {
+          return d.name
+        })
+        .append("input")
+          .attr("type", "checkbox")
+          .attr("name", "team")
+          .property("checked", function(d) {
+            return d.selected;
+          })
+          .on("change", function(d) {
+            d.selected = this.checked;
+            playersLayer.classed({
+                hidden: function(d) { return !d.selected; }
+              });
+            schools.classed({
+                hidden: function(d) { return !d.selected; }
+              });
+            medians.classed({
+                hidden: function(d) { return !d.selected; }
+              });
+            means.classed({
+                hidden: function(d) { return !d.selected; }
+              });
+          });
+
+        shownTeams.exit().remove();
+    }
+
+    // initial render
+    setTeams(teamSelector, filteredTeams);
   });
 
+function setupTeams(teams, rosters, projection) {
+  // setup additional info for the teams
+  var copy = teams.slice();
+  copy.forEach(function(team, index) {
+    team.selected = false;
+    // roster points, converted from coordinates to points in the projection
+    team.coords = rosters[team.name.toLowerCase()];
+    team.points = projectedCoordinates(team.coords, projection);
 
+    // determine the mean and median distance for each player from the school
+    // using the projected distances
+    var universityLocation = [team.longitude, team.latitude];
+    team.schoolCoords = projection(universityLocation);
+
+    var distances = teamDistances(team.points, team.schoolCoords);
+
+    // sort for the median
+    distances.sort(function(a, b) { return a-b;});
+
+    // determine the mean distance from each player's hometown to the school
+    var mean = distances.reduce(function(oldSum, newVal) {
+      return oldSum + newVal;
+    }, 0) / distances.length;
+    team.mean = mean;
+
+    // determine the median distance from each player's hometown to the school
+    var half = Math.floor(distances.length / 2);
+    var median = (half % 2 === 0) ?
+      (distances[half] + distances[half-1]) / 2 :
+      distances[half];
+    team.median = median;
+
+    // find a point the mean/median distance away in the projection, invert it
+    // to get coordinates, then use haversine to determine the real world distance
+    var meanPoint = [team.schoolCoords[0] + mean, team.schoolCoords[1]];
+    var medianPoint = [team.schoolCoords[0] + median, team.schoolCoords[1]];
+    team.meanMiles = realDistance(universityLocation, meanPoint, projection);
+    team.medianMiles = realDistance(universityLocation, medianPoint, projection);
+
+  });
+  copy.sort(function(a, b) {
+    if ( a.name < b.name ) {
+      return -1;
+    } else if ( a.name > b.name ) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  return copy;
+}
+
+/*
+ * return an array containing all of the coordinates projected to their position
+ * in the svg/map
+ */
+function projectedCoordinates(coords, projection) {
+  return coords.map(function(spot) {
+    return projection(spot);
+  });
+}
+
+// return a (sorted) array of distances from hometowns to the school
+// using the projected points in the svg/map
+function teamDistances(coords, home) {
+  return coords.map(function(spot) {
+    return distance(spot, home);
+  });
+}
+
+function realDistance(homeCoords, mapPoint, projection) {
+  var mapCoords = projection.invert(mapPoint);
+  return haversine(homeCoords, mapCoords);
+}
+
+/*
+ * returns a function that takes a list of schools and only returns ones
+ * for the specified conference
+ */
+function filterConference(name) {
+  return function(teams) {
+    return teams.filter(function(team) {
+      return team.conference === name;
+    });
+  };
+}
+
+/*
+ * draw hometown coordinates correctly, only by longitude, and only by latitude
+ */
 function byLongitude(players) {
   players.transition()
     .duration(1000)

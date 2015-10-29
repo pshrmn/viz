@@ -36,9 +36,14 @@ label {
   cursor: pointer;
 }
 
-button {
-  margin-right: 10px;
-  cursor: pointer;
+.controls {
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin: 5px;
+}
+
+.controls h2 {
+  margin: 3px 0;
 }
 
 .sub-form {
