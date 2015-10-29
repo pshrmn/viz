@@ -1,17 +1,17 @@
 queue()
   .defer(d3.json, "./data/us.json")
-  .defer(d3.json, "./data/bigtenteams.json")
-  .defer(d3.json, "./data/bigten.json")
+  .defer(d3.json, "./data/pac12teams.json")
+  .defer(d3.json, "./data/pac12.json")
   .await(function(error, states, teams, rosters) {
     if ( error !== null ) {
       console.error(error);
       return;
     }
-
+    console.log(teams, rosters);
     // setup
     var margin = {top: 15, right: 15, bottom: 15, left: 15};
     var width = 800;
-    var height = 600;
+    var height = 500;
     var scale = 1000;
     var projection = d3.geo.albersUsa()
       .scale(scale)
