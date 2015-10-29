@@ -1,56 +1,98 @@
+/*
+ * Setup that doesn't rely on having files loaded
+ */
+var margin = {top: 15, right: 15, bottom: 15, left: 15};
+var width = 800;
+var height = 500;
+var scale = 1000;
+// most important function for mapping
+// this is used to convert coordinates to points in the svg
+// (or reverse by calling projection.invert)
+var projection = d3.geo.albersUsa()
+  .scale(scale)
+  .translate([width/2, height/2]);
+var path = d3.geo.path()
+  .projection(projection);
+
+var holder = d3.select("#content");
+var svg = holder.append("div")
+  .classed({
+    "map-holder": true
+  })
+  .append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+/*
+ * SVG Layers:
+ *     states
+ *     players
+ *     schools
+ *     medians
+ *     means
+ *
+ * layers are created here, move them around here to determine
+ * rendering order
+ */
+var stateLayer = svg.append("g").classed("country", true);
+var meansLayer = svg.append("g").classed("means", true);
+var mediansLayer = svg.append("g").classed("medians", true);
+var playersLayer = svg.append("g").classed("teams", true);
+var schoolsLayer = svg.append("g").classed("schools", true);
+
+/*
+ * LOAD AND DRAW THE MAP
+ */
 queue()
   .defer(d3.json, "./data/us.json")
+  .await(function(error, states) {
+    if ( error !== null ) {
+      console.error(error);
+      return;
+    }
+    var stateData = topojson.feature(states, states.objects.states).features;
+    stateLayer.selectAll("g.state")
+        .data(stateData)
+      .enter().append("g")
+        .classed("state", true)
+        .append("path")
+          .classed("outline", true)
+          .attr("d", path);
+  });
+
+/*
+ * LOAD AND RENDER THE TEAMS/ROSTERS INFORMATION
+ */
+queue()
   .defer(d3.json, "./data/teams.json")
   .defer(d3.json, "./data/rosters.json")
-  .await(function(error, states, teams, rosters) {
+  .await(function(error, teams, rosters) {
     if ( error !== null ) {
       console.error(error);
       return;
     }
 
-    /*
-     * SETUP
-     */
-    var margin = {top: 15, right: 15, bottom: 15, left: 15};
-    var width = 800;
-    var height = 500;
-    var scale = 1000;
-    var projection = d3.geo.albersUsa()
-      .scale(scale)
-      .translate([width/2, height/2]);
-    var path = d3.geo.path()
-      .projection(projection);
-
+    // the teams (don't overwrite teams)
     var teams = setupTeams(teams, rosters, projection);
     var filteredTeams = teams;
 
+    // rendering variables
     var opacity = 0.5;
     var radius = 3;
     var drawSchools = true;
     var drawMedians = true;
     var drawMeans = true;
 
-    // create the svg and projection
-    var holder = d3.select("#content");
-    var svg = holder.append("div")
-      .classed({
-        "map-holder": true
-      })
-      .append("svg")
-        .attr("width", width + margin.right + margin.left)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var teamFilter = holder.append("div")
-      .classed({
-        "team-filter": true
-      });
-
-    var teamSelector = holder.append("div")
-      .classed({
-        "teams-holder": true
-      });
+    // nested to show inheritance
+    var teamFilter = holder.append("div").classed("team-filter", true);
+      var filterButtons = teamFilter.append("div");
+    var teamSelector = holder.append("div").classed("teams-holder", true);
+    var controls = holder.append("div").classed("controls", true);
+      var ranges = controls.append("div").classed("sub-form", true);
+      var toggles = controls.append("div").classed("sub-form", true);
+      var locationForm = controls.append("div").classed("sub-form", true);
 
 
     teamFilter.append("div").selectAll("label")
@@ -74,7 +116,6 @@ queue()
             setTeams(teamSelector, filteredTeams)
           });
 
-    var filterButtons = teamFilter.append("div");
     /*
      * select all filtered teams
      */
@@ -99,26 +140,11 @@ queue()
 
 
     // controls to change how the data is rendered
-    var controls = holder.append("div")
-      .classed({
-        controls: true
-      })
     controls.append("h2")
       .text("Controls");
 
 
-    // control opacity/radius
-    var visInputs = controls.append("div")
-
-
-    /*
-     * control the radius/opacity of players circles
-     */
-    var ranges = visInputs.append("div")
-      .classed({
-        "sub-form": true
-      });
-
+    // control the radius/opacity of players circles    
     ranges.append("h3")
       .text("Control Hometown Markers");
 
@@ -148,14 +174,7 @@ queue()
           players.style("opacity", this.value);
         });
 
-    /*
-     * toggle the visibility of school, median, and mean circles
-     */
-    var toggles = visInputs.append("div")
-      .classed({
-        "sub-form": true
-      });
-
+    // toggle the visibility of school, median, and mean circles
     toggles.append("h3")
       .text("Toggle Indicators:");
 
@@ -195,14 +214,7 @@ queue()
           })
         });
 
-    /*
-     * control the position of player circles
-     */
-    var locationForm = controls.append("div")
-      .classed({
-        "sub-form": true
-      });
-
+    // control the position of player circles
     locationForm.append("h3")
       .text("Render Hometown Locations:")
 
@@ -236,70 +248,18 @@ queue()
 
 
     /*
-     * The map
-     * Layers:
-     *     states
-     *     players
-     *     schools
-     *     medians
-     *     means
-     */
-
-    /*
-     * layers are created here, move them around here to determine
-     * rendering order
-     */
-
-    var stateLayer = svg.append("g")
-      .classed({
-        country: true
-      });
-
-    var meansLayer = svg.append("g")
-      .classed({
-        means: true
-      });
-
-    var mediansLayer = svg.append("g")
-      .classed({
-        medians: true
-      });
-
-    var playersLayer = svg.append("g")
-      .classed({
-        teams: true
-      })
-      .selectAll("g.team")
-          .data(teams)
-        .enter().append("g")
-          .classed({
-            team: true,
-            hidden: function(d) { return !d.selected }
-          });
-      
-    var schoolsLayer = svg.append("g")
-      .classed({
-        schools: true
-      });
-
-    /*
-     * STATE LAYER
-     */
-    var stateData = topojson.feature(states, states.objects.states).features;
-    stateLayer.selectAll("g.state")
-          .data(stateData)
-        .enter().append("g")
-          .classed("state", true)
-          .append("path")
-            .classed("outline", true)
-            .attr("d", path);
-
-    /*
      * PLAYERS LAYER
      */
-    playersLayer.style("fill", function(d) { return d.color; })
+    var playersTeams = playersLayer.selectAll("g.team")
+      .data(teams)
+    .enter().append("g")
+      .classed({
+        team: true,
+        hidden: function(d) { return !d.selected }
+      })
+      .style("fill", function(d) { return d.color; });
 
-    var players = playersLayer.selectAll("circle.player")
+    var players = playersTeams.selectAll("circle.player")
         .data(function(d){ return d.points })
       .enter().append("circle")
         .classed({
@@ -385,7 +345,7 @@ queue()
     }
 
     function rerender() {
-      playersLayer.classed({
+      playersTeams.classed({
           hidden: function(d) { return !d.selected; }
         });
       schools.classed({
