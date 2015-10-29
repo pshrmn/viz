@@ -96,7 +96,8 @@ def get_team(name):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-team', dest='team',
-                        help='espn.com url for team roster')
+    parser.add_argument("-teams", dest="teams", nargs="+",
+                        help="name of the college")
     args = parser.parse_args()
-    get_team(args.team)
+    for team in args.teams:
+        get_team(team)
