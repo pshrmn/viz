@@ -1,9 +1,7 @@
 queue()
   .defer(d3.json, "./data/us.json")
-  //.defer(d3.json, "./data/teams.json")
-  //.defer(d3.json, "./data/rosters.json")
-  .defer(d3.json, "./data/accteams.json")
-  .defer(d3.json, "./data/acc.json")
+  .defer(d3.json, "./data/teams.json")
+  .defer(d3.json, "./data/rosters.json")
   .await(function(error, states, teams, rosters) {
     if ( error !== null ) {
       console.error(error);
