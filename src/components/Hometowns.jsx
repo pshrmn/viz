@@ -24,6 +24,7 @@ export default React.createClass({
     });
   },
   _d3Select: function(teams) {
+    let { radius, opacity } = this.props;
     let teamsSelection = this.state.teamsSelection
       .data(teams, d => d.name)
     teamsSelection.enter().append("g")
@@ -31,21 +32,23 @@ export default React.createClass({
         "team": true,
         "hidden": d => !d.selected
       })
-      .style("fill", d => d.color)
+      .style("fill", d => d.color);
+
+    teamsSelection.classed({
+      "hidden": d => !d.selected
+    });
+
     let cities = teamsSelection.selectAll("circle.city")
-        .data(d => d.points)
-      .enter().append("circle")
+      .data(d => d.points);
+    cities.enter().append("circle")
         .classed("city", true)
         .attr("cx", d => d[0])
         .attr("cy", d => d[1]);
 
     cities
-      .attr("r", this.props.radius)
+      .attr("r", radius)
       .style("opacity", this.props.opacity);
 
-    teamsSelection.classed({
-      "hidden": d => !d.selected
-    });
     this.setState({
       teamsSelection: teamsSelection
     });

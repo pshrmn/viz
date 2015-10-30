@@ -1,8 +1,9 @@
 import React from "react";
 import d3 from "d3";
 import USMap from "./USMap";
-import Hometowns from "./Hometowns";
-import TeamMenu from "./TeamMenu"
+import Teams from "./Teams";
+import TeamMenu from "./TeamMenu";
+import Controls from "./Controls";
 
 export default React.createClass({
   getInitialState: function() {
@@ -10,7 +11,10 @@ export default React.createClass({
       activeTeams: [],
       teams: [],
       radius: 3,
-      opacity: 0.25
+      opacity: 0.25,
+      showMeans: false,
+      showMedians: true,
+      showSchools: true
     };
   },
   componentWillMount: function() {
@@ -27,6 +31,31 @@ export default React.createClass({
       activeTeams: activeTeams
     });
   },
+  toggleSchools: function() {
+    this.setState({
+      showSchools: !this.state.showSchools
+    });
+  },
+  toggleMedians: function() {
+    this.setState({
+      showMedians: !this.state.showMedians
+    });
+  },
+  toggleMeans: function() {
+    this.setState({
+      showMeans: !this.state.showMeans
+    });
+  },
+  setRadius: function(val) {
+    this.setState({
+      radius: val
+    });
+  },
+  setOpacity: function(val) {
+    this.setState({
+      opacity: val
+    });
+  },
   render: function() {
     let { width, height, margin, scale } = this.props;
     return (
@@ -34,13 +63,26 @@ export default React.createClass({
         <svg width={width + margin*2} height={height + margin*2} >
           <g translate={`transform(${margin},${margin})`} >
             <USMap projection={this.state.projection} />
-            <Hometowns teams={this.state.activeTeams}
-                       radius={this.state.radius}
-                       opacity={this.state.opacity} />
+            <Teams teams={this.state.activeTeams}
+                   radius={this.state.radius}
+                   opacity={this.state.opacity}
+                   showMeans={this.state.showMeans}
+                   showMedians={this.state.showMedians} 
+                   showSchools={this.state.showSchools} />
           </g>
         </svg>
         <TeamMenu teams={this.state.teams}
                   setTeams={this.setPlayers} />
+        <Controls schools={this.state.showSchools}
+                  toggleSchools={this.toggleSchools}
+                  medians={this.state.showMedians}
+                  toggleMedians={this.toggleMedians}
+                  means={this.state.showMeans}
+                  toggleMeans={this.toggleMeans}
+                  radius={this.state.radius}
+                  setRadius={this.setRadius}
+                  opacity={this.state.opacity}
+                  setOpacity={this.setOpacity} />
       </div>
     );
   },
@@ -63,10 +105,13 @@ export default React.createClass({
         // this is a far southern/central point whose projection should never return null
         // knock on wood
         let lowPoint = [-97.584980, 26.281485];
+        let projectedLow = projection(lowPoint);
+
         let pMean = projection([lowPoint[0], lowPoint[1] + (team.mean / milesPerDegreeLatitude)]);
-        team.meanRadius = Math.abs(pMean[1] - team.schoolPoint[1]);
+        team.meanRadius = Math.abs(pMean[1] - projectedLow[1]);
+
         let pMedian = projection([lowPoint[0], lowPoint[1] + (team.median / milesPerDegreeLatitude)]);
-        team.medianRadius = Math.abs(pMedian[1] - team.schoolPoint[1]);
+        team.medianRadius = Math.abs(pMedian[1] - projectedLow[1]);
       });
       // default ordering alphabetical
       teams.sort(function(a, b) {

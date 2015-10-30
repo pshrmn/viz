@@ -115,13 +115,17 @@
 
 	var _USMap2 = _interopRequireDefault(_USMap);
 
-	var _Hometowns = __webpack_require__(8);
+	var _Teams = __webpack_require__(8);
 
-	var _Hometowns2 = _interopRequireDefault(_Hometowns);
+	var _Teams2 = _interopRequireDefault(_Teams);
 
-	var _TeamMenu = __webpack_require__(9);
+	var _TeamMenu = __webpack_require__(13);
 
 	var _TeamMenu2 = _interopRequireDefault(_TeamMenu);
+
+	var _Controls = __webpack_require__(14);
+
+	var _Controls2 = _interopRequireDefault(_Controls);
 
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "App",
@@ -131,7 +135,10 @@
 	      activeTeams: [],
 	      teams: [],
 	      radius: 3,
-	      opacity: 0.25
+	      opacity: 0.25,
+	      showMeans: false,
+	      showMedians: true,
+	      showSchools: true
 	    };
 	  },
 	  componentWillMount: function componentWillMount() {
@@ -148,6 +155,31 @@
 	  setPlayers: function setPlayers(activeTeams) {
 	    this.setState({
 	      activeTeams: activeTeams
+	    });
+	  },
+	  toggleSchools: function toggleSchools() {
+	    this.setState({
+	      showSchools: !this.state.showSchools
+	    });
+	  },
+	  toggleMedians: function toggleMedians() {
+	    this.setState({
+	      showMedians: !this.state.showMedians
+	    });
+	  },
+	  toggleMeans: function toggleMeans() {
+	    this.setState({
+	      showMeans: !this.state.showMeans
+	    });
+	  },
+	  setRadius: function setRadius(val) {
+	    this.setState({
+	      radius: val
+	    });
+	  },
+	  setOpacity: function setOpacity(val) {
+	    this.setState({
+	      opacity: val
 	    });
 	  },
 	  render: function render() {
@@ -167,13 +199,26 @@
 	          "g",
 	          { translate: "transform(" + margin + "," + margin + ")" },
 	          _react2["default"].createElement(_USMap2["default"], { projection: this.state.projection }),
-	          _react2["default"].createElement(_Hometowns2["default"], { teams: this.state.activeTeams,
+	          _react2["default"].createElement(_Teams2["default"], { teams: this.state.activeTeams,
 	            radius: this.state.radius,
-	            opacity: this.state.opacity })
+	            opacity: this.state.opacity,
+	            showMeans: this.state.showMeans,
+	            showMedians: this.state.showMedians,
+	            showSchools: this.state.showSchools })
 	        )
 	      ),
 	      _react2["default"].createElement(_TeamMenu2["default"], { teams: this.state.teams,
-	        setTeams: this.setPlayers })
+	        setTeams: this.setPlayers }),
+	      _react2["default"].createElement(_Controls2["default"], { schools: this.state.showSchools,
+	        toggleSchools: this.toggleSchools,
+	        medians: this.state.showMedians,
+	        toggleMedians: this.toggleMedians,
+	        means: this.state.showMeans,
+	        toggleMeans: this.toggleMeans,
+	        radius: this.state.radius,
+	        setRadius: this.setRadius,
+	        opacity: this.state.opacity,
+	        setOpacity: this.setOpacity })
 	    );
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -198,10 +243,13 @@
 	        // this is a far southern/central point whose projection should never return null
 	        // knock on wood
 	        var lowPoint = [-97.584980, 26.281485];
+	        var projectedLow = projection(lowPoint);
+
 	        var pMean = projection([lowPoint[0], lowPoint[1] + team.mean / milesPerDegreeLatitude]);
-	        team.meanRadius = Math.abs(pMean[1] - team.schoolPoint[1]);
+	        team.meanRadius = Math.abs(pMean[1] - projectedLow[1]);
+
 	        var pMedian = projection([lowPoint[0], lowPoint[1] + team.median / milesPerDegreeLatitude]);
-	        team.medianRadius = Math.abs(pMedian[1] - team.schoolPoint[1]);
+	        team.medianRadius = Math.abs(pMedian[1] - projectedLow[1]);
 	      });
 	      // default ordering alphabetical
 	      teams.sort(function (a, b) {
@@ -353,6 +401,126 @@
 
 	var _d32 = _interopRequireDefault(_d3);
 
+	var _Schools = __webpack_require__(9);
+
+	var _Schools2 = _interopRequireDefault(_Schools);
+
+	var _Hometowns = __webpack_require__(10);
+
+	var _Hometowns2 = _interopRequireDefault(_Hometowns);
+
+	var _Medians = __webpack_require__(11);
+
+	var _Medians2 = _interopRequireDefault(_Medians);
+
+	var _Means = __webpack_require__(12);
+
+	var _Means2 = _interopRequireDefault(_Means);
+
+	exports["default"] = _react2["default"].createClass({
+	  displayName: "Teams",
+
+	  render: function render() {
+	    var _props = this.props;
+	    var teams = _props.teams;
+	    var opacity = _props.opacity;
+	    var radius = _props.radius;
+	    var showMeans = _props.showMeans;
+	    var showMedians = _props.showMedians;
+	    var showSchools = _props.showSchools;
+
+	    return _react2["default"].createElement(
+	      "g",
+	      null,
+	      _react2["default"].createElement(_Means2["default"], { teams: teams,
+	        hidden: !showMeans }),
+	      _react2["default"].createElement(_Medians2["default"], { teams: teams,
+	        hidden: !showMedians }),
+	      _react2["default"].createElement(_Hometowns2["default"], { teams: teams,
+	        radius: radius,
+	        opacity: opacity }),
+	      _react2["default"].createElement(_Schools2["default"], { teams: teams,
+	        hidden: !showSchools })
+	    );
+	  }
+	});
+	module.exports = exports["default"];
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequireDefault = __webpack_require__(1)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	exports["default"] = _react2["default"].createClass({
+	  displayName: "Schools",
+
+	  render: function render() {
+	    var _props = this.props;
+	    var teams = _props.teams;
+	    var hidden = _props.hidden;
+
+	    var opacity = 0.1;
+	    var schools = teams.map(function (team, index) {
+	      var className = team.selected ? "school" : "school hidden";
+	      return _react2["default"].createElement(
+	        "circle",
+	        { key: index,
+	          className: className,
+	          r: "5",
+	          fill: team.color,
+	          cx: team.schoolPoint[0],
+	          cy: team.schoolPoint[1] },
+	        _react2["default"].createElement(
+	          "title",
+	          null,
+	          team.name
+	        )
+	      );
+	    });
+	    var classNames = ["schools"];
+	    if (hidden) {
+	      classNames.push("hidden");
+	    }
+	    return _react2["default"].createElement(
+	      "g",
+	      { className: classNames.join(" ") },
+	      schools
+	    );
+	  }
+	});
+	module.exports = exports["default"];
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequireDefault = __webpack_require__(1)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _d3 = __webpack_require__(5);
+
+	var _d32 = _interopRequireDefault(_d3);
+
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "Hometowns",
 
@@ -376,6 +544,10 @@
 	    });
 	  },
 	  _d3Select: function _d3Select(teams) {
+	    var _props = this.props;
+	    var radius = _props.radius;
+	    var opacity = _props.opacity;
+
 	    var teamsSelection = this.state.teamsSelection.data(teams, function (d) {
 	      return d.name;
 	    });
@@ -387,21 +559,24 @@
 	    }).style("fill", function (d) {
 	      return d.color;
 	    });
-	    var cities = teamsSelection.selectAll("circle.city").data(function (d) {
-	      return d.points;
-	    }).enter().append("circle").classed("city", true).attr("cx", function (d) {
-	      return d[0];
-	    }).attr("cy", function (d) {
-	      return d[1];
-	    });
-
-	    cities.attr("r", this.props.radius).style("opacity", this.props.opacity);
 
 	    teamsSelection.classed({
 	      "hidden": function hidden(d) {
 	        return !d.selected;
 	      }
 	    });
+
+	    var cities = teamsSelection.selectAll("circle.city").data(function (d) {
+	      return d.points;
+	    });
+	    cities.enter().append("circle").classed("city", true).attr("cx", function (d) {
+	      return d[0];
+	    }).attr("cy", function (d) {
+	      return d[1];
+	    });
+
+	    cities.attr("r", radius).style("opacity", this.props.opacity);
+
 	    this.setState({
 	      teamsSelection: teamsSelection
 	    });
@@ -410,7 +585,115 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 9 */
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequireDefault = __webpack_require__(1)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	exports["default"] = _react2["default"].createClass({
+	  displayName: "Medians",
+
+	  render: function render() {
+	    var _props = this.props;
+	    var teams = _props.teams;
+	    var hidden = _props.hidden;
+
+	    var opacity = 0.1;
+	    var medians = teams.map(function (team, index) {
+	      var className = team.selected ? "median" : "median hidden";
+	      return _react2["default"].createElement(
+	        "circle",
+	        { key: index,
+	          className: className,
+	          r: team.medianRadius,
+	          cx: team.schoolPoint[0],
+	          cy: team.schoolPoint[1] },
+	        _react2["default"].createElement(
+	          "title",
+	          null,
+	          team.name + " median: " + team.median + " miles"
+	        )
+	      );
+	    });
+	    var classNames = ["medians"];
+	    if (hidden) {
+	      classNames.push("hidden");
+	    }
+	    return _react2["default"].createElement(
+	      "g",
+	      { className: classNames.join(" ") },
+	      medians
+	    );
+	  }
+	});
+	module.exports = exports["default"];
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequireDefault = __webpack_require__(1)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	exports["default"] = _react2["default"].createClass({
+	  displayName: "Means",
+
+	  render: function render() {
+	    var _props = this.props;
+	    var teams = _props.teams;
+	    var hidden = _props.hidden;
+
+	    var opacity = 0.1;
+	    var means = teams.map(function (team, index) {
+	      var className = team.selected ? "mean" : "mean hidden";
+	      return _react2["default"].createElement(
+	        "circle",
+	        { key: index,
+	          className: className,
+	          r: team.meanRadius,
+	          cx: team.schoolPoint[0],
+	          cy: team.schoolPoint[1] },
+	        _react2["default"].createElement(
+	          "title",
+	          null,
+	          team.name + " mean: " + team.mean + " miles"
+	        )
+	      );
+	    });
+	    var classNames = ["means"];
+	    if (hidden) {
+	      classNames.push("hidden");
+	    }
+	    return _react2["default"].createElement(
+	      "g",
+	      { className: classNames.join(" ") },
+	      means
+	    );
+	  }
+	});
+	module.exports = exports["default"];
+
+/***/ },
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -527,6 +810,109 @@
 	        _react2["default"].createElement("input", { type: "checkbox",
 	          checked: this.props.selected,
 	          onChange: this.checkHandler })
+	      )
+	    );
+	  }
+	});
+	module.exports = exports["default"];
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequireDefault = __webpack_require__(1)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	exports["default"] = _react2["default"].createClass({
+	  displayName: "Controls",
+
+	  setRadius: function setRadius(event) {
+	    this.props.setRadius(event.target.value);
+	  },
+	  setOpacity: function setOpacity(event) {
+	    this.props.setOpacity(event.target.value);
+	  },
+	  toggleSchools: function toggleSchools() {
+	    this.props.toggleSchools(event.target.checked);
+	  },
+	  toggleMedians: function toggleMedians() {
+	    this.props.toggleMedians(event.target.checked);
+	  },
+	  toggleMeans: function toggleMeans() {
+	    this.props.toggleMeans(event.target.checked);
+	  },
+	  render: function render() {
+	    var _props = this.props;
+	    var schools = _props.schools;
+	    var medians = _props.medians;
+	    var means = _props.means;
+	    var opacity = _props.opacity;
+	    var radius = _props.radius;
+
+	    return _react2["default"].createElement(
+	      "div",
+	      null,
+	      _react2["default"].createElement(
+	        "h2",
+	        null,
+	        "Controls"
+	      ),
+	      _react2["default"].createElement(
+	        "label",
+	        null,
+	        "Radius ",
+	        radius,
+	        _react2["default"].createElement("input", { type: "range",
+	          value: radius,
+	          step: "1",
+	          min: "1",
+	          max: "15",
+	          onChange: this.setRadius })
+	      ),
+	      _react2["default"].createElement(
+	        "label",
+	        null,
+	        "Opacity ",
+	        opacity,
+	        _react2["default"].createElement("input", { type: "range",
+	          value: opacity,
+	          step: "0.05",
+	          min: "0",
+	          max: "1",
+	          onChange: this.setOpacity })
+	      ),
+	      _react2["default"].createElement(
+	        "label",
+	        null,
+	        "Show Schools",
+	        _react2["default"].createElement("input", { type: "checkbox",
+	          checked: schools,
+	          onChange: this.toggleSchools })
+	      ),
+	      _react2["default"].createElement(
+	        "label",
+	        null,
+	        "Show Medians",
+	        _react2["default"].createElement("input", { type: "checkbox",
+	          checked: medians,
+	          onChange: this.toggleMedians })
+	      ),
+	      _react2["default"].createElement(
+	        "label",
+	        null,
+	        "Show Means",
+	        _react2["default"].createElement("input", { type: "checkbox",
+	          checked: means,
+	          onChange: this.toggleMeans })
 	      )
 	    );
 	  }
