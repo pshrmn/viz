@@ -2,16 +2,63 @@ import React from "react";
 import d3 from "d3";
 
 export default React.createClass({
+  getInitialState: function() {
+    return {
+      teams: []
+    };
+  },
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({
+      teams: nextProps.teams
+    });
+  },
+  updateTeam: function(index) {
+    let teams = this.state.teams;
+    teams[index].selected = !teams[index].selected;
+    this.sendUpdate(teams);
+    this.setState({
+      teams: teams
+    });
+  },
+  selectAll: function() {
+    let teams = this.state.teams;
+    teams.forEach(t => {
+      t.selected = true;
+    });
+    this.sendUpdate(teams);
+    this.setState({
+      teams: teams
+    });
+  },
+  deselectAll: function() {
+    let teams = this.state.teams;
+    teams.forEach(t => {
+      t.selected = false;
+    });
+    this.sendUpdate(teams);
+    this.setState({
+      teams: teams
+    });
+  },
+  sendUpdate: function(teams) {
+    this.props.setTeams(teams);
+  },
   render: function() {
     let teams = this.props.teams.map((team, index) => {
       return (
         <Team key={index}
+              index={index}
               name={team.name}
-              select={this} />
+              selected={team.selected}
+              update={this.updateTeam} />
       );
     });
     return (
       <div className="team-menu">
+        <div className="controls">
+          <button onClick={this.selectAll}>Select All</button>
+          <button onClick={this.deselectAll}>Deselect All</button>
+        </div>
         {teams}
       </div>
     );
@@ -24,15 +71,8 @@ let Team = React.createClass({
       name: ""
     };
   },
-  getInitialState: function() {
-    return {
-      checked: false
-    }
-  },
   checkHandler: function(event) {
-    this.setState({
-      checked: event.target.checked
-    });
+    this.props.update(this.props.index);
   },
   render: function() {
     return (
@@ -40,7 +80,7 @@ let Team = React.createClass({
         <label>
           {this.props.name}
           <input type="checkbox"
-                 checked={this.state.checked}
+                 checked={this.props.selected}
                  onChange={this.checkHandler} />
         </label>
       </div>

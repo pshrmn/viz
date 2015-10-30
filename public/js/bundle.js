@@ -128,8 +128,10 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      players: [],
-	      teams: []
+	      activeTeams: [],
+	      teams: [],
+	      radius: 3,
+	      opacity: 0.25
 	    };
 	  },
 	  componentWillMount: function componentWillMount() {
@@ -141,6 +143,11 @@
 	    var projection = _d32["default"].geo.albersUsa().scale(scale).translate([width / 2, height / 2]);
 	    this.setState({
 	      projection: projection
+	    });
+	  },
+	  setPlayers: function setPlayers(activeTeams) {
+	    this.setState({
+	      activeTeams: activeTeams
 	    });
 	  },
 	  render: function render() {
@@ -160,10 +167,13 @@
 	          "g",
 	          { translate: "transform(" + margin + "," + margin + ")" },
 	          _react2["default"].createElement(_USMap2["default"], { projection: this.state.projection }),
-	          _react2["default"].createElement(_Hometowns2["default"], { cities: this.state.players })
+	          _react2["default"].createElement(_Hometowns2["default"], { teams: this.state.activeTeams,
+	            radius: this.state.radius,
+	            opacity: this.state.opacity })
 	        )
 	      ),
-	      _react2["default"].createElement(_TeamMenu2["default"], { teams: this.state.teams })
+	      _react2["default"].createElement(_TeamMenu2["default"], { teams: this.state.teams,
+	        setTeams: this.setPlayers })
 	    );
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -204,7 +214,8 @@
 	        }
 	      });
 	      _this.setState({
-	        teams: teams
+	        teams: teams,
+	        activeTeams: teams
 	      });
 	    });
 	  }
@@ -345,8 +356,55 @@
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "Hometowns",
 
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+	    // d3 handle the rendering, so never update
+	    return false;
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    this._d3Select(nextProps.teams);
+	  },
 	  render: function render() {
-	    return null;
+	    // we want want for the component is the holder (with a ref to it for easy access)
+	    // d3 will handle all of the rendering
+	    return _react2["default"].createElement("g", { className: "hometowns", ref: "hometowns" });
+	  },
+	  componentDidMount: function componentDidMount() {
+	    // draw all of the teams the first time the component is rendered
+	    var teamsSelection = _d32["default"].select(this.refs.hometowns).selectAll("g.team");
+	    this.setState({
+	      teamsSelection: teamsSelection
+	    });
+	  },
+	  _d3Select: function _d3Select(teams) {
+	    var teamsSelection = this.state.teamsSelection.data(teams, function (d) {
+	      return d.name;
+	    });
+	    teamsSelection.enter().append("g").classed({
+	      "team": true,
+	      "hidden": function hidden(d) {
+	        return !d.selected;
+	      }
+	    }).style("fill", function (d) {
+	      return d.color;
+	    });
+	    var cities = teamsSelection.selectAll("circle.city").data(function (d) {
+	      return d.points;
+	    }).enter().append("circle").classed("city", true).attr("cx", function (d) {
+	      return d[0];
+	    }).attr("cy", function (d) {
+	      return d[1];
+	    });
+
+	    cities.attr("r", this.props.radius).style("opacity", this.props.opacity);
+
+	    teamsSelection.classed({
+	      "hidden": function hidden(d) {
+	        return !d.selected;
+	      }
+	    });
+	    this.setState({
+	      teamsSelection: teamsSelection
+	    });
 	  }
 	});
 	module.exports = exports["default"];
@@ -374,17 +432,74 @@
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "TeamMenu",
 
+	  getInitialState: function getInitialState() {
+	    return {
+	      teams: []
+	    };
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    this.setState({
+	      teams: nextProps.teams
+	    });
+	  },
+	  updateTeam: function updateTeam(index) {
+	    var teams = this.state.teams;
+	    teams[index].selected = !teams[index].selected;
+	    this.sendUpdate(teams);
+	    this.setState({
+	      teams: teams
+	    });
+	  },
+	  selectAll: function selectAll() {
+	    var teams = this.state.teams;
+	    teams.forEach(function (t) {
+	      t.selected = true;
+	    });
+	    this.sendUpdate(teams);
+	    this.setState({
+	      teams: teams
+	    });
+	  },
+	  deselectAll: function deselectAll() {
+	    var teams = this.state.teams;
+	    teams.forEach(function (t) {
+	      t.selected = false;
+	    });
+	    this.sendUpdate(teams);
+	    this.setState({
+	      teams: teams
+	    });
+	  },
+	  sendUpdate: function sendUpdate(teams) {
+	    this.props.setTeams(teams);
+	  },
 	  render: function render() {
 	    var _this = this;
 
 	    var teams = this.props.teams.map(function (team, index) {
 	      return _react2["default"].createElement(Team, { key: index,
+	        index: index,
 	        name: team.name,
-	        select: _this });
+	        selected: team.selected,
+	        update: _this.updateTeam });
 	    });
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "team-menu" },
+	      _react2["default"].createElement(
+	        "div",
+	        { className: "controls" },
+	        _react2["default"].createElement(
+	          "button",
+	          { onClick: this.selectAll },
+	          "Select All"
+	        ),
+	        _react2["default"].createElement(
+	          "button",
+	          { onClick: this.deselectAll },
+	          "Deselect All"
+	        )
+	      ),
 	      teams
 	    );
 	  }
@@ -398,15 +513,8 @@
 	      name: ""
 	    };
 	  },
-	  getInitialState: function getInitialState() {
-	    return {
-	      checked: false
-	    };
-	  },
 	  checkHandler: function checkHandler(event) {
-	    /*this.setState({
-	      checked: event.target.checked
-	    })*/
+	    this.props.update(this.props.index);
 	  },
 	  render: function render() {
 	    return _react2["default"].createElement(
@@ -417,7 +525,7 @@
 	        null,
 	        this.props.name,
 	        _react2["default"].createElement("input", { type: "checkbox",
-	          checked: this.state.checked,
+	          checked: this.props.selected,
 	          onChange: this.checkHandler })
 	      )
 	    );

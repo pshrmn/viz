@@ -7,8 +7,10 @@ import TeamMenu from "./TeamMenu"
 export default React.createClass({
   getInitialState: function() {
     return {
-      players: [],
-      teams: []
+      activeTeams: [],
+      teams: [],
+      radius: 3,
+      opacity: 0.25
     };
   },
   componentWillMount: function() {
@@ -20,6 +22,11 @@ export default React.createClass({
       projection: projection
     });
   },
+  setPlayers: function(activeTeams) {
+    this.setState({
+      activeTeams: activeTeams
+    });
+  },
   render: function() {
     let { width, height, margin, scale } = this.props;
     return (
@@ -27,10 +34,13 @@ export default React.createClass({
         <svg width={width + margin*2} height={height + margin*2} >
           <g translate={`transform(${margin},${margin})`} >
             <USMap projection={this.state.projection} />
-            <Hometowns cities={this.state.players} />
+            <Hometowns teams={this.state.activeTeams}
+                       radius={this.state.radius}
+                       opacity={this.state.opacity} />
           </g>
         </svg>
-        <TeamMenu teams={this.state.teams} />
+        <TeamMenu teams={this.state.teams}
+                  setTeams={this.setPlayers} />
       </div>
     );
   },
@@ -69,7 +79,8 @@ export default React.createClass({
         }
       });
       this.setState({
-        teams: teams
+        teams: teams,
+        activeTeams: teams
       });
     });
   }
