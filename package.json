@@ -1,6 +1,6 @@
 {
   "name": "recruiting",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Visualize the location of college football players hometowns compared to where they play",
   "main": "index.js",
   "scripts": {
