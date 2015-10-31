@@ -4,9 +4,9 @@ import ReactDOM from "react-dom";
 import App from "./components/App";
 
 ReactDOM.render(
-  <App width={800}
-       height={500}
+  <App width={600}
+       height={400}
        margin={15}
-       scale={1000} />,
+       scale={800} />,
   document.getElementById("content")
 );

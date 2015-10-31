@@ -60,10 +60,10 @@
 
 	var _componentsApp2 = _interopRequireDefault(_componentsApp);
 
-	_reactDom2["default"].render(_react2["default"].createElement(_componentsApp2["default"], { width: 800,
-	     height: 500,
+	_reactDom2["default"].render(_react2["default"].createElement(_componentsApp2["default"], { width: 600,
+	     height: 400,
 	     margin: 15,
-	     scale: 1000 }), document.getElementById("content"));
+	     scale: 800 }), document.getElementById("content"));
 
 /***/ },
 /* 1 */
@@ -193,25 +193,32 @@
 	        console.error(error);
 	        return;
 	      }
+
+	      var prettyNumber = _d32["default"].format(",.0f");
+
 	      teams.forEach(function (team) {
 	        // convert coordinates to points in the projection
-	        team.points = projectedCoordinates(team.roster, projection);
+	        team.roster.forEach(function (city) {
+	          city.point = projection([city.longitude, city.latitude]);
+	        });
 	        team.schoolPoint = projection([team.longitude, team.latitude]);
 
 	        // find a point the mean/median distance away in the projection, invert it
 	        // to get coordinates, then use haversine to determine the real world distance
 	        var milesPerDegreeLatitude = 68.6863716;
-
 	        // this is a far southern/central point whose projection should never return null
 	        // knock on wood
 	        var lowPoint = [-97.584980, 26.281485];
 	        var projectedLow = projection(lowPoint);
 
 	        var pMean = projection([lowPoint[0], lowPoint[1] + team.mean / milesPerDegreeLatitude]);
-	        team.mean = Math.abs(pMean[1] - projectedLow[1]);
+	        team.meanRadius = Math.abs(pMean[1] - projectedLow[1]);
 
 	        var pMedian = projection([lowPoint[0], lowPoint[1] + team.median / milesPerDegreeLatitude]);
-	        team.median = Math.abs(pMedian[1] - projectedLow[1]);
+	        team.medianRadius = Math.abs(pMedian[1] - projectedLow[1]);
+
+	        team.prettyMean = prettyNumber(team.mean);
+	        team.prettyMedian = prettyNumber(team.median);
 	      });
 	      // default ordering alphabetical
 	      teams.sort(function (a, b) {
@@ -230,55 +237,6 @@
 	    });
 	  }
 	});
-
-	/*
-	 * return an array containing all of the coordinates projected to their position
-	 * in the svg/map
-	 */
-	function projectedCoordinates(coords, projection) {
-	  return coords.map(function (spot) {
-	    return projection(spot);
-	  });
-	}
-
-	/*
-	 * return an array of distances from hometowns to the school
-	 * using the projected points in the svg/map
-	 */
-	function teamDistances(coords, home) {
-	  return coords.map(function (spot) {
-	    return distance(spot, home);
-	  });
-	}
-
-	function realDistance(homeCoords, mapPoint, projection) {
-	  var mapCoords = projection.invert(mapPoint);
-	  return haversine(homeCoords, mapCoords);
-	}
-
-	function haversine(start, end) {
-	  // equatorial radius
-	  var R = 3963.1906;
-	  var start_lat = toRads(start[1]);
-	  var start_cos = Math.cos(start_lat);
-
-	  var end_lat = toRads(end[1]);
-	  var end_cos = Math.cos(end_lat);
-
-	  var lat_delta = toRads(end[1] - start[1]);
-	  var lat_delta_sin = Math.pow(Math.sin(lat_delta / 2), 2);
-
-	  var long_delta = toRads(end[0] - start[0]);
-	  var long_delta_sin = Math.pow(Math.sin(long_delta / 2), 2);
-
-	  var a = lat_delta_sin + start_cos * end_cos * long_delta_sin;
-	  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-	  return Math.round(R * c, 10);
-	}
-
-	function toRads(num) {
-	  return num * Math.PI / 180;
-	}
 	module.exports = exports["default"];
 
 /***/ },
@@ -365,7 +323,6 @@
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      name: "",
-	      schoolPoint: [0, 0],
 	      roster: []
 	    };
 	  },
@@ -375,23 +332,66 @@
 	    var schoolPoint = _props.schoolPoint;
 	    var roster = _props.roster;
 	    var color = _props.color;
+	    var prettyMean = _props.prettyMean;
+	    var prettyMedian = _props.prettyMedian;
+	    var meanRadius = _props.meanRadius;
+	    var medianRadius = _props.medianRadius;
+
+	    var hometowns = roster.map(function (city, index) {
+	      return _react2["default"].createElement("circle", { key: index,
+	        r: "2",
+	        cx: city.point[0],
+	        cy: city.point[1] });
+	    });
+	    var school = schoolPoint !== undefined ? _react2["default"].createElement(
+	      "circle",
+	      { className: "school",
+	        r: "5",
+	        cx: schoolPoint[0],
+	        cy: schoolPoint[1] },
+	      _react2["default"].createElement(
+	        "title",
+	        null,
+	        this.props.name
+	      )
+	    ) : null;
+	    var meanCircle = schoolPoint !== undefined && meanRadius !== undefined ? _react2["default"].createElement(
+	      "circle",
+	      { className: "mean",
+	        r: meanRadius,
+	        cx: schoolPoint[0],
+	        cy: schoolPoint[1] },
+	      _react2["default"].createElement(
+	        "title",
+	        null,
+	        "Mean Distance: " + prettyMean + " miles"
+	      )
+	    ) : null;
+	    var medianCircle = schoolPoint !== undefined && meanRadius !== undefined ? _react2["default"].createElement(
+	      "circle",
+	      { className: "median",
+	        r: medianRadius,
+	        cx: schoolPoint[0],
+	        cy: schoolPoint[1] },
+	      _react2["default"].createElement(
+	        "title",
+	        null,
+	        "Median Distance: " + prettyMedian + " miles"
+	      )
+	    ) : null;
 
 	    return _react2["default"].createElement(
 	      "g",
 	      { className: "team",
 	        fill: color },
+	      meanCircle,
+	      medianCircle,
 	      _react2["default"].createElement(
-	        "circle",
-	        { className: "school",
-	          r: "5",
-	          cx: this.props.schoolPoint[0],
-	          cy: this.props.schoolPoint[1] },
-	        _react2["default"].createElement(
-	          "title",
-	          null,
-	          this.props.name
-	        )
-	      )
+	        "g",
+	        { className: "hometowns" },
+	        hometowns
+	      ),
+	      school
 	    );
 	  }
 	});
@@ -440,15 +440,14 @@
 	    mean: _react2["default"].PropTypes.number.isRequired,
 	    median: _react2["default"].PropTypes.number.isRequired
 	  },
-	  prettyNumbers: d3.format(",.0f"),
 	  render: function render() {
 	    var _props = this.props;
 	    var name = _props.name;
 	    var city = _props.city;
 	    var state = _props.state;
 	    var roster = _props.roster;
-	    var mean = _props.mean;
-	    var median = _props.median;
+	    var prettyMean = _props.prettyMean;
+	    var prettyMedian = _props.prettyMedian;
 
 	    return _react2["default"].createElement(
 	      "div",
@@ -469,14 +468,14 @@
 	        "p",
 	        null,
 	        "Mean Distance: ",
-	        this.prettyNumbers(mean),
+	        prettyMean,
 	        " miles"
 	      ),
 	      _react2["default"].createElement(
 	        "p",
 	        null,
 	        "Median Distance: ",
-	        this.prettyNumbers(median),
+	        prettyMedian,
 	        " miles"
 	      )
 	    );

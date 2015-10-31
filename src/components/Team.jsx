@@ -24,15 +24,14 @@ export default React.createClass({
     mean: React.PropTypes.number.isRequired,
     median: React.PropTypes.number.isRequired
   },
-  prettyNumbers: d3.format(",.0f"),
   render: function() {
-    let { name, city, state, roster, mean, median } = this.props;
+    let { name, city, state, roster, prettyMean, prettyMedian } = this.props;
     return (
       <div className="team">
         <h2>{name}</h2>
         <h3>{city}, {state}</h3>
-        <p>Mean Distance: {this.prettyNumbers(mean)} miles</p>
-        <p>Median Distance: {this.prettyNumbers(median)} miles</p>
+        <p>Mean Distance: {prettyMean} miles</p>
+        <p>Median Distance: {prettyMedian} miles</p>
       </div>
     );
   }
