@@ -42,7 +42,7 @@ def get_roster(url):
 
 def get_coordinates(hometown):
     if hometown == "--":
-        return
+        return None, None
     elif hometown in KNOWN_CITIES:
         return KNOWN_CITIES[hometown]
     else:
@@ -52,6 +52,25 @@ def get_coordinates(hometown):
             coords = (longitude, latitude)
             KNOWN_CITIES[hometown] = coords
             return coords
+        else:
+            return None, None
+
+
+def player_info(player):
+    # get the location of a player's hometown
+    hometown = player["hometown"]
+    longitude, latitude = get_coordinates(hometown)
+    if longitude is None or latitude is None:
+        return None
+    city, state = map(str.strip, hometown.split(",", 1))
+
+    return {
+        "position": player["position"],
+        "city": city,
+        "state": state,
+        "longitude": longitude,
+        "latitude": latitude
+    }
 
 
 def team_coordinates(url):
@@ -64,20 +83,12 @@ def team_coordinates(url):
     if not team:
         return
     players = team["players"][1:]
-    position_locs = {}
-    coords = []
-    for p in players:
-        loc = get_coordinates(p["hometown"])
-        if loc is not None:
-            pos = p["position"]
-            coords.append(loc)
-            pos_coords = position_locs.get(pos, [])
-            pos_coords.append(loc)
-            position_locs[pos] = pos_coords
-    return {
-        "coords": coords,
-        "positions": position_locs
-    }
+    data = []
+    for player in players:
+        info = player_info(player)
+        if info is not None:
+            data.append(info)
+    return data
 
 
 def get_team(name):
