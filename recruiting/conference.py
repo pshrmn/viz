@@ -15,9 +15,9 @@ def combine_teams(conference, teams):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-conference", dest="conf",
+    parser.add_argument("-name", dest="name",
                         help="name of the conference")
     parser.add_argument("-teams", dest="teams", nargs="+",
                         help="names of the colleges in the conference")
     args = parser.parse_args()
-    combine_teams(args.conf, args.teams)
+    combine_teams(args.name, args.teams)

@@ -1,9 +1,17 @@
 Gather data on where US college football recruits come from.
 
-Output will be a JSON object with a `coords` array containing the coordinates of all of the players' hometowns and a `positions` object where hometowns are grouped by football position. The file will be saved in the `data` directory.
+###locations.py
 
 ```python
-python -m locations -team <team-name>
+python -m recruiting.locations -team <team name> -city <city of school> -state <state of school>
 ```
 
-`<team-name>` is the name that is used to refer to the university's athletic teams by ESPN. For example, the University of Wisconsin - Madison is referred to as Wisconsin and Brigham Young University if referred to as BYU.
+`<team name>` is the name that is used to refer to the university's athletic teams by ESPN. For example, the University of Wisconsin - Madison is referred to as Wisconsin and Brigham Young University if referred to as BYU.
+
+###conference.py
+
+```python
+python -m recruiting.conference -name <conference name> -teams <team name> [, <team names>, ...]
+```
+
+Group the files for the teams provided in the `teams` arg together in one big file that is saved under the name of the conference. Eg. `-name SEC` will save the teams to `SEC.json`.

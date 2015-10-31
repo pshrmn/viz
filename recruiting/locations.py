@@ -10,13 +10,15 @@ import argparse
 from gatherer import Page, Fetch, Cache
 from wikinfo.geo import city
 
+from .averages import get_mean_and_median
+
 # load the rules to get a roster's players' position & hometown
 with open("roster.json") as fp:
     roster_rules = json.load(fp)
 
 # load a dict with the urls for all of the FBS D1-A teams' roster urls
 with open("team_pages.json") as fp:
-    teams = json.load(fp)
+    team_urls = json.load(fp)
 
 cache = Cache("cache")
 wiki_city = city.City(city.city_rule_set, {
@@ -36,11 +38,11 @@ def get_roster(url):
     with hometown and position keys
     """
     dom = fetcher.get(url)
-    roster = roster_page.gather(dom)
-    return roster
+    return roster_page.gather(dom)
 
 
 def get_coordinates(hometown):
+    # if a player does not live in the US or Canada, his hometown is listed as --
     if hometown == "--":
         return None, None
     elif hometown in KNOWN_CITIES:
@@ -91,24 +93,41 @@ def team_coordinates(url):
     return data
 
 
-def get_team(name):
+def get_team(name, city, state):
     # teams are saved as lower case
     lower_name = name.lower()
-    if lower_name not in teams:
+    if lower_name not in team_urls:
         print("could not find team: {}".format(name))
         return
-    url = teams[lower_name]
-    team = team_coordinates(url)
-    if not team:
-        return
+    url = team_urls[lower_name]
+    school_long, school_lat = wiki_city.coordinates(city, state)
+    team = {
+        "name": name,
+        "city": city,
+        "state": state,
+        "longitude": school_long,
+        "latitude": school_lat,
+        "roster": team_coordinates(url)
+    }
+    if school_long is not None and school_lat is not None:
+        mean, median = get_mean_and_median(team)
+        team["mean"] = mean
+        team["median"] = median
+    else:
+        print("Did not get longitude/latitude for {}".format(name))
+
     filename = lower_name.replace(" ", "_")
+    # save the file using the name of the school
     with open("data/{}.json".format(filename), "w") as fp:
-        json.dump(team, fp, indent=2)
+        json.dump(team, fp, sort_keys=True, indent=2)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-teams", dest="teams", nargs="+",
+    parser.add_argument("-team", dest="team",
                         help="name of the college")
+    parser.add_argument("-city", dest="city",
+                        help="city where the college is located")
+    parser.add_argument("-state", dest="state",
+                        help="state where the college is located")
     args = parser.parse_args()
-    for team in args.teams:
-        get_team(team)
+    get_team(args.team, args.city, args.state)
