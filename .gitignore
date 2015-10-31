@@ -1,5 +1,7 @@
 __pycache__
 *.py[co]
 node_modules
-averages.py
+
 old.js
+averages.py
+

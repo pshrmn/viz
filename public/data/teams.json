@@ -1,0 +1,457 @@
+[
+  {
+    "name": "Boston College",
+    "color": "#910039",
+    "longitude": -71.16872,
+    "latitude": 42.335251,
+    "conference": "ACC"
+  },
+  {
+    "name": "Clemson",
+    "color": "#F66733",
+    "longitude": -82.81472,
+    "latitude": 34.685,
+    "conference": "ACC"
+  },
+  {
+    "name": "Duke",
+    "color": "#0736A4",
+    "longitude": -78.90722,
+    "latitude": 35.98861,
+    "conference": "ACC"
+  },
+  {
+    "name": "Florida State",
+    "color": "#782F40",
+    "longitude": -84.25333,
+    "latitude": 30.455,
+    "conference": "ACC"
+  },
+  {
+    "name": "Georgia Tech",
+    "color": "#C59353",
+    "longitude": -84.39,
+    "latitude": 33.755,
+    "conference": "ACC"
+  },
+  {
+    "name": "Louisville",
+    "color": "#AD0000",
+    "longitude": -85.767,
+    "latitude": 38.25,
+    "conference": "ACC"
+  },
+  {
+    "name": "Miami",
+    "color": "#005030",
+    "longitude": -80.27111,
+    "latitude": 25.75,
+    "conference": "ACC"
+  },
+  {
+    "name": "North Carolina",
+    "color": "#7BAFD4",
+    "longitude": -79.033,
+    "latitude": 35.933,
+    "conference": "ACC"
+  },
+  {
+    "name": "NC State",
+    "color": "#CC0000",
+    "longitude": -78.63889,
+    "latitude": 35.78056,
+    "conference": "ACC"
+  },
+  {
+    "name": "Notre Dame",
+    "color": "#002B5B",
+    "longitude": -86.25528,
+    "latitude": 41.6725,
+    "conference": "ACC"
+  },
+  {
+    "name": "Pittsburgh",
+    "color": "#192857",
+    "longitude": -79.97639,
+    "latitude": 40.43972,
+    "conference": "ACC"
+  },
+  {
+    "name": "Syracuse",
+    "color": "#D44500",
+    "longitude": -76.14444,
+    "latitude": 43.04694,
+    "conference": "ACC"
+  },
+  {
+    "name": "Virginia",
+    "color": "#F36F21",
+    "longitude": -78.47889,
+    "latitude": 38.03,
+    "conference": "ACC"
+  },
+  {
+    "name": "Virginia Tech",
+    "color": "#660000",
+    "longitude": -80.41778,
+    "latitude": 37.23,
+    "conference": "ACC"
+  },
+  {
+    "name": "Wake Forest",
+    "color": "#9E7E38",
+    "longitude": -80.2604917,
+    "latitude": 36.1027639,
+    "conference": "ACC"
+  },
+  {
+    "name": "Baylor",
+    "color": "#003015",
+    "longitude": -97.15583,
+    "latitude": 31.55139,
+    "conference": "Big 12"
+  },
+  {
+    "name": "Iowa State",
+    "color": "#a71930",
+    "longitude": -93.62,
+    "latitude": 42.03472,
+    "conference": "Big 12"
+  },
+  {
+    "name": "Kansas",
+    "color": "#0022b4",
+    "longitude": -95.23528,
+    "latitude": 38.97167,
+    "conference": "Big 12"
+  },
+  {
+    "name": "Kansas State",
+    "color": "#512888",
+    "longitude": -96.59167,
+    "latitude": 39.19167,
+    "conference": "Big 12"
+  },
+  {
+    "name": "Oklahoma",
+    "color": "#841617",
+    "longitude": -97.44,
+    "latitude": 35.22,
+    "conference": "Big 12"
+  },
+  {
+    "name": "Oklahoma State",
+    "color": "#FF7300",
+    "longitude": -97.075128,
+    "latitude": 36.127305,
+    "conference": "Big 12"
+  },
+  {
+    "name": "Texas",
+    "color": "#BF5700",
+    "longitude": -97.75,
+    "latitude": 30.25,
+    "conference": "Big 12"
+  },
+  {
+    "name": "TCU",
+    "color": "#4d1979",
+    "longitude": -97.3331806,
+    "latitude": 32.7573583,
+    "conference": "Big 12"
+  },
+  {
+    "name": "Texas Tech",
+    "color": "#CC0000",
+    "longitude": -101.883,
+    "latitude": 33.567,
+    "conference": "Big 12"
+  },
+  {
+    "name": "West Virginia",
+    "color": "#EAAA00",
+    "longitude": -79.95056,
+    "latitude": 39.63361,
+    "conference": "Big 12"
+  },
+  {
+    "name": "Illinois",
+    "color": "#E87722",
+    "longitude": -88.272778,
+    "latitude": 40.115,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Indiana",
+    "color": "#7D110C",
+    "longitude": -86.529167,
+    "latitude": 39.162222,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Iowa",
+    "color": "#000000",
+    "longitude": -91.533333,
+    "latitude": 41.666667,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Maryland",
+    "color": "#E03A3E",
+    "longitude": -76.9275,
+    "latitude": 38.996667,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Michigan",
+    "color": "#00274C",
+    "longitude": -83.748333,
+    "latitude": 42.281389,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Michigan State",
+    "color": "#18453B",
+    "longitude": -84.4808,
+    "latitude": 42.7348,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Minnesota",
+    "color": "#7A0019",
+    "longitude": -93.266667,
+    "latitude": 44.983333,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Nebraska",
+    "color": "#D00000",
+    "longitude": -96.680278,
+    "latitude": 40.810556,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Northwestern",
+    "color": "#4E2A84",
+    "longitude": -87.694722,
+    "latitude": 42.046389,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Ohio State",
+    "color": "#BB0000",
+    "longitude": -82.983333,
+    "latitude": 39.983333,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Penn State",
+    "color": "#012D62",
+    "longitude": -77.862778,
+    "latitude": 40.796111,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Purdue",
+    "color": "#2C2A29",
+    "longitude": -86.9125,
+    "latitude": 40.441944,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Rutgers",
+    "color": "#2C2A29",
+    "longitude": -74.444414,
+    "latitude": 40.486678,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Wisconsin",
+    "color": "#C41E3A",
+    "longitude": -89.4,
+    "latitude": 43.066667,
+    "conference": "Big Ten"
+  },
+  {
+    "name": "Arizona",
+    "color": "#CC0033",
+    "longitude": -110.92639,
+    "latitude": 32.22167,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "ASU",
+    "color": "#990033",
+    "longitude": -111.94306,
+    "latitude": 33.42944,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "Cal",
+    "color": "#010066",
+    "longitude": -122.27278,
+    "latitude": 37.87167,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "UCLA",
+    "color": "#3284bf",
+    "longitude": -118.446833,
+    "latitude": 34.068143,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "Colorado",
+    "color": "#000000",
+    "longitude": -105.251945,
+    "latitude": 40.027435,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "Oregon",
+    "color": "#004F27",
+    "longitude": -123.08667,
+    "latitude": 44.05194,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "Oregon State",
+    "color": "#c34500",
+    "longitude": -123.283,
+    "latitude": 44.567,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "USC",
+    "color": "#990000",
+    "longitude": -118.284925,
+    "latitude": 34.020796,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "Stanford",
+    "color": "#8C1515",
+    "longitude": -122.16528,
+    "latitude": 37.4225,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "Utah",
+    "color": "#CC0000",
+    "longitude": -111.88333,
+    "latitude": 40.75,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "Washington",
+    "color": "#39275B",
+    "longitude": -122.33306,
+    "latitude": 47.60972,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "Washington State",
+    "color": "#981e32",
+    "longitude": -117.167,
+    "latitude": 46.733,
+    "conference": "Pac-12"
+  },
+  {
+    "name": "Florida",
+    "color": "#FF4A00",
+    "longitude": -82.324992,
+    "latitude": 29.651997,
+    "conference": "SEC"
+  },
+  {
+    "name": "Georgia",
+    "color": "#cc0000",
+    "longitude": -83.383333,
+    "latitude": 33.95,
+    "conference": "SEC"
+  },
+  {
+    "name": "Kentucky",
+    "color": "#005DAA",
+    "longitude": -84.494722,
+    "latitude": 38.029722,
+    "conference": "SEC"
+  },
+  {
+    "name": "Missouri",
+    "color": "#000000",
+    "longitude": -92.328333,
+    "latitude": 38.951389,
+    "conference": "SEC"
+  },
+  {
+    "name": "South Carolina",
+    "color": "#73000A",
+    "longitude": -80.896556,
+    "latitude": 34.029778,
+    "conference": "SEC"
+  },
+  {
+    "name": "Tennessee",
+    "color": "#FF8200",
+    "longitude": -83.942222,
+    "latitude": 35.972778,
+    "conference": "SEC"
+  },
+  {
+    "name": "Vanderbilt",
+    "color": "#997F3D",
+    "longitude": -86.783333,
+    "latitude": 36.166667,
+    "conference": "SEC"
+  },
+  {
+    "name": "Alabama",
+    "color": "#9E1B32",
+    "longitude": -87.534722,
+    "latitude": 33.206667,
+    "conference": "SEC"
+  },
+  {
+    "name": "Arkansas",
+    "color": "#9D2235",
+    "longitude": -94.160833,
+    "latitude": 36.076389,
+    "conference": "SEC"
+  },
+  {
+    "name": "Auburn",
+    "color": "#DD550C",
+    "longitude": -85.480833,
+    "latitude": 32.597778,
+    "conference": "SEC"
+  },
+  {
+    "name": "LSU",
+    "color": "#461D7C",
+    "longitude": -91.125833,
+    "latitude": 30.448611,
+    "conference": "SEC"
+  },
+  {
+    "name": "Ole Miss",
+    "color": "#E51837",
+    "longitude": -89.526111,
+    "latitude": 34.359722,
+    "conference": "SEC"
+  },
+  {
+    "name": "Mississippi State",
+    "color": "#660000",
+    "longitude": -88.82,
+    "latitude": 33.4625,
+    "conference": "SEC"
+  },
+  {
+    "name": "Texas A&M",
+    "color": "#500000",
+    "longitude": -96.314444,
+    "latitude": 30.601389,
+    "conference": "SEC"
+  }
+]
