@@ -9,7 +9,7 @@ def combine_teams(conference, teams):
         team_filename = "data/{}.json".format(team.replace(" ", "_"))
         with open(team_filename) as fp:
             team_json = json.load(fp)
-            combined[team] = team_json["coords"]
+            combined[team] = team_json
     with open(output, "w") as fp:
         json.dump(combined, fp, sort_keys=True)
 
