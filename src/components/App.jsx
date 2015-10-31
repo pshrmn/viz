@@ -1,20 +1,16 @@
 import React from "react";
 import d3 from "d3";
 import USMap from "./USMap";
-import Teams from "./Teams";
-import TeamMenu from "./TeamMenu";
-import Controls from "./Controls";
+import TeamSVG from "./TeamSVG";
+import Team from "./Team";
+import TeamSelect from "./TeamSelect";
 
 export default React.createClass({
   getInitialState: function() {
     return {
-      activeTeams: [],
+      team: {},
       teams: [],
-      radius: 3,
-      opacity: 0.25,
-      showMeans: false,
-      showMedians: true,
-      showSchools: true
+      index: 0
     };
   },
   componentWillMount: function() {
@@ -26,76 +22,40 @@ export default React.createClass({
       projection: projection
     });
   },
-  setPlayers: function(activeTeams) {
+  setTeam: function(index) {
     this.setState({
-      activeTeams: activeTeams
-    });
-  },
-  toggleSchools: function() {
-    this.setState({
-      showSchools: !this.state.showSchools
-    });
-  },
-  toggleMedians: function() {
-    this.setState({
-      showMedians: !this.state.showMedians
-    });
-  },
-  toggleMeans: function() {
-    this.setState({
-      showMeans: !this.state.showMeans
-    });
-  },
-  setRadius: function(val) {
-    this.setState({
-      radius: val
-    });
-  },
-  setOpacity: function(val) {
-    this.setState({
-      opacity: val
+      index: index,
+      team: this.state.teams[index]
     });
   },
   render: function() {
     let { width, height, margin, scale } = this.props;
+    let { teams, index } = this.state
     return (
       <div className="app">
+        <TeamSelect teams={this.state.teams}
+                    selected={this.state.index}
+                    setTeam={this.setTeam} />
         <svg width={width + margin*2} height={height + margin*2} >
           <g translate={`transform(${margin},${margin})`} >
             <USMap projection={this.state.projection} />
-            <Teams teams={this.state.activeTeams}
-                   radius={this.state.radius}
-                   opacity={this.state.opacity}
-                   showMeans={this.state.showMeans}
-                   showMedians={this.state.showMedians} 
-                   showSchools={this.state.showSchools} />
+            <TeamSVG {...this.state.team} />
           </g>
         </svg>
-        <TeamMenu teams={this.state.teams}
-                  setTeams={this.setPlayers} />
-        <Controls schools={this.state.showSchools}
-                  toggleSchools={this.toggleSchools}
-                  medians={this.state.showMedians}
-                  toggleMedians={this.toggleMedians}
-                  means={this.state.showMeans}
-                  toggleMeans={this.toggleMeans}
-                  radius={this.state.radius}
-                  setRadius={this.setRadius}
-                  opacity={this.state.opacity}
-                  setOpacity={this.setOpacity} />
+        <Team {...this.state.team} />
       </div>
     );
   },
   componentDidMount: function() {
     let { projection } = this.state;
-    d3.json("./data/fullteams.json", (error, teams) => {
+    d3.json("./data/bigtenarray.json", (error, teams) => {
       if ( error !== null ) {
         console.error(error);
         return;
       }
       teams.forEach((team) => {
         // convert coordinates to points in the projection
-        team.points = projectedCoordinates(team.hometowns, projection);
+        team.points = projectedCoordinates(team.roster, projection);
         team.schoolPoint = projection([team.longitude, team.latitude]);
 
         // find a point the mean/median distance away in the projection, invert it
@@ -108,10 +68,10 @@ export default React.createClass({
         let projectedLow = projection(lowPoint);
 
         let pMean = projection([lowPoint[0], lowPoint[1] + (team.mean / milesPerDegreeLatitude)]);
-        team.meanRadius = Math.abs(pMean[1] - projectedLow[1]);
+        team.mean = Math.abs(pMean[1] - projectedLow[1]);
 
         let pMedian = projection([lowPoint[0], lowPoint[1] + (team.median / milesPerDegreeLatitude)]);
-        team.medianRadius = Math.abs(pMedian[1] - projectedLow[1]);
+        team.median = Math.abs(pMedian[1] - projectedLow[1]);
       });
       // default ordering alphabetical
       teams.sort(function(a, b) {
@@ -125,7 +85,7 @@ export default React.createClass({
       });
       this.setState({
         teams: teams,
-        activeTeams: teams
+        team: teams[this.state.index]
       });
     });
   }

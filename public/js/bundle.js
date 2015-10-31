@@ -115,30 +115,26 @@
 
 	var _USMap2 = _interopRequireDefault(_USMap);
 
-	var _Teams = __webpack_require__(8);
+	var _TeamSVG = __webpack_require__(8);
 
-	var _Teams2 = _interopRequireDefault(_Teams);
+	var _TeamSVG2 = _interopRequireDefault(_TeamSVG);
 
-	var _TeamMenu = __webpack_require__(13);
+	var _Team = __webpack_require__(9);
 
-	var _TeamMenu2 = _interopRequireDefault(_TeamMenu);
+	var _Team2 = _interopRequireDefault(_Team);
 
-	var _Controls = __webpack_require__(14);
+	var _TeamSelect = __webpack_require__(10);
 
-	var _Controls2 = _interopRequireDefault(_Controls);
+	var _TeamSelect2 = _interopRequireDefault(_TeamSelect);
 
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "App",
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      activeTeams: [],
+	      team: {},
 	      teams: [],
-	      radius: 3,
-	      opacity: 0.25,
-	      showMeans: false,
-	      showMedians: true,
-	      showSchools: true
+	      index: 0
 	    };
 	  },
 	  componentWillMount: function componentWillMount() {
@@ -152,34 +148,10 @@
 	      projection: projection
 	    });
 	  },
-	  setPlayers: function setPlayers(activeTeams) {
+	  setTeam: function setTeam(index) {
 	    this.setState({
-	      activeTeams: activeTeams
-	    });
-	  },
-	  toggleSchools: function toggleSchools() {
-	    this.setState({
-	      showSchools: !this.state.showSchools
-	    });
-	  },
-	  toggleMedians: function toggleMedians() {
-	    this.setState({
-	      showMedians: !this.state.showMedians
-	    });
-	  },
-	  toggleMeans: function toggleMeans() {
-	    this.setState({
-	      showMeans: !this.state.showMeans
-	    });
-	  },
-	  setRadius: function setRadius(val) {
-	    this.setState({
-	      radius: val
-	    });
-	  },
-	  setOpacity: function setOpacity(val) {
-	    this.setState({
-	      opacity: val
+	      index: index,
+	      team: this.state.teams[index]
 	    });
 	  },
 	  render: function render() {
@@ -188,10 +160,16 @@
 	    var height = _props2.height;
 	    var margin = _props2.margin;
 	    var scale = _props2.scale;
+	    var _state = this.state;
+	    var teams = _state.teams;
+	    var index = _state.index;
 
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "app" },
+	      _react2["default"].createElement(_TeamSelect2["default"], { teams: this.state.teams,
+	        selected: this.state.index,
+	        setTeam: this.setTeam }),
 	      _react2["default"].createElement(
 	        "svg",
 	        { width: width + margin * 2, height: height + margin * 2 },
@@ -199,26 +177,10 @@
 	          "g",
 	          { translate: "transform(" + margin + "," + margin + ")" },
 	          _react2["default"].createElement(_USMap2["default"], { projection: this.state.projection }),
-	          _react2["default"].createElement(_Teams2["default"], { teams: this.state.activeTeams,
-	            radius: this.state.radius,
-	            opacity: this.state.opacity,
-	            showMeans: this.state.showMeans,
-	            showMedians: this.state.showMedians,
-	            showSchools: this.state.showSchools })
+	          _react2["default"].createElement(_TeamSVG2["default"], this.state.team)
 	        )
 	      ),
-	      _react2["default"].createElement(_TeamMenu2["default"], { teams: this.state.teams,
-	        setTeams: this.setPlayers }),
-	      _react2["default"].createElement(_Controls2["default"], { schools: this.state.showSchools,
-	        toggleSchools: this.toggleSchools,
-	        medians: this.state.showMedians,
-	        toggleMedians: this.toggleMedians,
-	        means: this.state.showMeans,
-	        toggleMeans: this.toggleMeans,
-	        radius: this.state.radius,
-	        setRadius: this.setRadius,
-	        opacity: this.state.opacity,
-	        setOpacity: this.setOpacity })
+	      _react2["default"].createElement(_Team2["default"], this.state.team)
 	    );
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -226,14 +188,14 @@
 
 	    var projection = this.state.projection;
 
-	    _d32["default"].json("./data/fullteams.json", function (error, teams) {
+	    _d32["default"].json("./data/bigtenarray.json", function (error, teams) {
 	      if (error !== null) {
 	        console.error(error);
 	        return;
 	      }
 	      teams.forEach(function (team) {
 	        // convert coordinates to points in the projection
-	        team.points = projectedCoordinates(team.hometowns, projection);
+	        team.points = projectedCoordinates(team.roster, projection);
 	        team.schoolPoint = projection([team.longitude, team.latitude]);
 
 	        // find a point the mean/median distance away in the projection, invert it
@@ -246,10 +208,10 @@
 	        var projectedLow = projection(lowPoint);
 
 	        var pMean = projection([lowPoint[0], lowPoint[1] + team.mean / milesPerDegreeLatitude]);
-	        team.meanRadius = Math.abs(pMean[1] - projectedLow[1]);
+	        team.mean = Math.abs(pMean[1] - projectedLow[1]);
 
 	        var pMedian = projection([lowPoint[0], lowPoint[1] + team.median / milesPerDegreeLatitude]);
-	        team.medianRadius = Math.abs(pMedian[1] - projectedLow[1]);
+	        team.median = Math.abs(pMedian[1] - projectedLow[1]);
 	      });
 	      // default ordering alphabetical
 	      teams.sort(function (a, b) {
@@ -263,7 +225,7 @@
 	      });
 	      _this.setState({
 	        teams: teams,
-	        activeTeams: teams
+	        team: teams[_this.state.index]
 	      });
 	    });
 	  }
@@ -397,50 +359,39 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _d3 = __webpack_require__(5);
-
-	var _d32 = _interopRequireDefault(_d3);
-
-	var _Schools = __webpack_require__(9);
-
-	var _Schools2 = _interopRequireDefault(_Schools);
-
-	var _Hometowns = __webpack_require__(10);
-
-	var _Hometowns2 = _interopRequireDefault(_Hometowns);
-
-	var _Medians = __webpack_require__(11);
-
-	var _Medians2 = _interopRequireDefault(_Medians);
-
-	var _Means = __webpack_require__(12);
-
-	var _Means2 = _interopRequireDefault(_Means);
-
 	exports["default"] = _react2["default"].createClass({
-	  displayName: "Teams",
+	  displayName: "TeamSVG",
 
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      name: "",
+	      schoolPoint: [0, 0],
+	      roster: []
+	    };
+	  },
 	  render: function render() {
 	    var _props = this.props;
-	    var teams = _props.teams;
-	    var opacity = _props.opacity;
-	    var radius = _props.radius;
-	    var showMeans = _props.showMeans;
-	    var showMedians = _props.showMedians;
-	    var showSchools = _props.showSchools;
+	    var name = _props.name;
+	    var schoolPoint = _props.schoolPoint;
+	    var roster = _props.roster;
+	    var color = _props.color;
 
 	    return _react2["default"].createElement(
 	      "g",
-	      null,
-	      _react2["default"].createElement(_Means2["default"], { teams: teams,
-	        hidden: !showMeans }),
-	      _react2["default"].createElement(_Medians2["default"], { teams: teams,
-	        hidden: !showMedians }),
-	      _react2["default"].createElement(_Hometowns2["default"], { teams: teams,
-	        radius: radius,
-	        opacity: opacity }),
-	      _react2["default"].createElement(_Schools2["default"], { teams: teams,
-	        hidden: !showSchools })
+	      { className: "team",
+	        fill: color },
+	      _react2["default"].createElement(
+	        "circle",
+	        { className: "school",
+	          r: "5",
+	          cx: this.props.schoolPoint[0],
+	          cy: this.props.schoolPoint[1] },
+	        _react2["default"].createElement(
+	          "title",
+	          null,
+	          this.props.name
+	        )
+	      )
 	    );
 	  }
 	});
@@ -462,40 +413,72 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	exports["default"] = _react2["default"].createClass({
-	  displayName: "Schools",
+	var _d3 = __webpack_require__(5);
 
+	exports["default"] = _react2["default"].createClass({
+	  displayName: "Team",
+
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      name: "",
+	      city: "",
+	      state: "",
+	      roster: [],
+	      latitude: -1,
+	      longitude: -1,
+	      mean: 0,
+	      median: 0
+	    };
+	  },
+	  propTypes: {
+	    name: _react2["default"].PropTypes.string.isRequired,
+	    city: _react2["default"].PropTypes.string.isRequired,
+	    state: _react2["default"].PropTypes.string.isRequired,
+	    roster: _react2["default"].PropTypes.array.isRequired,
+	    latitude: _react2["default"].PropTypes.number.isRequired,
+	    longitude: _react2["default"].PropTypes.number.isRequired,
+	    mean: _react2["default"].PropTypes.number.isRequired,
+	    median: _react2["default"].PropTypes.number.isRequired
+	  },
+	  prettyNumbers: d3.format(",.0f"),
 	  render: function render() {
 	    var _props = this.props;
-	    var teams = _props.teams;
-	    var hidden = _props.hidden;
+	    var name = _props.name;
+	    var city = _props.city;
+	    var state = _props.state;
+	    var roster = _props.roster;
+	    var mean = _props.mean;
+	    var median = _props.median;
 
-	    var opacity = 0.1;
-	    var schools = teams.map(function (team, index) {
-	      var className = team.selected ? "school" : "school hidden";
-	      return _react2["default"].createElement(
-	        "circle",
-	        { key: index,
-	          className: className,
-	          r: "5",
-	          fill: team.color,
-	          cx: team.schoolPoint[0],
-	          cy: team.schoolPoint[1] },
-	        _react2["default"].createElement(
-	          "title",
-	          null,
-	          team.name
-	        )
-	      );
-	    });
-	    var classNames = ["schools"];
-	    if (hidden) {
-	      classNames.push("hidden");
-	    }
 	    return _react2["default"].createElement(
-	      "g",
-	      { className: classNames.join(" ") },
-	      schools
+	      "div",
+	      { className: "team" },
+	      _react2["default"].createElement(
+	        "h2",
+	        null,
+	        name
+	      ),
+	      _react2["default"].createElement(
+	        "h3",
+	        null,
+	        city,
+	        ", ",
+	        state
+	      ),
+	      _react2["default"].createElement(
+	        "p",
+	        null,
+	        "Mean Distance: ",
+	        this.prettyNumbers(mean),
+	        " miles"
+	      ),
+	      _react2["default"].createElement(
+	        "p",
+	        null,
+	        "Median Distance: ",
+	        this.prettyNumbers(median),
+	        " miles"
+	      )
 	    );
 	  }
 	});
@@ -517,418 +500,30 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _d3 = __webpack_require__(5);
-
-	var _d32 = _interopRequireDefault(_d3);
-
 	exports["default"] = _react2["default"].createClass({
-	  displayName: "Hometowns",
+	  displayName: "TeamSelect",
 
-	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-	    // d3 handle the rendering, so never update
-	    return false;
+	  updateTeam: function updateTeam(event) {
+	    this.props.setTeam(event.target.value);
 	  },
-	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    return this.state.setup === true ? this._d3Update(nextProps.teams) : this._d3Setup(nextProps.teams);
+	  sendUpdate: function sendUpdate(index) {
+	    this.props.setTeam(index);
 	  },
 	  render: function render() {
-	    // we want want for the component is the holder (with a ref to it for easy access)
-	    // d3 will handle all of the rendering
-	    return _react2["default"].createElement("g", { className: "hometowns", ref: "hometowns" });
-	  },
-	  componentDidMount: function componentDidMount() {
-	    // draw all of the teams the first time the component is rendered
-	    var teamsSelection = _d32["default"].select(this.refs.hometowns).selectAll("g.team");
-	    var citiesSelection = teamsSelection.selectAll("circle.city");
-	    this.setState({
-	      teamsSelection: teamsSelection,
-	      citiesSelection: citiesSelection
-	    });
-	  },
-	  _d3Update: function _d3Update(teams) {
-	    var _props = this.props;
-	    var radius = _props.radius;
-	    var opacity = _props.opacity;
-	    var _state = this.state;
-	    var teamsSelection = _state.teamsSelection;
-	    var citiesSelection = _state.citiesSelection;
-
-	    teamsSelection.data(teams, function (d) {
-	      return d.name;
-	    }).classed({
-	      hidden: function hidden(d) {
-	        return !d.selected;
-	      }
-	    });
-	    citiesSelection.data(function (d) {
-	      return d.points;
-	    }).attr("r", radius).style("opacity", opacity);
-	  },
-	  _d3Setup: function _d3Setup(teams) {
-	    //
-	    console.log("setting up!");
-	    var _props2 = this.props;
-	    var radius = _props2.radius;
-	    var opacity = _props2.opacity;
-
-	    var teamsSelection = this.state.teamsSelection.data(teams, function (d) {
-	      return d.name;
-	    });
-	    teamsSelection.enter().append("g").classed({
-	      "team": true,
-	      "hidden": function hidden(d) {
-	        return !d.selected;
-	      }
-	    }).style("fill", function (d) {
-	      return d.color;
-	    });
-
-	    var citiesSelection = teamsSelection.selectAll("circle.city").data(function (d) {
-	      return d.points;
-	    });
-	    citiesSelection.enter().append("circle").classed("city", true).attr("cx", function (d) {
-	      return d[0];
-	    }).attr("cy", function (d) {
-	      return d[1];
-	    }).attr("r", radius).style("opacity", opacity);
-	    this.setState({
-	      teamsSelection: teamsSelection,
-	      citiesSelection: citiesSelection,
-	      setup: true
-	    });
-	  }
-	});
-	module.exports = exports["default"];
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequireDefault = __webpack_require__(1)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	exports["default"] = _react2["default"].createClass({
-	  displayName: "Medians",
-
-	  render: function render() {
-	    var _props = this.props;
-	    var teams = _props.teams;
-	    var hidden = _props.hidden;
-
-	    var opacity = 0.1;
-	    var medians = teams.map(function (team, index) {
-	      var className = team.selected ? "median" : "median hidden";
-	      return _react2["default"].createElement(
-	        "circle",
-	        { key: index,
-	          className: className,
-	          r: team.medianRadius,
-	          cx: team.schoolPoint[0],
-	          cy: team.schoolPoint[1] },
-	        _react2["default"].createElement(
-	          "title",
-	          null,
-	          team.name + " median: " + team.median + " miles"
-	        )
-	      );
-	    });
-	    var classNames = ["medians"];
-	    if (hidden) {
-	      classNames.push("hidden");
-	    }
-	    return _react2["default"].createElement(
-	      "g",
-	      { className: classNames.join(" ") },
-	      medians
-	    );
-	  }
-	});
-	module.exports = exports["default"];
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequireDefault = __webpack_require__(1)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	exports["default"] = _react2["default"].createClass({
-	  displayName: "Means",
-
-	  render: function render() {
-	    var _props = this.props;
-	    var teams = _props.teams;
-	    var hidden = _props.hidden;
-
-	    var opacity = 0.1;
-	    var means = teams.map(function (team, index) {
-	      var className = team.selected ? "mean" : "mean hidden";
-	      return _react2["default"].createElement(
-	        "circle",
-	        { key: index,
-	          className: className,
-	          r: team.meanRadius,
-	          cx: team.schoolPoint[0],
-	          cy: team.schoolPoint[1] },
-	        _react2["default"].createElement(
-	          "title",
-	          null,
-	          team.name + " mean: " + team.mean + " miles"
-	        )
-	      );
-	    });
-	    var classNames = ["means"];
-	    if (hidden) {
-	      classNames.push("hidden");
-	    }
-	    return _react2["default"].createElement(
-	      "g",
-	      { className: classNames.join(" ") },
-	      means
-	    );
-	  }
-	});
-	module.exports = exports["default"];
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequireDefault = __webpack_require__(1)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _d3 = __webpack_require__(5);
-
-	var _d32 = _interopRequireDefault(_d3);
-
-	exports["default"] = _react2["default"].createClass({
-	  displayName: "TeamMenu",
-
-	  getInitialState: function getInitialState() {
-	    return {
-	      teams: []
-	    };
-	  },
-	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    this.setState({
-	      teams: nextProps.teams
-	    });
-	  },
-	  updateTeam: function updateTeam(index) {
-	    var teams = this.state.teams;
-	    teams[index].selected = !teams[index].selected;
-	    this.sendUpdate(teams);
-	    this.setState({
-	      teams: teams
-	    });
-	  },
-	  selectAll: function selectAll() {
-	    var teams = this.state.teams;
-	    teams.forEach(function (t) {
-	      t.selected = true;
-	    });
-	    this.sendUpdate(teams);
-	    this.setState({
-	      teams: teams
-	    });
-	  },
-	  deselectAll: function deselectAll() {
-	    var teams = this.state.teams;
-	    teams.forEach(function (t) {
-	      t.selected = false;
-	    });
-	    this.sendUpdate(teams);
-	    this.setState({
-	      teams: teams
-	    });
-	  },
-	  sendUpdate: function sendUpdate(teams) {
-	    this.props.setTeams(teams);
-	  },
-	  render: function render() {
-	    var _this = this;
-
 	    var teams = this.props.teams.map(function (team, index) {
-	      return _react2["default"].createElement(Team, { key: index,
-	        index: index,
-	        name: team.name,
-	        selected: team.selected,
-	        update: _this.updateTeam });
+	      return _react2["default"].createElement(
+	        "option",
+	        { key: index, value: index },
+	        team.name
+	      );
 	    });
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "team-menu" },
 	      _react2["default"].createElement(
-	        "div",
-	        { className: "controls" },
-	        _react2["default"].createElement(
-	          "button",
-	          { onClick: this.selectAll },
-	          "Select All"
-	        ),
-	        _react2["default"].createElement(
-	          "button",
-	          { onClick: this.deselectAll },
-	          "Deselect All"
-	        )
-	      ),
-	      teams
-	    );
-	  }
-	});
-
-	var Team = _react2["default"].createClass({
-	  displayName: "Team",
-
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      name: ""
-	    };
-	  },
-	  checkHandler: function checkHandler(event) {
-	    this.props.update(this.props.index);
-	  },
-	  render: function render() {
-	    return _react2["default"].createElement(
-	      "div",
-	      { className: "team" },
-	      _react2["default"].createElement(
-	        "label",
-	        null,
-	        this.props.name,
-	        _react2["default"].createElement("input", { type: "checkbox",
-	          checked: this.props.selected,
-	          onChange: this.checkHandler })
-	      )
-	    );
-	  }
-	});
-	module.exports = exports["default"];
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequireDefault = __webpack_require__(1)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	exports["default"] = _react2["default"].createClass({
-	  displayName: "Controls",
-
-	  setRadius: function setRadius(event) {
-	    this.props.setRadius(event.target.value);
-	  },
-	  setOpacity: function setOpacity(event) {
-	    this.props.setOpacity(event.target.value);
-	  },
-	  toggleSchools: function toggleSchools() {
-	    this.props.toggleSchools(event.target.checked);
-	  },
-	  toggleMedians: function toggleMedians() {
-	    this.props.toggleMedians(event.target.checked);
-	  },
-	  toggleMeans: function toggleMeans() {
-	    this.props.toggleMeans(event.target.checked);
-	  },
-	  render: function render() {
-	    var _props = this.props;
-	    var schools = _props.schools;
-	    var medians = _props.medians;
-	    var means = _props.means;
-	    var opacity = _props.opacity;
-	    var radius = _props.radius;
-
-	    return _react2["default"].createElement(
-	      "div",
-	      null,
-	      _react2["default"].createElement(
-	        "h2",
-	        null,
-	        "Controls"
-	      ),
-	      _react2["default"].createElement(
-	        "label",
-	        null,
-	        "Radius ",
-	        radius,
-	        _react2["default"].createElement("input", { type: "range",
-	          value: radius,
-	          step: "1",
-	          min: "1",
-	          max: "15",
-	          onChange: this.setRadius })
-	      ),
-	      _react2["default"].createElement(
-	        "label",
-	        null,
-	        "Opacity ",
-	        opacity,
-	        _react2["default"].createElement("input", { type: "range",
-	          value: opacity,
-	          step: "0.05",
-	          min: "0",
-	          max: "1",
-	          onChange: this.setOpacity })
-	      ),
-	      _react2["default"].createElement(
-	        "label",
-	        null,
-	        "Show Schools",
-	        _react2["default"].createElement("input", { type: "checkbox",
-	          checked: schools,
-	          onChange: this.toggleSchools })
-	      ),
-	      _react2["default"].createElement(
-	        "label",
-	        null,
-	        "Show Medians",
-	        _react2["default"].createElement("input", { type: "checkbox",
-	          checked: medians,
-	          onChange: this.toggleMedians })
-	      ),
-	      _react2["default"].createElement(
-	        "label",
-	        null,
-	        "Show Means",
-	        _react2["default"].createElement("input", { type: "checkbox",
-	          checked: means,
-	          onChange: this.toggleMeans })
+	        "select",
+	        { onChange: this.updateTeam, value: this.props.index },
+	        teams
 	      )
 	    );
 	  }
