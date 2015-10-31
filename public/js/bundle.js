@@ -529,7 +529,7 @@
 	    return false;
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    this._d3Select(nextProps.teams);
+	    return this.state.setup === true ? this._d3Update(nextProps.teams) : this._d3Setup(nextProps.teams);
 	  },
 	  render: function render() {
 	    // we want want for the component is the holder (with a ref to it for easy access)
@@ -539,14 +539,37 @@
 	  componentDidMount: function componentDidMount() {
 	    // draw all of the teams the first time the component is rendered
 	    var teamsSelection = _d32["default"].select(this.refs.hometowns).selectAll("g.team");
+	    var citiesSelection = teamsSelection.selectAll("circle.city");
 	    this.setState({
-	      teamsSelection: teamsSelection
+	      teamsSelection: teamsSelection,
+	      citiesSelection: citiesSelection
 	    });
 	  },
-	  _d3Select: function _d3Select(teams) {
+	  _d3Update: function _d3Update(teams) {
 	    var _props = this.props;
 	    var radius = _props.radius;
 	    var opacity = _props.opacity;
+	    var _state = this.state;
+	    var teamsSelection = _state.teamsSelection;
+	    var citiesSelection = _state.citiesSelection;
+
+	    teamsSelection.data(teams, function (d) {
+	      return d.name;
+	    }).classed({
+	      hidden: function hidden(d) {
+	        return !d.selected;
+	      }
+	    });
+	    citiesSelection.data(function (d) {
+	      return d.points;
+	    }).attr("r", radius).style("opacity", opacity);
+	  },
+	  _d3Setup: function _d3Setup(teams) {
+	    //
+	    console.log("setting up!");
+	    var _props2 = this.props;
+	    var radius = _props2.radius;
+	    var opacity = _props2.opacity;
 
 	    var teamsSelection = this.state.teamsSelection.data(teams, function (d) {
 	      return d.name;
@@ -560,25 +583,18 @@
 	      return d.color;
 	    });
 
-	    teamsSelection.classed({
-	      "hidden": function hidden(d) {
-	        return !d.selected;
-	      }
-	    });
-
-	    var cities = teamsSelection.selectAll("circle.city").data(function (d) {
+	    var citiesSelection = teamsSelection.selectAll("circle.city").data(function (d) {
 	      return d.points;
 	    });
-	    cities.enter().append("circle").classed("city", true).attr("cx", function (d) {
+	    citiesSelection.enter().append("circle").classed("city", true).attr("cx", function (d) {
 	      return d[0];
 	    }).attr("cy", function (d) {
 	      return d[1];
-	    });
-
-	    cities.attr("r", radius).style("opacity", this.props.opacity);
-
+	    }).attr("r", radius).style("opacity", opacity);
 	    this.setState({
-	      teamsSelection: teamsSelection
+	      teamsSelection: teamsSelection,
+	      citiesSelection: citiesSelection,
+	      setup: true
 	    });
 	  }
 	});

@@ -7,7 +7,9 @@ export default React.createClass({
     return false;
   },
   componentWillReceiveProps: function(nextProps) {
-    this._d3Select(nextProps.teams)
+    return this.state.setup === true ? 
+      this._d3Update(nextProps.teams) :
+      this._d3Setup(nextProps.teams);
   },
   render: function() {
     // we want want for the component is the holder (with a ref to it for easy access)
@@ -19,14 +21,30 @@ export default React.createClass({
   componentDidMount: function() {
     // draw all of the teams the first time the component is rendered
     let teamsSelection = d3.select(this.refs.hometowns).selectAll("g.team");
+    let citiesSelection = teamsSelection.selectAll("circle.city")
     this.setState({
-      teamsSelection: teamsSelection
+      teamsSelection: teamsSelection,
+      citiesSelection: citiesSelection
     });
   },
-  _d3Select: function(teams) {
+  _d3Update: function(teams) {
+    let { radius, opacity } = this.props;
+    let { teamsSelection, citiesSelection } = this.state;
+    teamsSelection
+        .data(teams, d => d.name)
+      .classed({
+        hidden: d => !d.selected
+      });
+    citiesSelection
+        .data(d => d.points)
+      .attr("r", radius)
+      .style("opacity", opacity);
+  },
+  _d3Setup: function(teams) {
+    // 
     let { radius, opacity } = this.props;
     let teamsSelection = this.state.teamsSelection
-      .data(teams, d => d.name)
+      .data(teams, d => d.name);
     teamsSelection.enter().append("g")
       .classed({
         "team": true,
@@ -34,23 +52,18 @@ export default React.createClass({
       })
       .style("fill", d => d.color);
 
-    teamsSelection.classed({
-      "hidden": d => !d.selected
-    });
-
-    let cities = teamsSelection.selectAll("circle.city")
+    let citiesSelection = teamsSelection.selectAll("circle.city")
       .data(d => d.points);
-    cities.enter().append("circle")
+    citiesSelection.enter().append("circle")
         .classed("city", true)
         .attr("cx", d => d[0])
-        .attr("cy", d => d[1]);
-
-    cities
-      .attr("r", radius)
-      .style("opacity", this.props.opacity);
-
+        .attr("cy", d => d[1])
+        .attr("r", radius)
+        .style("opacity", opacity);
     this.setState({
-      teamsSelection: teamsSelection
+      teamsSelection: teamsSelection,
+      citiesSelection: citiesSelection,
+      setup: true
     });
   }
 });
