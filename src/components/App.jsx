@@ -30,7 +30,12 @@ export default React.createClass({
   },
   render: function() {
     let { width, height, margin, scale } = this.props;
-    let { teams, index } = this.state
+    let { teams, index, team } = this.state;
+    let activeState = "";
+    if ( team ) {
+      activeState = team.state;
+    }
+    console.log("active state:", activeState);
     return (
       <div className="app">
         <TeamSelect teams={this.state.teams}
@@ -38,7 +43,7 @@ export default React.createClass({
                     setTeam={this.setTeam} />
         <svg width={width + margin*2} height={height + margin*2} >
           <g translate={`transform(${margin},${margin})`} >
-            <USMap projection={this.state.projection} />
+            <USMap projection={this.state.projection} active={activeState} />
             <TeamSVG {...this.state.team} />
           </g>
         </svg>
@@ -48,7 +53,7 @@ export default React.createClass({
   },
   componentDidMount: function() {
     let { projection } = this.state;
-    d3.json("./data/bigtenarray.json", (error, teams) => {
+    d3.json("./data/bigten.json", (error, teams) => {
       if ( error !== null ) {
         console.error(error);
         return;

@@ -3,13 +3,31 @@ import d3 from "d3";
 import topojson from "topojson";
 
 export default React.createClass({
-  shouldComponentUpdate: function(nextProps, nextState) {
-    // don't redraw
-    return false
+  getInitialState: function() {
+    return {
+      states: []
+    };
+  },
+  componentWillMount: function() {
+    this.setState({
+      path: d3.geo.path()
+        .projection(this.props.projection)
+    });
   },
   render: function() {
+    let { active } = this.props;
+    let states = this.state.states.map((s, index) => {
+      return (
+        <State key={index}
+               active={s.properties.abbr===active}
+               path={this.state.path}
+               feature={s} />
+      );
+    });
     return (
-      <g className="map" ref="usmap"></g>
+      <g className="map" ref="usmap">
+        {states}
+      </g>
     );
   },
   componentDidMount: function() {
@@ -18,16 +36,38 @@ export default React.createClass({
         console.error(error);
         return;
       }
-      var path = d3.geo.path()
-        .projection(this.props.projection);
-      var stateData = topojson.feature(states, states.objects.states).features;
-      d3.select(this.refs.usmap).selectAll("g.state")
-          .data(stateData)
-        .enter().append("g")
-          .classed("state", true)
-          .append("path")
-            .classed("outline", true)
-            .attr("d", path);
+      let stateData = topojson.feature(states, states.objects.states).features;
+      this.setState({
+        states: stateData
+      });
     });
   }
 });
+
+let State = React.createClass({
+  render: function() {
+    var classes = ["state"];
+    if ( this.props.active ) {
+      classes.push("active");
+    }
+    return (
+      <g className={classes.join(" ")}>
+        <StatePath path={this.props.path}
+          feature={this.props.feature} />
+      </g>
+    );
+  }
+});
+
+let StatePath = React.createClass({
+  shouldComponentUpdate: function(nextProps, nextState) {
+    // the path doesn't need to be updated after its initial drawing
+    return false;
+  },
+  render: function() {
+    let { path, feature } = this.props;
+    return (
+      <path d={path(feature)} />
+    );
+  }
+})

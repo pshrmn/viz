@@ -163,7 +163,13 @@
 	    var _state = this.state;
 	    var teams = _state.teams;
 	    var index = _state.index;
+	    var team = _state.team;
 
+	    var activeState = "";
+	    if (team) {
+	      activeState = team.state;
+	    }
+	    console.log("active state:", activeState);
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "app" },
@@ -176,7 +182,7 @@
 	        _react2["default"].createElement(
 	          "g",
 	          { translate: "transform(" + margin + "," + margin + ")" },
-	          _react2["default"].createElement(_USMap2["default"], { projection: this.state.projection }),
+	          _react2["default"].createElement(_USMap2["default"], { projection: this.state.projection, active: activeState }),
 	          _react2["default"].createElement(_TeamSVG2["default"], this.state.team)
 	        )
 	      ),
@@ -188,7 +194,7 @@
 
 	    var projection = this.state.projection;
 
-	    _d32["default"].json("./data/bigtenarray.json", function (error, teams) {
+	    _d32["default"].json("./data/bigten.json", function (error, teams) {
 	      if (error !== null) {
 	        console.error(error);
 	        return;
@@ -272,25 +278,79 @@
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "USMap",
 
-	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-	    // don't redraw
-	    return false;
+	  getInitialState: function getInitialState() {
+	    return {
+	      states: []
+	    };
+	  },
+	  componentWillMount: function componentWillMount() {
+	    this.setState({
+	      path: _d32["default"].geo.path().projection(this.props.projection)
+	    });
 	  },
 	  render: function render() {
-	    return _react2["default"].createElement("g", { className: "map", ref: "usmap" });
+	    var _this = this;
+
+	    var active = this.props.active;
+
+	    var states = this.state.states.map(function (s, index) {
+	      return _react2["default"].createElement(State, { key: index,
+	        active: s.properties.abbr === active,
+	        path: _this.state.path,
+	        feature: s });
+	    });
+	    return _react2["default"].createElement(
+	      "g",
+	      { className: "map", ref: "usmap" },
+	      states
+	    );
 	  },
 	  componentDidMount: function componentDidMount() {
-	    var _this = this;
+	    var _this2 = this;
 
 	    _d32["default"].json("./data/us.json", function (error, states) {
 	      if (error !== null) {
 	        console.error(error);
 	        return;
 	      }
-	      var path = _d32["default"].geo.path().projection(_this.props.projection);
 	      var stateData = _topojson2["default"].feature(states, states.objects.states).features;
-	      _d32["default"].select(_this.refs.usmap).selectAll("g.state").data(stateData).enter().append("g").classed("state", true).append("path").classed("outline", true).attr("d", path);
+	      _this2.setState({
+	        states: stateData
+	      });
 	    });
+	  }
+	});
+
+	var State = _react2["default"].createClass({
+	  displayName: "State",
+
+	  render: function render() {
+	    var classes = ["state"];
+	    if (this.props.active) {
+	      classes.push("active");
+	    }
+	    return _react2["default"].createElement(
+	      "g",
+	      { className: classes.join(" ") },
+	      _react2["default"].createElement(StatePath, { path: this.props.path,
+	        feature: this.props.feature })
+	    );
+	  }
+	});
+
+	var StatePath = _react2["default"].createClass({
+	  displayName: "StatePath",
+
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+	    // the path doesn't need to be updated after its initial drawing
+	    return false;
+	  },
+	  render: function render() {
+	    var _props = this.props;
+	    var path = _props.path;
+	    var feature = _props.feature;
+
+	    return _react2["default"].createElement("path", { d: path(feature) });
 	  }
 	});
 	module.exports = exports["default"];
