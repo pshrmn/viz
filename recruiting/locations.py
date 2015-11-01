@@ -102,9 +102,9 @@ def get_team(name, city, state):
     url = team_urls[lower_name]
     school_long, school_lat = wiki_city.coordinates(city, state)
     team = {
-        "name": name,
-        "city": city,
-        "state": state,
+        "name": name.capitalize(),
+        "city": city.capitalize(),
+        "state": state.upper(),
         "longitude": school_long,
         "latitude": school_lat,
         "roster": team_coordinates(url)
@@ -128,6 +128,9 @@ if __name__ == "__main__":
     parser.add_argument("-city", dest="city",
                         help="city where the college is located")
     parser.add_argument("-state", dest="state",
-                        help="state where the college is located")
+                        help="two letter abbreviation of the state where the college is located")
     args = parser.parse_args()
-    get_team(args.team, args.city, args.state)
+    if len(args.state) != 2:
+        print("State must be listed by its two-letter postal code (eg. MN for Minnesota)")
+    else:
+        get_team(args.team, args.city, args.state)
