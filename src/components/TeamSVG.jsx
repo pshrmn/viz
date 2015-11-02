@@ -1,6 +1,9 @@
 import React from "react";
 
 export default React.createClass({
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return nextProps.name !== this.props.name;
+  },
   getDefaultProps: function() {
     return {
       name: "",

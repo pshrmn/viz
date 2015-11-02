@@ -111,15 +111,7 @@
 
 	var _d32 = _interopRequireDefault(_d3);
 
-	var _USMap = __webpack_require__(6);
-
-	var _USMap2 = _interopRequireDefault(_USMap);
-
-	var _TeamSVG = __webpack_require__(8);
-
-	var _TeamSVG2 = _interopRequireDefault(_TeamSVG);
-
-	var _Team = __webpack_require__(9);
+	var _Team = __webpack_require__(6);
 
 	var _Team2 = _interopRequireDefault(_Team);
 
@@ -132,9 +124,10 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
+	      conferences: [],
 	      team: {},
-	      teams: [],
-	      index: 0
+	      cIndex: 0,
+	      tIndex: 0
 	    };
 	  },
 	  componentWillMount: function componentWillMount() {
@@ -148,10 +141,18 @@
 	      projection: projection
 	    });
 	  },
+	  setConference: function setConference(index) {
+	    var conference = this.state.conferences[index];
+	    this.setState({
+	      cIndex: index,
+	      tIndex: 0,
+	      team: conference.teams[0]
+	    });
+	  },
 	  setTeam: function setTeam(index) {
 	    this.setState({
-	      index: index,
-	      team: this.state.teams[index]
+	      tIndex: index,
+	      team: this.state.conferences[this.state.cIndex].teams[index]
 	    });
 	  },
 	  render: function render() {
@@ -161,88 +162,90 @@
 	    var margin = _props2.margin;
 	    var scale = _props2.scale;
 	    var _state = this.state;
-	    var teams = _state.teams;
+	    var conferences = _state.conferences;
 	    var index = _state.index;
 	    var team = _state.team;
+	    var projection = _state.projection;
 
-	    var activeState = "";
-	    if (team) {
-	      activeState = team.state;
-	    }
-	    console.log("active state:", activeState);
+	    var teamElement = team !== undefined ? _react2["default"].createElement(_Team2["default"], { team: team,
+	      width: width,
+	      height: height,
+	      margin: margin,
+	      projection: projection }) : null;
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "app" },
-	      _react2["default"].createElement(_TeamSelect2["default"], { teams: this.state.teams,
-	        selected: this.state.index,
+	      _react2["default"].createElement(_TeamSelect2["default"], { conferences: conferences,
+	        conferenceIndex: this.state.cIndex,
+	        teamIndex: this.state.tIndex,
+	        setConference: this.setConference,
 	        setTeam: this.setTeam }),
-	      _react2["default"].createElement(
-	        "svg",
-	        { width: width + margin * 2, height: height + margin * 2 },
-	        _react2["default"].createElement(
-	          "g",
-	          { translate: "transform(" + margin + "," + margin + ")" },
-	          _react2["default"].createElement(_USMap2["default"], { projection: this.state.projection, active: activeState }),
-	          _react2["default"].createElement(_TeamSVG2["default"], this.state.team)
-	        )
-	      ),
-	      _react2["default"].createElement(_Team2["default"], this.state.team)
+	      teamElement
 	    );
 	  },
 	  componentDidMount: function componentDidMount() {
 	    var _this = this;
 
-	    var projection = this.state.projection;
+	    var _state2 = this.state;
+	    var projection = _state2.projection;
+	    var cIndex = _state2.cIndex;
+	    var tIndex = _state2.tIndex;
 
-	    _d32["default"].json("./data/bigten.json", function (error, teams) {
+	    _d32["default"].json("./data/bigten.json", function (error, conferences) {
 	      if (error !== null) {
 	        console.error(error);
 	        return;
 	      }
-
-	      var prettyNumber = _d32["default"].format(",.0f");
-
-	      teams.forEach(function (team) {
-	        // convert coordinates to points in the projection
-	        team.roster.forEach(function (city) {
-	          city.point = projection([city.longitude, city.latitude]);
-	        });
-	        team.schoolPoint = projection([team.longitude, team.latitude]);
-
-	        // find a point the mean/median distance away in the projection, invert it
-	        // to get coordinates, then use haversine to determine the real world distance
-	        var milesPerDegreeLatitude = 68.6863716;
-	        // this is a far southern/central point whose projection should never return null
-	        // knock on wood
-	        var lowPoint = [-97.584980, 26.281485];
-	        var projectedLow = projection(lowPoint);
-
-	        var pMean = projection([lowPoint[0], lowPoint[1] + team.mean / milesPerDegreeLatitude]);
-	        team.meanRadius = Math.abs(pMean[1] - projectedLow[1]);
-
-	        var pMedian = projection([lowPoint[0], lowPoint[1] + team.median / milesPerDegreeLatitude]);
-	        team.medianRadius = Math.abs(pMedian[1] - projectedLow[1]);
-
-	        team.prettyMean = prettyNumber(team.mean);
-	        team.prettyMedian = prettyNumber(team.median);
+	      conferences.forEach(function (conference, index) {
+	        conference.teams = setupTeams(conference.teams, projection);
 	      });
-	      // default ordering alphabetical
-	      teams.sort(function (a, b) {
-	        if (a.name < b.name) {
-	          return -1;
-	        } else if (a.name > b.name) {
-	          return 1;
-	        } else {
-	          return 0;
-	        }
-	      });
+
 	      _this.setState({
-	        teams: teams,
-	        team: teams[_this.state.index]
+	        conferences: conferences,
+	        team: conferences[cIndex].teams[tIndex]
 	      });
 	    });
 	  }
 	});
+
+	function setupTeams(teams, projection) {
+	  var prettyNumber = _d32["default"].format(",.0f");
+	  teams.forEach(function (team) {
+	    // convert coordinates to points in the projection
+	    team.roster.forEach(function (city) {
+	      city.point = projection([city.longitude, city.latitude]);
+	    });
+	    team.schoolPoint = projection([team.longitude, team.latitude]);
+
+	    // find a point the mean/median distance away in the projection, invert it
+	    // to get coordinates, then use haversine to determine the real world distance
+	    var milesPerDegreeLatitude = 68.6863716;
+	    // this is a far southern/central point whose projection should never return null
+	    // knock on wood
+	    var lowPoint = [-97.584980, 26.281485];
+	    var projectedLow = projection(lowPoint);
+
+	    var pMean = projection([lowPoint[0], lowPoint[1] + team.mean / milesPerDegreeLatitude]);
+	    team.meanRadius = Math.abs(pMean[1] - projectedLow[1]);
+
+	    var pMedian = projection([lowPoint[0], lowPoint[1] + team.median / milesPerDegreeLatitude]);
+	    team.medianRadius = Math.abs(pMedian[1] - projectedLow[1]);
+
+	    team.prettyMean = prettyNumber(team.mean);
+	    team.prettyMedian = prettyNumber(team.median);
+	  });
+	  // default ordering alphabetical
+	  teams.sort(function (a, b) {
+	    if (a.name < b.name) {
+	      return -1;
+	    } else if (a.name > b.name) {
+	      return 1;
+	    } else {
+	      return 0;
+	    }
+	  });
+	  return teams;
+	}
 	module.exports = exports["default"];
 
 /***/ },
@@ -269,9 +272,106 @@
 
 	var _d3 = __webpack_require__(5);
 
+	var _USMap = __webpack_require__(7);
+
+	var _USMap2 = _interopRequireDefault(_USMap);
+
+	var _TeamSVG = __webpack_require__(9);
+
+	var _TeamSVG2 = _interopRequireDefault(_TeamSVG);
+
+	exports["default"] = _react2["default"].createClass({
+	  displayName: "Team",
+
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      team: {},
+	      width: 1000,
+	      height: 800,
+	      margin: 0,
+	      // default projection does nothing?
+	      projection: function projection() {}
+	    };
+	  },
+	  render: function render() {
+	    //let { name, city, state, roster, prettyMean, prettyMedian,
+	    var _props = this.props;
+	    var team = _props.team;
+	    var width = _props.width;
+	    var height = _props.height;
+	    var margin = _props.margin;
+	    var projection = _props.projection;
+	    var name = team.name;
+	    var city = team.city;
+	    var state = team.state;
+	    var prettyMean = team.prettyMean;
+	    var prettyMedian = team.prettyMedian;
+
+	    return _react2["default"].createElement(
+	      "div",
+	      { className: "team" },
+	      _react2["default"].createElement(
+	        "h2",
+	        null,
+	        name
+	      ),
+	      _react2["default"].createElement(
+	        "h3",
+	        null,
+	        city,
+	        ", ",
+	        state
+	      ),
+	      _react2["default"].createElement(
+	        "svg",
+	        { width: width + margin * 2, height: height + margin * 2 },
+	        _react2["default"].createElement(
+	          "g",
+	          { translate: "transform(" + margin + "," + margin + ")" },
+	          _react2["default"].createElement(_USMap2["default"], { projection: projection, active: team.state }),
+	          _react2["default"].createElement(_TeamSVG2["default"], team)
+	        )
+	      ),
+	      _react2["default"].createElement(
+	        "p",
+	        null,
+	        "Mean Distance: ",
+	        prettyMean,
+	        " miles"
+	      ),
+	      _react2["default"].createElement(
+	        "p",
+	        null,
+	        "Median Distance: ",
+	        prettyMedian,
+	        " miles"
+	      )
+	    );
+	  }
+	});
+	module.exports = exports["default"];
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _interopRequireDefault = __webpack_require__(1)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _d3 = __webpack_require__(5);
+
 	var _d32 = _interopRequireDefault(_d3);
 
-	var _topojson = __webpack_require__(7);
+	var _topojson = __webpack_require__(8);
 
 	var _topojson2 = _interopRequireDefault(_topojson);
 
@@ -356,13 +456,13 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	module.exports = topojson;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -380,6 +480,9 @@
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "TeamSVG",
 
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+	    return nextProps.name !== this.props.name;
+	  },
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      name: "",
@@ -458,92 +561,6 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequireDefault = __webpack_require__(1)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _d3 = __webpack_require__(5);
-
-	exports["default"] = _react2["default"].createClass({
-	  displayName: "Team",
-
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      name: "",
-	      city: "",
-	      state: "",
-	      roster: [],
-	      latitude: -1,
-	      longitude: -1,
-	      mean: 0,
-	      median: 0
-	    };
-	  },
-	  propTypes: {
-	    name: _react2["default"].PropTypes.string.isRequired,
-	    city: _react2["default"].PropTypes.string.isRequired,
-	    state: _react2["default"].PropTypes.string.isRequired,
-	    roster: _react2["default"].PropTypes.array.isRequired,
-	    latitude: _react2["default"].PropTypes.number.isRequired,
-	    longitude: _react2["default"].PropTypes.number.isRequired,
-	    mean: _react2["default"].PropTypes.number.isRequired,
-	    median: _react2["default"].PropTypes.number.isRequired
-	  },
-	  render: function render() {
-	    var _props = this.props;
-	    var name = _props.name;
-	    var city = _props.city;
-	    var state = _props.state;
-	    var roster = _props.roster;
-	    var prettyMean = _props.prettyMean;
-	    var prettyMedian = _props.prettyMedian;
-
-	    return _react2["default"].createElement(
-	      "div",
-	      { className: "team" },
-	      _react2["default"].createElement(
-	        "h2",
-	        null,
-	        name
-	      ),
-	      _react2["default"].createElement(
-	        "h3",
-	        null,
-	        city,
-	        ", ",
-	        state
-	      ),
-	      _react2["default"].createElement(
-	        "p",
-	        null,
-	        "Mean Distance: ",
-	        prettyMean,
-	        " miles"
-	      ),
-	      _react2["default"].createElement(
-	        "p",
-	        null,
-	        "Median Distance: ",
-	        prettyMedian,
-	        " miles"
-	      )
-	    );
-	  }
-	});
-	module.exports = exports["default"];
-
-/***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -562,27 +579,54 @@
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "TeamSelect",
 
+	  updateConference: function updateConference(event) {
+	    this.props.setConference(event.target.value);
+	  },
 	  updateTeam: function updateTeam(event) {
 	    this.props.setTeam(event.target.value);
 	  },
-	  sendUpdate: function sendUpdate(index) {
-	    this.props.setTeam(index);
-	  },
 	  render: function render() {
-	    var teams = this.props.teams.map(function (team, index) {
+	    var _props = this.props;
+	    var conferences = _props.conferences;
+	    var conferenceIndex = _props.conferenceIndex;
+	    var teamIndex = _props.teamIndex;
+
+	    var conferenceOptions = conferences.length ? conferences.map(function (conf, index) {
+	      return _react2["default"].createElement(
+	        "option",
+	        { key: index, value: index },
+	        conf.name
+	      );
+	    }) : null;
+	    var teamOptions = conferences.length && conferences[conferenceIndex] ? conferences[conferenceIndex].teams.map(function (team, index) {
 	      return _react2["default"].createElement(
 	        "option",
 	        { key: index, value: index },
 	        team.name
 	      );
-	    });
+	    }) : null;
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "team-menu" },
 	      _react2["default"].createElement(
-	        "select",
-	        { onChange: this.updateTeam, value: this.props.index },
-	        teams
+	        "div",
+	        { className: "selector" },
+	        "Conference:",
+	        _react2["default"].createElement(
+	          "select",
+	          { onChange: this.updateConference, value: conferenceIndex },
+	          conferenceOptions
+	        )
+	      ),
+	      _react2["default"].createElement(
+	        "div",
+	        { className: "selector" },
+	        "School:",
+	        _react2["default"].createElement(
+	          "select",
+	          { onChange: this.updateTeam, value: teamIndex },
+	          teamOptions
+	        )
 	      )
 	    );
 	  }
