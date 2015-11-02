@@ -55,3 +55,24 @@ circle.school {
 .team .number {
   font-size: 2em;
 }
+
+/*
+ * state count bar chart
+ */
+.state-bar-chart {
+  display: block;
+}
+
+.tick line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.tick text {
+  text-anchor: middle;
+}
+
+text.count {
+  text-anchor: middle;
+}

@@ -77,7 +77,6 @@ export default React.createClass({
 });
 
 function setupTeams(teams, projection) {
-  let prettyNumber = d3.format(",.0f");
   teams.forEach((team) => {
     // convert coordinates to points in the projection
     team.roster.forEach((city) => {
@@ -98,9 +97,6 @@ function setupTeams(teams, projection) {
 
     let pMedian = projection([lowPoint[0], lowPoint[1] + (team.median / milesPerDegreeLatitude)]);
     team.medianRadius = Math.abs(pMedian[1] - projectedLow[1]);
-
-    team.prettyMean = prettyNumber(team.mean);
-    team.prettyMedian = prettyNumber(team.median);
   });
   // default ordering alphabetical
   teams.sort(function(a, b) {

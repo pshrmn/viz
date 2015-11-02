@@ -1,4 +1,5 @@
 import React from "react";
+import { format } from "d3";
 
 export default React.createClass({
   shouldComponentUpdate: function(nextProps, nextState) {
@@ -11,8 +12,11 @@ export default React.createClass({
     };
   },
   render: function() {
+    let prettyNumber = format(",.0f");
     let { name, schoolPoint, roster, color,
-      prettyMean, prettyMedian, meanRadius, medianRadius } = this.props;
+      mean, median, meanRadius, medianRadius } = this.props;
+    let prettyMean = prettyNumber(mean);
+    let prettyMedian = prettyNumber(median);
     let hometowns = roster.map((city, index) => {
       return (
         <circle key={index}

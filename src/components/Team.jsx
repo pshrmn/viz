@@ -1,12 +1,23 @@
 import React from "react";
-import { format } from "d3";
+import d3 from "d3";
 import USMap from "./USMap";
-import TeamSVG from "./TeamSVG";
+import TeamMap from "./TeamMap";
+import StateChart from "./StateChart";
 
 export default React.createClass({
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return nextProps.team.name !== this.props.name;
+  },
   getDefaultProps: function() {
     return {
-      team: {},
+      team: {
+        name: "",
+        city: "",
+        state: "",
+        mean: 0,
+        median: 0,
+        roster: []
+      },
       width: 1000,
       height: 800,
       margin: 0,
@@ -14,25 +25,51 @@ export default React.createClass({
       projection: () => {}
     };
   },
+  _stateCounts: function(roster = []) {
+    let counts = {};
+    roster.forEach((player) => {
+      let state = player.state;
+      if ( counts[state] ) {
+        counts[state]++;
+      } else {
+        counts[state] = 1;
+      }
+    });
+    let countArray = [];
+    for ( var key in counts ) {
+      countArray.push({
+        name: key,
+        count: counts[key]
+      });
+    }
+    return {
+      counts: counts,
+      states: countArray
+    };
+  },
   render: function() {
-    //let { name, city, state, roster, prettyMean, prettyMedian,
     let { team, width, height, margin, projection } = this.props;
-    let { name, city, state, prettyMean, prettyMedian, roster } = team;
+    let { name, city, state, mean, median, roster, color } = team;
+    let stateData = this._stateCounts(roster);
     return (
       <div className="team">
         <h2>{name}</h2>
         <h3>{city}, {state}</h3>
-        <svg width={width + margin*2} height={height + margin*2} >
+        <TeamInfo counts={stateData.counts}
+                  {...team} />
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width={width + margin*2}
+             height={height + margin*2} >
           <g translate={`transform(${margin},${margin})`} >
             <USMap projection={projection} active={team.state} />
-            <TeamSVG {...team} />
+            <TeamMap {...team} />
           </g>
         </svg>
-        <TeamInfo name={name}
-                  mean={prettyMean}
-                  median={prettyMedian}
-                  roster={roster}
-                  state={state} />
+        <StateChart name={name}
+                    states={stateData.states}
+                    color={color}
+                    width={500}
+                    height={200} />
       </div>
     );
   }
@@ -51,35 +88,34 @@ let TeamInfo = React.createClass({
   shouldComponentUpdate: function(nextProps, nextState) {
     return nextProps.name !== this.props.name;
   },
-  _stateCounts: function(roster) {
-    let counts = {};
-    roster.forEach((player) => {
-      let state = player.state;
-      if ( counts[state] ) {
-        counts[state]++;
-      } else {
-        counts[state] = 1;
-      }
-    });
-    return counts;
-  },
   render: function() {
-    let { mean, median, roster, state } = this.props;
-    let stateCounts = this._stateCounts(roster);
+    let fPercent = d3.format(".2%");
+    let prettyNumber = d3.format(",.0f");
+
+    let { mean, median, roster, state, counts } = this.props;
+
     let playerCount = roster.length;
-    let fPercent = format(".2%");
     // on the off chance there are no in-state players, make sure a value is set
-    if ( stateCounts[state] == undefined ) {
-      stateCounts[state] = 0;
+    if ( counts[state] == undefined ) {
+      counts[state] = 0;
     }
-    let inStatePercent = fPercent(stateCounts[state] / playerCount);
+    let inStatePercent = fPercent(counts[state] / playerCount);
+
+    let prettyMean = prettyNumber(mean);
+    let prettyMedian = prettyNumber(median);
+    let medianString = mean > median ? (
+      <p>However, 50% of players come from within <span className="number">{prettyMedian}</span> miles of campus.</p>
+    ) : (
+      <p>50% of players come from over <span className="number">{prettyMedian}</span> miles of campus.</p>
+    );
+
     return (
       <div className="team-info">
         <p>
           <span className="number">{inStatePercent}</span> of players come from in-state
         </p>
-        <p>Mean Distance: <span className="number">{mean}</span> miles</p>
-        <p>Median Distance: <span className="number">{median}</span> miles</p>
+        <p>On average, a player's hometown is <span className="number">{prettyMean}</span> miles away from campus.</p>
+        {medianString}
       </div>
     );
   }  
