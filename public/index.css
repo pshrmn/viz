@@ -47,3 +47,11 @@ circle.school {
 .active path {
   fill: #fff;
 }
+
+.team h2, .team h3, .team p {
+  margin: 2px 0;
+}
+
+.team .number {
+  font-size: 2em;
+}

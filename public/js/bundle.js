@@ -306,6 +306,7 @@
 	    var state = team.state;
 	    var prettyMean = team.prettyMean;
 	    var prettyMedian = team.prettyMedian;
+	    var roster = team.roster;
 
 	    return _react2["default"].createElement(
 	      "div",
@@ -332,18 +333,90 @@
 	          _react2["default"].createElement(_TeamSVG2["default"], team)
 	        )
 	      ),
+	      _react2["default"].createElement(TeamInfo, { name: name,
+	        mean: prettyMean,
+	        median: prettyMedian,
+	        roster: roster,
+	        state: state })
+	    );
+	  }
+	});
+
+	var TeamInfo = _react2["default"].createClass({
+	  displayName: "TeamInfo",
+
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      name: "",
+	      mean: 0,
+	      median: 0,
+	      roster: [],
+	      state: ""
+	    };
+	  },
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+	    return nextProps.name !== this.props.name;
+	  },
+	  _stateCounts: function _stateCounts(roster) {
+	    var counts = {};
+	    roster.forEach(function (player) {
+	      var state = player.state;
+	      if (counts[state]) {
+	        counts[state]++;
+	      } else {
+	        counts[state] = 1;
+	      }
+	    });
+	    return counts;
+	  },
+	  render: function render() {
+	    var _props2 = this.props;
+	    var mean = _props2.mean;
+	    var median = _props2.median;
+	    var roster = _props2.roster;
+	    var state = _props2.state;
+
+	    var stateCounts = this._stateCounts(roster);
+	    var playerCount = roster.length;
+	    var fPercent = (0, _d3.format)(".2%");
+	    // on the off chance there are no in-state players, make sure a value is set
+	    if (stateCounts[state] == undefined) {
+	      stateCounts[state] = 0;
+	    }
+	    var inStatePercent = fPercent(stateCounts[state] / playerCount);
+	    return _react2["default"].createElement(
+	      "div",
+	      { className: "team-info" },
+	      _react2["default"].createElement(
+	        "p",
+	        null,
+	        _react2["default"].createElement(
+	          "span",
+	          { className: "number" },
+	          inStatePercent
+	        ),
+	        " of players come from in-state"
+	      ),
 	      _react2["default"].createElement(
 	        "p",
 	        null,
 	        "Mean Distance: ",
-	        prettyMean,
+	        _react2["default"].createElement(
+	          "span",
+	          { className: "number" },
+	          mean
+	        ),
 	        " miles"
 	      ),
 	      _react2["default"].createElement(
 	        "p",
 	        null,
 	        "Median Distance: ",
-	        prettyMedian,
+	        _react2["default"].createElement(
+	          "span",
+	          { className: "number" },
+	          median
+	        ),
 	        " miles"
 	      )
 	    );
