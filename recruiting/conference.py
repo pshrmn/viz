@@ -3,7 +3,7 @@ import argparse
 
 
 def get_team(name, conference):
-    team_filename = "data/{}.json".format(name.lower().replace(" ", "_"))
+    team_filename = "data/team/{}.json".format(name.lower().replace(" ", "_"))
     with open(team_filename) as fp:
         team_json = json.load(fp)
         team_json["conference"] = conference
@@ -11,7 +11,7 @@ def get_team(name, conference):
 
 
 def combine_teams(conference, teams):
-    output = "data/{}.json".format(conference)
+    output = "data/conference/{}.json".format(conference)
     combined = [get_team(team, conference) for team in teams]
     with open(output, "w") as fp:
         json.dump({

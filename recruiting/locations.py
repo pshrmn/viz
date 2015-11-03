@@ -122,7 +122,7 @@ def get_team(name, city, state):
 
     filename = lower_name.replace(" ", "_")
     # save the file using the name of the school
-    with open("data/{}.json".format(filename), "w") as fp:
+    with open("data/team/{}.json".format(filename), "w") as fp:
         json.dump(team, fp, sort_keys=True, indent=2)
 
 if __name__ == "__main__":
