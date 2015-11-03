@@ -8,12 +8,13 @@ export default React.createClass({
   getDefaultProps: function() {
     return {
       name: "",
-      roster: []
+      roster: [],
+      colors: ["#000"]
     };
   },
   render: function() {
     let prettyNumber = format(",.0f");
-    let { name, schoolPoint, roster, color,
+    let { name, schoolPoint, roster, colors,
       mean, median, meanRadius, medianRadius } = this.props;
     let prettyMean = prettyNumber(mean);
     let prettyMedian = prettyNumber(median);
@@ -28,6 +29,7 @@ export default React.createClass({
     let school = schoolPoint !== undefined ? (
       <circle className="school"
               r="5"
+              fill={colors.length >= 2 ? colors[1] : "#FFF"}
               cx={schoolPoint[0]}
               cy={schoolPoint[1]} >
         <title>{this.props.name}</title>
@@ -52,7 +54,7 @@ export default React.createClass({
 
     return (
       <g className="team"
-         fill={color} >
+         fill={colors[0]} >
         {meanCircle}
         {medianCircle}
         <g className="hometowns">

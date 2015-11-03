@@ -49,7 +49,7 @@ export default React.createClass({
   },
   render: function() {
     let { team, width, height, margin, projection } = this.props;
-    let { name, city, state, mean, median, roster, color } = team;
+    let { name, city, state, mean, median, roster, colors } = team;
     let stateData = this._stateCounts(roster);
     return (
       <div className="team">
@@ -67,7 +67,7 @@ export default React.createClass({
         </svg>
         <StateChart name={name}
                     states={stateData.states}
-                    color={color}
+                    color={colors ? colors[0] : "#000"}
                     width={500}
                     height={200} />
       </div>
@@ -111,6 +111,9 @@ let TeamInfo = React.createClass({
 
     return (
       <div className="team-info">
+        <p>
+          <span className="number">{roster.length}</span> total players.
+        </p>
         <p>
           <span className="number">{inStatePercent}</span> of players come from in-state
         </p>

@@ -26,7 +26,7 @@ circle.player {
 }
 
 circle.school {
-  stroke: #fff;
+  stroke: #222;
   stroke-width: 2;
 }
 
@@ -46,6 +46,18 @@ circle.school {
 
 .active path {
   fill: #fff;
+}
+
+.team {
+  padding: 15px;
+}
+
+.team h2 {
+  font-size: 2em;
+}
+
+.team h3 {
+  font-size: 1.25em;
 }
 
 .team h2, .team h3, .team p {

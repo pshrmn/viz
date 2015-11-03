@@ -58,7 +58,7 @@ export default React.createClass({
   },
   componentDidMount: function() {
     let { projection, cIndex, tIndex } = this.state;
-    d3.json("./data/bigten.json", (error, conferences) => {
+    d3.json("./data/teams.json", (error, conferences) => {
       if ( error !== null ) {
         console.error(error);
         return;

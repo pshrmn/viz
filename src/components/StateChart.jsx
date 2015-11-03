@@ -62,31 +62,6 @@ export default React.createClass({
         </g>
       </svg>
     );
-  },
-  drawChart: function(props) {
-
-    // draw the bars
-    let bars = svg.selectAll("rect.bar")
-      .data(filteredStates, bar => bar.name)
-    bars.enter().append("rect").classed("bar", true);
-
-    bars
-      .attr("x", d => xScale(d.name))
-      .attr("y", d => yScale(d.count))
-      .attr("height", d => height - yScale(d.count))
-      .attr("width", xScale.rangeBand())
-      .style("fill", color);
-
-    bars.exit().remove();
-
-    let texts = svg.selectAll("text.count")
-      .data(filteredStates, bar => bar.name);
-    texts.enter().append("text").classed("count", true);
-    texts
-      .attr("x", d => xScale(d.name) + xScale.rangeBand()/2)
-      .attr("y", d=> yScale(d.count) - 2)
-      .text(d => d.count);
-    texts.exit().remove();
   }
 });
 

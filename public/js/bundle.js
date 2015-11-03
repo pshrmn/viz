@@ -191,7 +191,7 @@
 	    var cIndex = _state2.cIndex;
 	    var tIndex = _state2.tIndex;
 
-	    _d32["default"].json("./data/bigten.json", function (error, conferences) {
+	    _d32["default"].json("./data/teams.json", function (error, conferences) {
 	      if (error !== null) {
 	        console.error(error);
 	        return;
@@ -344,7 +344,7 @@
 	    var mean = team.mean;
 	    var median = team.median;
 	    var roster = team.roster;
-	    var color = team.color;
+	    var colors = team.colors;
 
 	    var stateData = this._stateCounts(roster);
 	    return _react2["default"].createElement(
@@ -378,7 +378,7 @@
 	      ),
 	      _react2["default"].createElement(_StateChart2["default"], { name: name,
 	        states: stateData.states,
-	        color: color,
+	        color: colors ? colors[0] : "#000",
 	        width: 500,
 	        height: 200 })
 	    );
@@ -445,6 +445,16 @@
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "team-info" },
+	      _react2["default"].createElement(
+	        "p",
+	        null,
+	        _react2["default"].createElement(
+	          "span",
+	          { className: "number" },
+	          roster.length
+	        ),
+	        " total players."
+	      ),
 	      _react2["default"].createElement(
 	        "p",
 	        null,
@@ -831,7 +841,8 @@
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      name: "",
-	      roster: []
+	      roster: [],
+	      colors: ["#000"]
 	    };
 	  },
 	  render: function render() {
@@ -840,7 +851,7 @@
 	    var name = _props.name;
 	    var schoolPoint = _props.schoolPoint;
 	    var roster = _props.roster;
-	    var color = _props.color;
+	    var colors = _props.colors;
 	    var mean = _props.mean;
 	    var median = _props.median;
 	    var meanRadius = _props.meanRadius;
@@ -858,6 +869,7 @@
 	      "circle",
 	      { className: "school",
 	        r: "5",
+	        fill: colors.length >= 2 ? colors[1] : "#FFF",
 	        cx: schoolPoint[0],
 	        cy: schoolPoint[1] },
 	      _react2["default"].createElement(
@@ -894,7 +906,7 @@
 	    return _react2["default"].createElement(
 	      "g",
 	      { className: "team",
-	        fill: color },
+	        fill: colors[0] },
 	      meanCircle,
 	      medianCircle,
 	      _react2["default"].createElement(
@@ -997,37 +1009,6 @@
 	          yScale: yScale })
 	      )
 	    );
-	  },
-	  drawChart: function drawChart(props) {
-
-	    // draw the bars
-	    var bars = svg.selectAll("rect.bar").data(filteredStates, function (bar) {
-	      return bar.name;
-	    });
-	    bars.enter().append("rect").classed("bar", true);
-
-	    bars.attr("x", function (d) {
-	      return xScale(d.name);
-	    }).attr("y", function (d) {
-	      return yScale(d.count);
-	    }).attr("height", function (d) {
-	      return height - yScale(d.count);
-	    }).attr("width", xScale.rangeBand()).style("fill", color);
-
-	    bars.exit().remove();
-
-	    var texts = svg.selectAll("text.count").data(filteredStates, function (bar) {
-	      return bar.name;
-	    });
-	    texts.enter().append("text").classed("count", true);
-	    texts.attr("x", function (d) {
-	      return xScale(d.name) + xScale.rangeBand() / 2;
-	    }).attr("y", function (d) {
-	      return yScale(d.count) - 2;
-	    }).text(function (d) {
-	      return d.count;
-	    });
-	    texts.exit().remove();
 	  }
 	});
 
