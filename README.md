@@ -1,9 +1,9 @@
 Gather data on where US college football recruits come from.
 
-###locations.py
+###team.py
 
 ```python
-python -m recruiting.locations -team <team name> -city <city of school> -state <state of school>
+python -m recruiting.team -name <team name> -city <city of school> -state <state of school> -colors <school colors>
 ```
 
 `<team name>` is the name that is used to refer to the university's athletic teams by ESPN. For example, the University of Wisconsin - Madison is referred to as Wisconsin and Brigham Young University if referred to as BYU.

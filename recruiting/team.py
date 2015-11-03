@@ -97,7 +97,9 @@ def cap_words(text):
     return " ".join(map(str.capitalize, text.split(" ")))
 
 
-def get_team(name, city, state):
+def get_team(name, city, state, colors):
+    if colors is None:
+        colors = []
     # teams are saved as lower case
     lower_name = name.lower()
     if lower_name not in team_urls:
@@ -111,7 +113,8 @@ def get_team(name, city, state):
         "state": cap_words(state),
         "longitude": school_long,
         "latitude": school_lat,
-        "roster": team_coordinates(url)
+        "roster": team_coordinates(url),
+        "colors": colors
     }
     if school_long is not None and school_lat is not None:
         mean, median = get_mean_and_median(team)
@@ -127,14 +130,16 @@ def get_team(name, city, state):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-team", dest="team",
+    parser.add_argument("-name", dest="name", required=True,
                         help="name of the college")
-    parser.add_argument("-city", dest="city",
+    parser.add_argument("-city", dest="city", required=True,
                         help="city where the college is located")
-    parser.add_argument("-state", dest="state",
+    parser.add_argument("-state", dest="state", required=True,
                         help="two letter abbreviation of the state where the college is located")
+    parser.add_argument("-colors", dest="colors", nargs="*",
+                        help="list of school colors")
     args = parser.parse_args()
     if len(args.state) != 2:
         print("State must be listed by its two-letter postal code (eg. MN for Minnesota)")
     else:
-        get_team(args.team, args.city, args.state)
+        get_team(args.name, args.city, args.state, args.colors)
