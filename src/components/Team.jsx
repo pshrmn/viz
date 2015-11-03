@@ -11,22 +11,12 @@ export default React.createClass({
   getDefaultProps: function() {
     return {
       team: {},
-      width: 1000,
-      height: 800,
-      margin: 0,
-      // default projection does nothing?
-      projection: () => {}
+      map: {}
     };
   },
   render: function() {
-    let { team, width, height, margin, projection } = this.props;
+    let { team, map } = this.props;
     let { name, city, state } = team;
-    let map = {
-      projection,
-      width,
-      height,
-      margin
-    };
     return (
       <div className="team">
         <h2>{name}</h2>
@@ -46,10 +36,7 @@ let TeamStats = React.createClass({
     };
   },
   shouldComponentUpdate: function(nextProps, nextState) {
-    return (
-      nextProps.team !== undefined &&
-      nextProps.team.name !== this.props.team.name
-    );
+    return nextProps.team !== undefined && nextProps.team.name !== this.props.team.name;
   },
   _stateCounts: function(roster = []) {
     // figure out how many players there are per state
@@ -77,36 +64,15 @@ let TeamStats = React.createClass({
   render: function() {
     let prettyNumber = d3.format(",.0f");
     let fPercent = d3.format(".2%");
+
     let { team, map } = this.props;
     let { width, height, margin, projection } = map;
     let { mean, median, roster, state, colors } = team;
     roster = roster || [];
+
     let { counts, states } = this._stateCounts(roster);
     
-    let prettyMean = prettyNumber(mean);
-    let prettyMedian = prettyNumber(median);
-    let meanString = (
-      <span>
-        On average, a player's hometown is <span className="number">{prettyMean}</span> miles away from campus.
-      </span>
-    );
-    let medianString = mean > median ? (
-      <div>
-        50% of players come from within <span className="number">{prettyMedian}</span> miles of campus.
-      </div>
-      ) : (
-      <div>
-        50% of players hometowns are over <span className="number">{prettyMedian}</span> miles from campus.
-      </div>
-    );
-
     let inState = counts[state] ? counts[state] : 0;
-    let inStateString = (
-      <div>
-        Of the <span className="number">{roster.length}</span> players on the team,{" "}
-        <span className="number">{fPercent(counts[state] / roster.length)}</span> play in their home state.
-      </div>
-    );
     return (
       <div className="team-info">
         <div className="state-counts">
@@ -115,16 +81,20 @@ let TeamStats = React.createClass({
               color={colors ? colors[0] : "#000"}
               width={500}
               height={100} />
-          {inStateString}
+          <div>
+            Of the <span className="number">{roster.length}</span> players on the team,{" "}
+            <span className="number">{fPercent(inState / roster.length)}</span> play in their home state.
+          </div>
         </div>
         <div className="city-distances">
-          {meanString}{" "}
-          {medianString}
-          <RosterSVG projection={projection}
-                     width={width}
-                     height={height}
-                     margin={margin}
-                     team={team} />
+          <div>
+            On average, a player's hometown is <span className="number">{prettyNumber(mean)}</span> miles away from campus.
+          </div>
+          <div>
+            50% of players come from within <span className="number">{prettyNumber(median)}</span> miles of campus.
+          </div>
+          <RosterSVG team={team}
+                     {...map} />
         </div>
       </div>
     );
@@ -141,13 +111,15 @@ let RosterSVG = React.createClass({
     };
   },
   render: function() {
-    let { width, height, margin, projection, team } = this.props;
+    let { width, height, margin, projection, features, team } = this.props;
     return (
       <svg xmlns="http://www.w3.org/2000/svg"
            width={width + margin*2}
            height={height + margin*2} >
         <g translate={`transform(${margin},${margin})`} >
-          <USMap projection={projection} active={team.state} />
+          <USMap projection={projection}
+                 features={features}
+                 active={team.state} />
           <TeamMap {...team} />
         </g>
       </svg>

@@ -48,164 +48,52 @@
 
 	var _interopRequireDefault = __webpack_require__(1)["default"];
 
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactDom = __webpack_require__(3);
+	var _reactDom = __webpack_require__(2);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _componentsApp = __webpack_require__(4);
-
-	var _componentsApp2 = _interopRequireDefault(_componentsApp);
-
-	_reactDom2["default"].render(_react2["default"].createElement(_componentsApp2["default"], { width: 600,
-	     height: 400,
-	     margin: 15,
-	     scale: 800 }), document.getElementById("content"));
-
-/***/ },
-/* 1 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	exports["default"] = function (obj) {
-	  return obj && obj.__esModule ? obj : {
-	    "default": obj
-	  };
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 2 */
-/***/ function(module, exports) {
-
-	module.exports = React;
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	module.exports = ReactDOM;
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _interopRequireDefault = __webpack_require__(1)["default"];
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _d3 = __webpack_require__(5);
+	var _d3 = __webpack_require__(3);
 
 	var _d32 = _interopRequireDefault(_d3);
 
-	var _Team = __webpack_require__(6);
+	var _queueAsync = __webpack_require__(4);
 
-	var _Team2 = _interopRequireDefault(_Team);
+	var _queueAsync2 = _interopRequireDefault(_queueAsync);
 
-	var _TeamSelect = __webpack_require__(11);
+	var _topojson = __webpack_require__(5);
 
-	var _TeamSelect2 = _interopRequireDefault(_TeamSelect);
+	var _topojson2 = _interopRequireDefault(_topojson);
 
-	exports["default"] = _react2["default"].createClass({
-	  displayName: "App",
+	var _componentsApp = __webpack_require__(6);
 
-	  getInitialState: function getInitialState() {
-	    return {
-	      conferences: [],
-	      team: {},
-	      cIndex: 0,
-	      tIndex: 0
-	    };
-	  },
-	  componentWillMount: function componentWillMount() {
-	    var _props = this.props;
-	    var scale = _props.scale;
-	    var width = _props.width;
-	    var height = _props.height;
+	var _componentsApp2 = _interopRequireDefault(_componentsApp);
 
-	    var projection = _d32["default"].geo.albersUsa().scale(scale).translate([width / 2, height / 2]);
-	    this.setState({
-	      projection: projection
-	    });
-	  },
-	  setConference: function setConference(index) {
-	    var conference = this.state.conferences[index];
-	    this.setState({
-	      cIndex: index,
-	      tIndex: 0,
-	      team: conference.teams[0]
-	    });
-	  },
-	  setTeam: function setTeam(index) {
-	    this.setState({
-	      tIndex: index,
-	      team: this.state.conferences[this.state.cIndex].teams[index]
-	    });
-	  },
-	  render: function render() {
-	    var _props2 = this.props;
-	    var width = _props2.width;
-	    var height = _props2.height;
-	    var margin = _props2.margin;
-	    var scale = _props2.scale;
-	    var _state = this.state;
-	    var conferences = _state.conferences;
-	    var index = _state.index;
-	    var team = _state.team;
-	    var projection = _state.projection;
-
-	    var teamElement = team !== undefined ? _react2["default"].createElement(_Team2["default"], { team: team,
-	      width: width,
-	      height: height,
-	      margin: margin,
-	      projection: projection }) : null;
-	    return _react2["default"].createElement(
-	      "div",
-	      { className: "app" },
-	      _react2["default"].createElement(_TeamSelect2["default"], { conferences: conferences,
-	        conferenceIndex: this.state.cIndex,
-	        teamIndex: this.state.tIndex,
-	        setConference: this.setConference,
-	        setTeam: this.setTeam }),
-	      teamElement
-	    );
-	  },
-	  componentDidMount: function componentDidMount() {
-	    var _this = this;
-
-	    var _state2 = this.state;
-	    var projection = _state2.projection;
-	    var cIndex = _state2.cIndex;
-	    var tIndex = _state2.tIndex;
-
-	    _d32["default"].json("./data/teams.json", function (error, conferences) {
-	      if (error !== null) {
-	        console.error(error);
-	        return;
-	      }
-	      conferences.forEach(function (conference, index) {
-	        conference.teams = setupTeams(conference.teams, projection);
-	      });
-
-	      _this.setState({
-	        conferences: conferences,
-	        team: conferences[cIndex].teams[tIndex]
-	      });
-	    });
+	(0, _queueAsync2["default"])().defer(_d32["default"].json, "./data/us.json").defer(_d32["default"].json, "./data/conferences.json").await(function (error, usmap, conferences) {
+	  if (error !== null) {
+	    console.error(error);
+	    return;
 	  }
+
+	  var width = 600;
+	  var height = 400;
+	  var margin = 15;
+	  var scale = 800;
+	  var map = {
+	    features: _topojson2["default"].feature(usmap, usmap.objects.states).features,
+	    projection: _d32["default"].geo.albersUsa().scale(scale).translate([width / 2, height / 2]),
+	    height: height,
+	    width: width,
+	    margin: margin,
+	    scale: scale
+	  };
+
+	  conferences.forEach(function (conference, index) {
+	    conference.teams = setupTeams(conference.teams, map.projection);
+	  });
+
+	  _reactDom2["default"].render(React.createElement(_componentsApp2["default"], {
+	    map: map,
+	    conferences: conferences }), document.getElementById("content"));
 	});
 
 	function setupTeams(teams, projection) {
@@ -242,13 +130,124 @@
 	  });
 	  return teams;
 	}
-	module.exports = exports["default"];
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	exports["default"] = function (obj) {
+	  return obj && obj.__esModule ? obj : {
+	    "default": obj
+	  };
+	};
+
+	exports.__esModule = true;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	module.exports = ReactDOM;
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	module.exports = d3;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;(function() {
+	  var slice = [].slice;
+
+	  function queue(parallelism) {
+	    var q,
+	        tasks = [],
+	        started = 0, // number of tasks that have been started (and perhaps finished)
+	        active = 0, // number of tasks currently being executed (started but not finished)
+	        remaining = 0, // number of tasks not yet finished
+	        popping, // inside a synchronous task callback?
+	        error = null,
+	        await = noop,
+	        all;
+
+	    if (!parallelism) parallelism = Infinity;
+
+	    function pop() {
+	      while (popping = started < tasks.length && active < parallelism) {
+	        var i = started++,
+	            t = tasks[i],
+	            a = slice.call(t, 1);
+	        a.push(callback(i));
+	        ++active;
+	        t[0].apply(null, a);
+	      }
+	    }
+
+	    function callback(i) {
+	      return function(e, r) {
+	        --active;
+	        if (error != null) return;
+	        if (e != null) {
+	          error = e; // ignore new tasks and squelch active callbacks
+	          started = remaining = NaN; // stop queued tasks from starting
+	          notify();
+	        } else {
+	          tasks[i] = r;
+	          if (--remaining) popping || pop();
+	          else notify();
+	        }
+	      };
+	    }
+
+	    function notify() {
+	      if (error != null) await(error);
+	      else if (all) await(error, tasks);
+	      else await.apply(null, [error].concat(tasks));
+	    }
+
+	    return q = {
+	      defer: function() {
+	        if (!error) {
+	          tasks.push(arguments);
+	          ++remaining;
+	          pop();
+	        }
+	        return q;
+	      },
+	      await: function(f) {
+	        await = f;
+	        all = false;
+	        if (!remaining) notify();
+	        return q;
+	      },
+	      awaitAll: function(f) {
+	        await = f;
+	        all = true;
+	        if (!remaining) notify();
+	        return q;
+	      }
+	    };
+	  }
+
+	  function noop() {}
+
+	  queue.version = "1.0.7";
+	  if (true) !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return queue; }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  else if (typeof module === "object" && module.exports) module.exports = queue;
+	  else this.queue = queue;
+	})();
+
 
 /***/ },
 /* 5 */
 /***/ function(module, exports) {
 
-	module.exports = d3;
+	module.exports = topojson;
 
 /***/ },
 /* 6 */
@@ -262,23 +261,107 @@
 	  value: true
 	});
 
-	var _react = __webpack_require__(2);
+	var _react = __webpack_require__(7);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _d3 = __webpack_require__(5);
+	var _d3 = __webpack_require__(3);
 
 	var _d32 = _interopRequireDefault(_d3);
 
-	var _USMap = __webpack_require__(7);
+	var _Team = __webpack_require__(8);
+
+	var _Team2 = _interopRequireDefault(_Team);
+
+	var _TeamSelect = __webpack_require__(26);
+
+	var _TeamSelect2 = _interopRequireDefault(_TeamSelect);
+
+	exports["default"] = _react2["default"].createClass({
+	  displayName: "App",
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      cIndex: 0,
+	      tIndex: 0
+	    };
+	  },
+	  setConference: function setConference(index) {
+	    // verify that index is valid, otherwise set it to 0
+	    var cIndex = this.props.conferences[index] !== undefined ? index : 0;
+	    this.setState({
+	      cIndex: cIndex,
+	      tIndex: 0
+	    });
+	  },
+	  setTeam: function setTeam(index) {
+	    // verify that index if valid, otherwise set it to 0
+	    var tIndex = this.props.conferences[this.state.cIndex].teams[index] !== undefined ? index : 0;
+	    this.setState({
+	      tIndex: tIndex
+	    });
+	  },
+	  render: function render() {
+	    var _props = this.props;
+	    var conferences = _props.conferences;
+	    var map = _props.map;
+	    var _state = this.state;
+	    var cIndex = _state.cIndex;
+	    var tIndex = _state.tIndex;
+
+	    var team = this.props.conferences[cIndex].teams[tIndex];
+	    return _react2["default"].createElement(
+	      "div",
+	      { className: "app" },
+	      _react2["default"].createElement(_TeamSelect2["default"], { conferences: conferences,
+	        conferenceIndex: cIndex,
+	        teamIndex: tIndex,
+	        setConference: this.setConference,
+	        setTeam: this.setTeam }),
+	      _react2["default"].createElement(_Team2["default"], { team: team,
+	        map: map })
+	    );
+	  }
+	});
+	module.exports = exports["default"];
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	module.exports = React;
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _extends = __webpack_require__(9)["default"];
+
+	var _interopRequireDefault = __webpack_require__(1)["default"];
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(7);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _d3 = __webpack_require__(3);
+
+	var _d32 = _interopRequireDefault(_d3);
+
+	var _USMap = __webpack_require__(23);
 
 	var _USMap2 = _interopRequireDefault(_USMap);
 
-	var _TeamMap = __webpack_require__(9);
+	var _TeamMap = __webpack_require__(24);
 
 	var _TeamMap2 = _interopRequireDefault(_TeamMap);
 
-	var _StateChart = __webpack_require__(10);
+	var _StateChart = __webpack_require__(25);
 
 	var _StateChart2 = _interopRequireDefault(_StateChart);
 
@@ -291,30 +374,17 @@
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      team: {},
-	      width: 1000,
-	      height: 800,
-	      margin: 0,
-	      // default projection does nothing?
-	      projection: function projection() {}
+	      map: {}
 	    };
 	  },
 	  render: function render() {
 	    var _props = this.props;
 	    var team = _props.team;
-	    var width = _props.width;
-	    var height = _props.height;
-	    var margin = _props.margin;
-	    var projection = _props.projection;
+	    var map = _props.map;
 	    var name = team.name;
 	    var city = team.city;
 	    var state = team.state;
 
-	    var map = {
-	      projection: projection,
-	      width: width,
-	      height: height,
-	      margin: margin
-	    };
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "team" },
@@ -376,6 +446,7 @@
 	  render: function render() {
 	    var prettyNumber = _d32["default"].format(",.0f");
 	    var fPercent = _d32["default"].format(".2%");
+
 	    var _props2 = this.props;
 	    var team = _props2.team;
 	    var map = _props2.map;
@@ -396,60 +467,7 @@
 	    var counts = _stateCounts2.counts;
 	    var states = _stateCounts2.states;
 
-	    var prettyMean = prettyNumber(mean);
-	    var prettyMedian = prettyNumber(median);
-	    var meanString = _react2["default"].createElement(
-	      "span",
-	      null,
-	      "On average, a player's hometown is ",
-	      _react2["default"].createElement(
-	        "span",
-	        { className: "number" },
-	        prettyMean
-	      ),
-	      " miles away from campus."
-	    );
-	    var medianString = mean > median ? _react2["default"].createElement(
-	      "div",
-	      null,
-	      "50% of players come from within ",
-	      _react2["default"].createElement(
-	        "span",
-	        { className: "number" },
-	        prettyMedian
-	      ),
-	      " miles of campus."
-	    ) : _react2["default"].createElement(
-	      "div",
-	      null,
-	      "50% of players hometowns are over ",
-	      _react2["default"].createElement(
-	        "span",
-	        { className: "number" },
-	        prettyMedian
-	      ),
-	      " miles from campus."
-	    );
-
 	    var inState = counts[state] ? counts[state] : 0;
-	    var inStateString = _react2["default"].createElement(
-	      "div",
-	      null,
-	      "Of the ",
-	      _react2["default"].createElement(
-	        "span",
-	        { className: "number" },
-	        roster.length
-	      ),
-	      " players on the team,",
-	      " ",
-	      _react2["default"].createElement(
-	        "span",
-	        { className: "number" },
-	        fPercent(counts[state] / roster.length)
-	      ),
-	      " play in their home state."
-	    );
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "team-info" },
@@ -461,19 +479,52 @@
 	          color: colors ? colors[0] : "#000",
 	          width: 500,
 	          height: 100 }),
-	        inStateString
+	        _react2["default"].createElement(
+	          "div",
+	          null,
+	          "Of the ",
+	          _react2["default"].createElement(
+	            "span",
+	            { className: "number" },
+	            roster.length
+	          ),
+	          " players on the team,",
+	          " ",
+	          _react2["default"].createElement(
+	            "span",
+	            { className: "number" },
+	            fPercent(inState / roster.length)
+	          ),
+	          " play in their home state."
+	        )
 	      ),
 	      _react2["default"].createElement(
 	        "div",
 	        { className: "city-distances" },
-	        meanString,
-	        " ",
-	        medianString,
-	        _react2["default"].createElement(RosterSVG, { projection: projection,
-	          width: width,
-	          height: height,
-	          margin: margin,
-	          team: team })
+	        _react2["default"].createElement(
+	          "div",
+	          null,
+	          "On average, a player's hometown is ",
+	          _react2["default"].createElement(
+	            "span",
+	            { className: "number" },
+	            prettyNumber(mean)
+	          ),
+	          " miles away from campus."
+	        ),
+	        _react2["default"].createElement(
+	          "div",
+	          null,
+	          "50% of players come from within ",
+	          _react2["default"].createElement(
+	            "span",
+	            { className: "number" },
+	            prettyNumber(median)
+	          ),
+	          " miles of campus."
+	        ),
+	        _react2["default"].createElement(RosterSVG, _extends({ team: team
+	        }, map))
 	      )
 	    );
 	  }
@@ -496,6 +547,7 @@
 	    var height = _props3.height;
 	    var margin = _props3.margin;
 	    var projection = _props3.projection;
+	    var features = _props3.features;
 	    var team = _props3.team;
 
 	    return _react2["default"].createElement(
@@ -506,7 +558,9 @@
 	      _react2["default"].createElement(
 	        "g",
 	        { translate: "transform(" + margin + "," + margin + ")" },
-	        _react2["default"].createElement(_USMap2["default"], { projection: projection, active: team.state }),
+	        _react2["default"].createElement(_USMap2["default"], { projection: projection,
+	          features: features,
+	          active: team.state }),
 	        _react2["default"].createElement(_TeamMap2["default"], team)
 	      )
 	    );
@@ -515,7 +569,229 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 7 */
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _Object$assign = __webpack_require__(10)["default"];
+
+	exports["default"] = _Object$assign || function (target) {
+	  for (var i = 1; i < arguments.length; i++) {
+	    var source = arguments[i];
+
+	    for (var key in source) {
+	      if (Object.prototype.hasOwnProperty.call(source, key)) {
+	        target[key] = source[key];
+	      }
+	    }
+	  }
+
+	  return target;
+	};
+
+	exports.__esModule = true;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(11), __esModule: true };
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(12);
+	module.exports = __webpack_require__(15).Object.assign;
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.1 Object.assign(target, source)
+	var $def = __webpack_require__(13);
+
+	$def($def.S + $def.F, 'Object', {assign: __webpack_require__(16)});
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var global    = __webpack_require__(14)
+	  , core      = __webpack_require__(15)
+	  , PROTOTYPE = 'prototype';
+	var ctx = function(fn, that){
+	  return function(){
+	    return fn.apply(that, arguments);
+	  };
+	};
+	var $def = function(type, name, source){
+	  var key, own, out, exp
+	    , isGlobal = type & $def.G
+	    , isProto  = type & $def.P
+	    , target   = isGlobal ? global : type & $def.S
+	        ? global[name] : (global[name] || {})[PROTOTYPE]
+	    , exports  = isGlobal ? core : core[name] || (core[name] = {});
+	  if(isGlobal)source = name;
+	  for(key in source){
+	    // contains in native
+	    own = !(type & $def.F) && target && key in target;
+	    if(own && key in exports)continue;
+	    // export native or passed
+	    out = own ? target[key] : source[key];
+	    // prevent global pollution for namespaces
+	    if(isGlobal && typeof target[key] != 'function')exp = source[key];
+	    // bind timers to global for call from export context
+	    else if(type & $def.B && own)exp = ctx(out, global);
+	    // wrap global constructors for prevent change them in library
+	    else if(type & $def.W && target[key] == out)!function(C){
+	      exp = function(param){
+	        return this instanceof C ? new C(param) : C(param);
+	      };
+	      exp[PROTOTYPE] = C[PROTOTYPE];
+	    }(out);
+	    else exp = isProto && typeof out == 'function' ? ctx(Function.call, out) : out;
+	    // export
+	    exports[key] = exp;
+	    if(isProto)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
+	  }
+	};
+	// type bitmap
+	$def.F = 1;  // forced
+	$def.G = 2;  // global
+	$def.S = 4;  // static
+	$def.P = 8;  // proto
+	$def.B = 16; // bind
+	$def.W = 32; // wrap
+	module.exports = $def;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+	var global = module.exports = typeof window != 'undefined' && window.Math == Math
+	  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
+	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	var core = module.exports = {version: '1.2.3'};
+	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.1 Object.assign(target, source, ...)
+	var $        = __webpack_require__(17)
+	  , toObject = __webpack_require__(18)
+	  , IObject  = __webpack_require__(20);
+
+	// should work with symbols and should have deterministic property order (V8 bug)
+	module.exports = __webpack_require__(22)(function(){
+	  var a = Object.assign
+	    , A = {}
+	    , B = {}
+	    , S = Symbol()
+	    , K = 'abcdefghijklmnopqrst';
+	  A[S] = 7;
+	  K.split('').forEach(function(k){ B[k] = k; });
+	  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
+	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+	  var T     = toObject(target)
+	    , $$    = arguments
+	    , $$len = $$.length
+	    , index = 1
+	    , getKeys    = $.getKeys
+	    , getSymbols = $.getSymbols
+	    , isEnum     = $.isEnum;
+	  while($$len > index){
+	    var S      = IObject($$[index++])
+	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
+	      , length = keys.length
+	      , j      = 0
+	      , key;
+	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
+	  }
+	  return T;
+	} : Object.assign;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	var $Object = Object;
+	module.exports = {
+	  create:     $Object.create,
+	  getProto:   $Object.getPrototypeOf,
+	  isEnum:     {}.propertyIsEnumerable,
+	  getDesc:    $Object.getOwnPropertyDescriptor,
+	  setDesc:    $Object.defineProperty,
+	  setDescs:   $Object.defineProperties,
+	  getKeys:    $Object.keys,
+	  getNames:   $Object.getOwnPropertyNames,
+	  getSymbols: $Object.getOwnPropertySymbols,
+	  each:       [].forEach
+	};
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.1.13 ToObject(argument)
+	var defined = __webpack_require__(19);
+	module.exports = function(it){
+	  return Object(defined(it));
+	};
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	// 7.2.1 RequireObjectCoercible(argument)
+	module.exports = function(it){
+	  if(it == undefined)throw TypeError("Can't call method on  " + it);
+	  return it;
+	};
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// fallback for non-array-like ES3 and non-enumerable old V8 strings
+	var cof = __webpack_require__(21);
+	module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+	  return cof(it) == 'String' ? it.split('') : Object(it);
+	};
+
+/***/ },
+/* 21 */
+/***/ function(module, exports) {
+
+	var toString = {}.toString;
+
+	module.exports = function(it){
+	  return toString.call(it).slice(8, -1);
+	};
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	module.exports = function(exec){
+	  try {
+	    return !!exec();
+	  } catch(e){
+	    return true;
+	  }
+	};
+
+/***/ },
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -526,26 +802,17 @@
 	  value: true
 	});
 
-	var _react = __webpack_require__(2);
+	var _react = __webpack_require__(7);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _d3 = __webpack_require__(5);
+	var _d3 = __webpack_require__(3);
 
 	var _d32 = _interopRequireDefault(_d3);
-
-	var _topojson = __webpack_require__(8);
-
-	var _topojson2 = _interopRequireDefault(_topojson);
 
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "USMap",
 
-	  getInitialState: function getInitialState() {
-	    return {
-	      states: []
-	    };
-	  },
 	  componentWillMount: function componentWillMount() {
 	    this.setState({
 	      path: _d32["default"].geo.path().projection(this.props.projection)
@@ -554,33 +821,22 @@
 	  render: function render() {
 	    var _this = this;
 
-	    var active = this.props.active;
+	    var _props = this.props;
+	    var features = _props.features;
+	    var active = _props.active;
 
-	    var states = this.state.states.map(function (s, index) {
+	    var states = features.map(function (s, index) {
 	      return _react2["default"].createElement(State, { key: index,
 	        active: s.properties.abbr === active,
 	        path: _this.state.path,
 	        feature: s });
 	    });
+
 	    return _react2["default"].createElement(
 	      "g",
 	      { className: "map", ref: "usmap" },
 	      states
 	    );
-	  },
-	  componentDidMount: function componentDidMount() {
-	    var _this2 = this;
-
-	    _d32["default"].json("./data/us.json", function (error, states) {
-	      if (error !== null) {
-	        console.error(error);
-	        return;
-	      }
-	      var stateData = _topojson2["default"].feature(states, states.objects.states).features;
-	      _this2.setState({
-	        states: stateData
-	      });
-	    });
 	  }
 	});
 
@@ -609,9 +865,9 @@
 	    return false;
 	  },
 	  render: function render() {
-	    var _props = this.props;
-	    var path = _props.path;
-	    var feature = _props.feature;
+	    var _props2 = this.props;
+	    var path = _props2.path;
+	    var feature = _props2.feature;
 
 	    return _react2["default"].createElement("path", { d: path(feature) });
 	  }
@@ -619,13 +875,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	module.exports = topojson;
-
-/***/ },
-/* 9 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -636,11 +886,11 @@
 	  value: true
 	});
 
-	var _react = __webpack_require__(2);
+	var _react = __webpack_require__(7);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _d3 = __webpack_require__(5);
+	var _d3 = __webpack_require__(3);
 
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "TeamMap",
@@ -731,7 +981,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 10 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -742,11 +992,11 @@
 	  value: true
 	});
 
-	var _react = __webpack_require__(2);
+	var _react = __webpack_require__(7);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _d3 = __webpack_require__(5);
+	var _d3 = __webpack_require__(3);
 
 	var _d32 = _interopRequireDefault(_d3);
 
@@ -915,7 +1165,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 11 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -926,7 +1176,7 @@
 	  value: true
 	});
 
-	var _react = __webpack_require__(2);
+	var _react = __webpack_require__(7);
 
 	var _react2 = _interopRequireDefault(_react);
 

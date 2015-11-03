@@ -1,13 +1,7 @@
 import React from "react";
 import d3 from "d3";
-import topojson from "topojson";
 
 export default React.createClass({
-  getInitialState: function() {
-    return {
-      states: []
-    };
-  },
   componentWillMount: function() {
     this.setState({
       path: d3.geo.path()
@@ -15,8 +9,8 @@ export default React.createClass({
     });
   },
   render: function() {
-    let { active } = this.props;
-    let states = this.state.states.map((s, index) => {
+    let { features, active } = this.props;
+    let states = features.map((s, index) => {
       return (
         <State key={index}
                active={s.properties.abbr===active}
@@ -24,23 +18,12 @@ export default React.createClass({
                feature={s} />
       );
     });
+
     return (
       <g className="map" ref="usmap">
         {states}
       </g>
     );
-  },
-  componentDidMount: function() {
-    d3.json("./data/us.json", (error, states) => {
-      if ( error !== null ) {
-        console.error(error);
-        return;
-      }
-      let stateData = topojson.feature(states, states.objects.states).features;
-      this.setState({
-        states: stateData
-      });
-    });
   }
 });
 
