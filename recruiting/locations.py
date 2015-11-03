@@ -93,6 +93,10 @@ def team_coordinates(url):
     return data
 
 
+def cap_words(text):
+    return " ".join(map(str.capitalize, text.split(" ")))
+
+
 def get_team(name, city, state):
     # teams are saved as lower case
     lower_name = name.lower()
@@ -102,9 +106,9 @@ def get_team(name, city, state):
     url = team_urls[lower_name]
     school_long, school_lat = wiki_city.coordinates(city, state)
     team = {
-        "name": name.capitalize(),
-        "city": city.capitalize(),
-        "state": state.upper(),
+        "name": cap_words(name),
+        "city": cap_words(city),
+        "state": cap_words(state),
         "longitude": school_long,
         "latitude": school_lat,
         "roster": team_coordinates(url)
