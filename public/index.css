@@ -2,7 +2,6 @@
     font-size: 16px;
     font-family: 'Josefin Sans', sans-serif;
     padding: 0;
-    width: 100%;
     box-sizing: border-box;
 }
 
@@ -87,4 +86,12 @@ circle.school {
 
 text.count {
   text-anchor: middle;
+}
+
+.city-distances {
+
+}
+
+.city-distances svg {
+  display: block;
 }

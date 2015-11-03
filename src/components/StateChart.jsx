@@ -8,7 +8,7 @@ export default React.createClass({
       states: [],
       color: "#222",
       width: 700,
-      height: 200,
+      height: 100,
       margin: 30
     };
   },
@@ -41,7 +41,6 @@ export default React.createClass({
     let xScale = d3.scale.ordinal()
       .domain(filteredStates.map(s => s.name))
       .rangeBands([0, width], 0.1);
-
     return (
       <svg className="state-bar-chart"
            width={width + margin*2}

@@ -115,7 +115,7 @@
 
 	var _Team2 = _interopRequireDefault(_Team);
 
-	var _TeamSelect = __webpack_require__(25);
+	var _TeamSelect = __webpack_require__(11);
 
 	var _TeamSelect2 = _interopRequireDefault(_TeamSelect);
 
@@ -256,8 +256,6 @@
 
 	"use strict";
 
-	var _extends = __webpack_require__(7)["default"];
-
 	var _interopRequireDefault = __webpack_require__(1)["default"];
 
 	Object.defineProperty(exports, "__esModule", {
@@ -272,15 +270,15 @@
 
 	var _d32 = _interopRequireDefault(_d3);
 
-	var _USMap = __webpack_require__(21);
+	var _USMap = __webpack_require__(7);
 
 	var _USMap2 = _interopRequireDefault(_USMap);
 
-	var _TeamMap = __webpack_require__(23);
+	var _TeamMap = __webpack_require__(9);
 
 	var _TeamMap2 = _interopRequireDefault(_TeamMap);
 
-	var _StateChart = __webpack_require__(24);
+	var _StateChart = __webpack_require__(10);
 
 	var _StateChart2 = _interopRequireDefault(_StateChart);
 
@@ -292,14 +290,7 @@
 	  },
 	  getDefaultProps: function getDefaultProps() {
 	    return {
-	      team: {
-	        name: "",
-	        city: "",
-	        state: "",
-	        mean: 0,
-	        median: 0,
-	        roster: []
-	      },
+	      team: {},
 	      width: 1000,
 	      height: 800,
 	      margin: 0,
@@ -307,9 +298,60 @@
 	      projection: function projection() {}
 	    };
 	  },
+	  render: function render() {
+	    var _props = this.props;
+	    var team = _props.team;
+	    var width = _props.width;
+	    var height = _props.height;
+	    var margin = _props.margin;
+	    var projection = _props.projection;
+	    var name = team.name;
+	    var city = team.city;
+	    var state = team.state;
+
+	    var map = {
+	      projection: projection,
+	      width: width,
+	      height: height,
+	      margin: margin
+	    };
+	    return _react2["default"].createElement(
+	      "div",
+	      { className: "team" },
+	      _react2["default"].createElement(
+	        "h2",
+	        null,
+	        name
+	      ),
+	      _react2["default"].createElement(
+	        "h3",
+	        null,
+	        city,
+	        ", ",
+	        state
+	      ),
+	      _react2["default"].createElement(TeamStats, { map: map,
+	        team: team })
+	    );
+	  }
+	});
+
+	var TeamStats = _react2["default"].createClass({
+	  displayName: "TeamStats",
+
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      map: {},
+	      team: {}
+	    };
+	  },
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+	    return nextProps.team !== undefined && nextProps.team.name !== this.props.team.name;
+	  },
 	  _stateCounts: function _stateCounts() {
 	    var roster = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
+	    // figure out how many players there are per state
 	    var counts = {};
 	    roster.forEach(function (player) {
 	      var state = player.state;
@@ -332,98 +374,45 @@
 	    };
 	  },
 	  render: function render() {
-	    var _props = this.props;
-	    var team = _props.team;
-	    var width = _props.width;
-	    var height = _props.height;
-	    var margin = _props.margin;
-	    var projection = _props.projection;
-	    var name = team.name;
-	    var city = team.city;
-	    var state = team.state;
+	    var prettyNumber = _d32["default"].format(",.0f");
+	    var fPercent = _d32["default"].format(".2%");
+	    var _props2 = this.props;
+	    var team = _props2.team;
+	    var map = _props2.map;
+	    var width = map.width;
+	    var height = map.height;
+	    var margin = map.margin;
+	    var projection = map.projection;
 	    var mean = team.mean;
 	    var median = team.median;
 	    var roster = team.roster;
+	    var state = team.state;
 	    var colors = team.colors;
 
-	    var stateData = this._stateCounts(roster);
-	    return _react2["default"].createElement(
-	      "div",
-	      { className: "team" },
-	      _react2["default"].createElement(
-	        "h2",
-	        null,
-	        name
-	      ),
-	      _react2["default"].createElement(
-	        "h3",
-	        null,
-	        city,
-	        ", ",
-	        state
-	      ),
-	      _react2["default"].createElement(TeamInfo, _extends({ counts: stateData.counts
-	      }, team)),
-	      _react2["default"].createElement(
-	        "svg",
-	        { xmlns: "http://www.w3.org/2000/svg",
-	          width: width + margin * 2,
-	          height: height + margin * 2 },
-	        _react2["default"].createElement(
-	          "g",
-	          { translate: "transform(" + margin + "," + margin + ")" },
-	          _react2["default"].createElement(_USMap2["default"], { projection: projection, active: team.state }),
-	          _react2["default"].createElement(_TeamMap2["default"], team)
-	        )
-	      ),
-	      _react2["default"].createElement(_StateChart2["default"], { name: name,
-	        states: stateData.states,
-	        color: colors ? colors[0] : "#000",
-	        width: 500,
-	        height: 200 })
-	    );
-	  }
-	});
+	    roster = roster || [];
 
-	var TeamInfo = _react2["default"].createClass({
-	  displayName: "TeamInfo",
+	    var _stateCounts2 = this._stateCounts(roster);
 
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      name: "",
-	      mean: 0,
-	      median: 0,
-	      roster: [],
-	      state: ""
-	    };
-	  },
-	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-	    return nextProps.name !== this.props.name;
-	  },
-	  render: function render() {
-	    var fPercent = _d32["default"].format(".2%");
-	    var prettyNumber = _d32["default"].format(",.0f");
-
-	    var _props2 = this.props;
-	    var mean = _props2.mean;
-	    var median = _props2.median;
-	    var roster = _props2.roster;
-	    var state = _props2.state;
-	    var counts = _props2.counts;
-
-	    var playerCount = roster.length;
-	    // on the off chance there are no in-state players, make sure a value is set
-	    if (counts[state] == undefined) {
-	      counts[state] = 0;
-	    }
-	    var inStatePercent = fPercent(counts[state] / playerCount);
+	    var counts = _stateCounts2.counts;
+	    var states = _stateCounts2.states;
 
 	    var prettyMean = prettyNumber(mean);
 	    var prettyMedian = prettyNumber(median);
-	    var medianString = mean > median ? _react2["default"].createElement(
-	      "p",
+	    var meanString = _react2["default"].createElement(
+	      "span",
 	      null,
-	      "However, 50% of players come from within ",
+	      "On average, a player's hometown is ",
+	      _react2["default"].createElement(
+	        "span",
+	        { className: "number" },
+	        prettyMean
+	      ),
+	      " miles away from campus."
+	    );
+	    var medianString = mean > median ? _react2["default"].createElement(
+	      "div",
+	      null,
+	      "50% of players come from within ",
 	      _react2["default"].createElement(
 	        "span",
 	        { className: "number" },
@@ -431,52 +420,95 @@
 	      ),
 	      " miles of campus."
 	    ) : _react2["default"].createElement(
-	      "p",
+	      "div",
 	      null,
-	      "50% of players come from over ",
+	      "50% of players hometowns are over ",
 	      _react2["default"].createElement(
 	        "span",
 	        { className: "number" },
 	        prettyMedian
 	      ),
-	      " miles of campus."
+	      " miles from campus."
 	    );
 
+	    var inState = counts[state] ? counts[state] : 0;
+	    var inStateString = _react2["default"].createElement(
+	      "div",
+	      null,
+	      "Of the ",
+	      _react2["default"].createElement(
+	        "span",
+	        { className: "number" },
+	        roster.length
+	      ),
+	      " players on the team,",
+	      " ",
+	      _react2["default"].createElement(
+	        "span",
+	        { className: "number" },
+	        fPercent(counts[state] / roster.length)
+	      ),
+	      " play in their home state."
+	    );
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "team-info" },
 	      _react2["default"].createElement(
-	        "p",
-	        null,
-	        _react2["default"].createElement(
-	          "span",
-	          { className: "number" },
-	          roster.length
-	        ),
-	        " total players."
+	        "div",
+	        { className: "state-counts" },
+	        _react2["default"].createElement(_StateChart2["default"], { name: name,
+	          states: states,
+	          color: colors ? colors[0] : "#000",
+	          width: 500,
+	          height: 100 }),
+	        inStateString
 	      ),
 	      _react2["default"].createElement(
-	        "p",
-	        null,
-	        _react2["default"].createElement(
-	          "span",
-	          { className: "number" },
-	          inStatePercent
-	        ),
-	        " of players come from in-state"
-	      ),
+	        "div",
+	        { className: "city-distances" },
+	        meanString,
+	        " ",
+	        medianString,
+	        _react2["default"].createElement(RosterSVG, { projection: projection,
+	          width: width,
+	          height: height,
+	          margin: margin,
+	          team: team })
+	      )
+	    );
+	  }
+	});
+
+	var RosterSVG = _react2["default"].createClass({
+	  displayName: "RosterSVG",
+
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      width: 600,
+	      height: 400,
+	      margin: 15,
+	      team: {}
+	    };
+	  },
+	  render: function render() {
+	    var _props3 = this.props;
+	    var width = _props3.width;
+	    var height = _props3.height;
+	    var margin = _props3.margin;
+	    var projection = _props3.projection;
+	    var team = _props3.team;
+
+	    return _react2["default"].createElement(
+	      "svg",
+	      { xmlns: "http://www.w3.org/2000/svg",
+	        width: width + margin * 2,
+	        height: height + margin * 2 },
 	      _react2["default"].createElement(
-	        "p",
-	        null,
-	        "On average, a player's hometown is ",
-	        _react2["default"].createElement(
-	          "span",
-	          { className: "number" },
-	          prettyMean
-	        ),
-	        " miles away from campus."
-	      ),
-	      medianString
+	        "g",
+	        { translate: "transform(" + margin + "," + margin + ")" },
+	        _react2["default"].createElement(_USMap2["default"], { projection: projection, active: team.state }),
+	        _react2["default"].createElement(_TeamMap2["default"], team)
+	      )
 	    );
 	  }
 	});
@@ -484,228 +516,6 @@
 
 /***/ },
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _Object$assign = __webpack_require__(8)["default"];
-
-	exports["default"] = _Object$assign || function (target) {
-	  for (var i = 1; i < arguments.length; i++) {
-	    var source = arguments[i];
-
-	    for (var key in source) {
-	      if (Object.prototype.hasOwnProperty.call(source, key)) {
-	        target[key] = source[key];
-	      }
-	    }
-	  }
-
-	  return target;
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(9), __esModule: true };
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(10);
-	module.exports = __webpack_require__(13).Object.assign;
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.3.1 Object.assign(target, source)
-	var $def = __webpack_require__(11);
-
-	$def($def.S + $def.F, 'Object', {assign: __webpack_require__(14)});
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var global    = __webpack_require__(12)
-	  , core      = __webpack_require__(13)
-	  , PROTOTYPE = 'prototype';
-	var ctx = function(fn, that){
-	  return function(){
-	    return fn.apply(that, arguments);
-	  };
-	};
-	var $def = function(type, name, source){
-	  var key, own, out, exp
-	    , isGlobal = type & $def.G
-	    , isProto  = type & $def.P
-	    , target   = isGlobal ? global : type & $def.S
-	        ? global[name] : (global[name] || {})[PROTOTYPE]
-	    , exports  = isGlobal ? core : core[name] || (core[name] = {});
-	  if(isGlobal)source = name;
-	  for(key in source){
-	    // contains in native
-	    own = !(type & $def.F) && target && key in target;
-	    if(own && key in exports)continue;
-	    // export native or passed
-	    out = own ? target[key] : source[key];
-	    // prevent global pollution for namespaces
-	    if(isGlobal && typeof target[key] != 'function')exp = source[key];
-	    // bind timers to global for call from export context
-	    else if(type & $def.B && own)exp = ctx(out, global);
-	    // wrap global constructors for prevent change them in library
-	    else if(type & $def.W && target[key] == out)!function(C){
-	      exp = function(param){
-	        return this instanceof C ? new C(param) : C(param);
-	      };
-	      exp[PROTOTYPE] = C[PROTOTYPE];
-	    }(out);
-	    else exp = isProto && typeof out == 'function' ? ctx(Function.call, out) : out;
-	    // export
-	    exports[key] = exp;
-	    if(isProto)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
-	  }
-	};
-	// type bitmap
-	$def.F = 1;  // forced
-	$def.G = 2;  // global
-	$def.S = 4;  // static
-	$def.P = 8;  // proto
-	$def.B = 16; // bind
-	$def.W = 32; // wrap
-	module.exports = $def;
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-	var global = module.exports = typeof window != 'undefined' && window.Math == Math
-	  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
-	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
-
-/***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	var core = module.exports = {version: '1.2.3'};
-	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.1 Object.assign(target, source, ...)
-	var $        = __webpack_require__(15)
-	  , toObject = __webpack_require__(16)
-	  , IObject  = __webpack_require__(18);
-
-	// should work with symbols and should have deterministic property order (V8 bug)
-	module.exports = __webpack_require__(20)(function(){
-	  var a = Object.assign
-	    , A = {}
-	    , B = {}
-	    , S = Symbol()
-	    , K = 'abcdefghijklmnopqrst';
-	  A[S] = 7;
-	  K.split('').forEach(function(k){ B[k] = k; });
-	  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
-	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
-	  var T     = toObject(target)
-	    , $$    = arguments
-	    , $$len = $$.length
-	    , index = 1
-	    , getKeys    = $.getKeys
-	    , getSymbols = $.getSymbols
-	    , isEnum     = $.isEnum;
-	  while($$len > index){
-	    var S      = IObject($$[index++])
-	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
-	      , length = keys.length
-	      , j      = 0
-	      , key;
-	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
-	  }
-	  return T;
-	} : Object.assign;
-
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-	var $Object = Object;
-	module.exports = {
-	  create:     $Object.create,
-	  getProto:   $Object.getPrototypeOf,
-	  isEnum:     {}.propertyIsEnumerable,
-	  getDesc:    $Object.getOwnPropertyDescriptor,
-	  setDesc:    $Object.defineProperty,
-	  setDescs:   $Object.defineProperties,
-	  getKeys:    $Object.keys,
-	  getNames:   $Object.getOwnPropertyNames,
-	  getSymbols: $Object.getOwnPropertySymbols,
-	  each:       [].forEach
-	};
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 7.1.13 ToObject(argument)
-	var defined = __webpack_require__(17);
-	module.exports = function(it){
-	  return Object(defined(it));
-	};
-
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	// 7.2.1 RequireObjectCoercible(argument)
-	module.exports = function(it){
-	  if(it == undefined)throw TypeError("Can't call method on  " + it);
-	  return it;
-	};
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// fallback for non-array-like ES3 and non-enumerable old V8 strings
-	var cof = __webpack_require__(19);
-	module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
-	  return cof(it) == 'String' ? it.split('') : Object(it);
-	};
-
-/***/ },
-/* 19 */
-/***/ function(module, exports) {
-
-	var toString = {}.toString;
-
-	module.exports = function(it){
-	  return toString.call(it).slice(8, -1);
-	};
-
-/***/ },
-/* 20 */
-/***/ function(module, exports) {
-
-	module.exports = function(exec){
-	  try {
-	    return !!exec();
-	  } catch(e){
-	    return true;
-	  }
-	};
-
-/***/ },
-/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -724,7 +534,7 @@
 
 	var _d32 = _interopRequireDefault(_d3);
 
-	var _topojson = __webpack_require__(22);
+	var _topojson = __webpack_require__(8);
 
 	var _topojson2 = _interopRequireDefault(_topojson);
 
@@ -809,13 +619,13 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 22 */
+/* 8 */
 /***/ function(module, exports) {
 
 	module.exports = topojson;
 
 /***/ },
-/* 23 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -921,7 +731,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 24 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -949,7 +759,7 @@
 	      states: [],
 	      color: "#222",
 	      width: 700,
-	      height: 200,
+	      height: 100,
 	      margin: 30
 	    };
 	  },
@@ -986,7 +796,6 @@
 	    var xScale = _d32["default"].scale.ordinal().domain(filteredStates.map(function (s) {
 	      return s.name;
 	    })).rangeBands([0, width], 0.1);
-
 	    return _react2["default"].createElement(
 	      "svg",
 	      { className: "state-bar-chart",
@@ -1106,7 +915,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 25 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
