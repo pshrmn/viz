@@ -1,48 +1,33 @@
 import React from "react";
 import d3 from "d3";
-import TeamSelect from "./TeamSelect";
+import Selector from "./Selector";
 import Conference from "./Conference";
-import Team from "./Team";
 
 export default React.createClass({
   getInitialState: function() {
     return {
-      cIndex: 0,
-      tIndex: 0
+      index: 0
     };
   },
   setConference: function(index) {
     // verify that index is valid, otherwise set it to 0
-    let cIndex = this.props.conferences[index] !== undefined ? index : 0;
+    index = this.props.conferences[index] !== undefined ? index : 0;
     this.setState({
-      cIndex: cIndex,
-      tIndex: 0
-    });
-  },
-  setTeam: function(index) {
-    // verify that index if valid, otherwise set it to 0
-    let tIndex = this.props.conferences[this.state.cIndex].teams[index] !== undefined ?
-      index : 0;
-    this.setState({
-      tIndex: tIndex
+      index: index
     });
   },
   render: function() {
     let { conferences, map } = this.props;
-    let { cIndex, tIndex } = this.state;
-    let conference = this.props.conferences[cIndex]
-    let team = conference.teams[tIndex];
+    let conference = this.props.conferences[this.state.index];
     return (
       <div className="app">
-        <TeamSelect conferences={conferences}
-                    conferenceIndex={cIndex}
-                    teamIndex={tIndex}
-                    setConference={this.setConference}
-                    setTeam={this.setTeam} />
-        <Conference {...conference} />
-        <Team team={team}
-              map={map} />
+        <Selector vals={conferences}
+                  index={this.state.index}
+                  setIndex={this.setConference} />
+        <Conference map={map}
+                    {...conference} />
       </div>
     );
   }
 });
+

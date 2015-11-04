@@ -51,25 +51,30 @@ circle.school {
   padding: 15px;
 }
 
-.conference h2 {
-  font-size: 2.25em;
-  margin: 2px 0;
-}
-
-.team h2 {
+.app h2 {
   font-size: 2em;
 }
 
-.team h3 {
+.app h3 {
   font-size: 1.25em;
 }
 
-.team h2, .team h3, .team p {
+.app h2, .app h3, .app p {
   margin: 2px 0;
+}
+
+.team-info {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
 }
 
 .team-info > div {
   padding: 10px;
+  margin: 0 25px 25px 0;
 }
 
 .number {

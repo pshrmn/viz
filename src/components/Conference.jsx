@@ -1,11 +1,56 @@
 import React from "react";
-import StateChart from "./StateChart";
 import d3 from "d3";
+import StateChart from "./StateChart";
+import Selector from "./Selector";
+import Team from "./Team";
 
 export default React.createClass({
-  shouldComponentUpdate: function(nextProps, nextState) {
-    return nextProps.name !== this.props.name;
+  getInitialState: function() {
+    return {
+      index: 0
+    };
   },
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return (
+      nextState.index !== this.state.index ||
+      nextProps.name !== this.props.name
+    );
+  },
+  componentWillReceiveProps: function(nextProps) {
+    // reset the index when the conference is switched
+    this.setState({
+      index: 0
+    });
+  },
+  setTeam: function(index) {
+    index = index < this.props.teams.length ? index : 0;
+    this.setState({
+      index: index
+    });
+  },
+  render: function() {
+
+    let { name, teams, map } = this.props;
+    let team = teams[this.state.index];
+    return (
+      <div className="conference">
+        <h2>{name}</h2>
+        <ConferenceStats name={name}
+                         teams={teams} />
+        <div>
+          <h3>Teams</h3>
+          <Selector vals={teams}
+                    index={this.state.index}
+                    setIndex={this.setTeam} />
+        </div>
+        <Team team={team}
+              map={map} />
+      </div>
+    );
+  }  
+});
+
+let ConferenceStats = React.createClass({
   render: function() {
     let prettyNumber = d3.format(",.1f");
 
@@ -16,32 +61,27 @@ export default React.createClass({
     let [ minPlayers, maxPlayers ] = d3.extent(teams, team => team.roster.length);
     let averagePlayerCount = prettyNumber(playerCount / teams.length);
     return (
-      <div className="conference">
-        <h2>{name}</h2>
-        <div className="basics">
-          <div>
-            There are <span className="number">{teams.length}</span> teams in the {name} conference.
-          </div>
-          <div>
-            On average, each team has <span className="number">{averagePlayerCount}</span> players,
-            with a maximum of <span className="number">{maxPlayers}</span> and a minimum
-            of <span className="number">{minPlayers}</span>.
-          </div>
+      <div className="basics">
+        <div>
+          There are <span className="number">{teams.length}</span> teams in the {name} conference.
         </div>
         <div>
-          <div>
-            {name} football players come from <span className="number">{counts.length}</span> different states.
-          </div>
-          <StateChart name={name}
-                      states={counts}
-                      color="#222"
-                      width={650}
-                      height={100}
-                      min={10} />
+          On average, each team has <span className="number">{averagePlayerCount}</span> players,
+          with a maximum of <span className="number">{maxPlayers}</span> and a minimum
+          of <span className="number">{minPlayers}</span>.
         </div>
+        <div>
+          {name} football players come from <span className="number">{counts.length}</span> different states.
+        </div>
+        <StateChart name={name}
+                    states={counts}
+                    color="#2059C5"
+                    width={700}
+                    height={100}
+                    min={10} />
       </div>
     );
-  }  
+  }
 });
 
 function stateCount(teams) {
