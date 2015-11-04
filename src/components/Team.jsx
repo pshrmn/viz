@@ -75,17 +75,6 @@ let TeamStats = React.createClass({
     let inState = counts[state] ? counts[state] : 0;
     return (
       <div className="team-info">
-        <div className="state-counts">
-          <StateChart name={name}
-              states={states}
-              color={colors ? colors[0] : "#000"}
-              width={500}
-              height={100} />
-          <div>
-            Of the <span className="number">{roster.length}</span> players on the team,{" "}
-            <span className="number">{fPercent(inState / roster.length)}</span> play in their home state.
-          </div>
-        </div>
         <div className="city-distances">
           <div>
             On average, a player's hometown is <span className="number">{prettyNumber(mean)}</span> miles away from campus.
@@ -95,6 +84,18 @@ let TeamStats = React.createClass({
           </div>
           <RosterSVG team={team}
                      {...map} />
+        </div>
+        <div className="state-counts">
+          <StateChart name={name}
+              states={states}
+              color={colors ? colors[0] : "#000"}
+              width={500}
+              height={100}
+              min={2} />
+          <div>
+            Of the <span className="number">{roster.length}</span> players on the team,{" "}
+            <span className="number">{fPercent(inState / roster.length)}</span> play in their home state.
+          </div>
         </div>
       </div>
     );

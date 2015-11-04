@@ -1,7 +1,8 @@
 import React from "react";
 import d3 from "d3";
-import Team from "./Team";
 import TeamSelect from "./TeamSelect";
+import Conference from "./Conference";
+import Team from "./Team";
 
 export default React.createClass({
   getInitialState: function() {
@@ -29,7 +30,8 @@ export default React.createClass({
   render: function() {
     let { conferences, map } = this.props;
     let { cIndex, tIndex } = this.state;
-    let team = this.props.conferences[cIndex].teams[tIndex];
+    let conference = this.props.conferences[cIndex]
+    let team = conference.teams[tIndex];
     return (
       <div className="app">
         <TeamSelect conferences={conferences}
@@ -37,6 +39,7 @@ export default React.createClass({
                     teamIndex={tIndex}
                     setConference={this.setConference}
                     setTeam={this.setTeam} />
+        <Conference {...conference} />
         <Team team={team}
               map={map} />
       </div>

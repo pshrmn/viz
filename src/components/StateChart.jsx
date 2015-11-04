@@ -9,22 +9,29 @@ export default React.createClass({
       color: "#222",
       width: 700,
       height: 100,
-      margin: 30
+      marginTop: 30,
+      marginRight: 5,
+      marginBottom: 30,
+      marginLeft: 5,
+      min: 1
     };
   },
   render: function() {
-    let { width, height, margin,
-      name, states, color } = this.props;
+    let { width, height, marginTop, marginRight, marginBottom, marginLeft,
+      name, states, color, min } = this.props;
+
+    let horizontalMargin = marginLeft + marginRight;
+    let verticalMargin = marginTop + marginBottom;
 
     // only draw states with > 1 person
-    let filteredStates = states.filter(s => s.count > 1)
+    let filteredStates = states.filter(s => s.count >= min)
       .sort((a,b) => {
       return b.count - a.count;
     });
     let otherCount = 0;
     states.forEach(s => {
-      if ( s.count === 1 ) {
-        otherCount++
+      if ( s.count < min ) {
+        otherCount += s.count;
       }
     });
     filteredStates.push({
@@ -43,10 +50,10 @@ export default React.createClass({
       .rangeBands([0, width], 0.1);
     return (
       <svg className="state-bar-chart"
-           width={width + margin*2}
-           height={height + margin*2}>
+           width={marginLeft + width + marginRight}
+           height={marginTop + height + marginBottom}>
         <g ref="barChart"
-            transform={`translate(${margin},${margin})`}>
+            transform={`translate(${marginLeft},${marginTop})`}>
           <AxisTicks ticks={filteredStates}
                      scale={xScale}
                      height={height} />

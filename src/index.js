@@ -14,10 +14,10 @@ queue()
       return;
     }
 
-    let width = 600;
-    let height = 400;
+    let width = 400;
+    let height = 300;
     let margin = 15;
-    let scale = 800;
+    let scale = 550;
     let map = {
       features: topojson.feature(usmap, usmap.objects.states).features, 
       projection: d3.geo.albersUsa()
