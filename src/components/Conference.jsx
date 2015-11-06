@@ -38,10 +38,11 @@ export default React.createClass({
         <ConferenceStats name={name}
                          teams={teams} />
         <div>
-          <h3>Teams</h3>
-          <Selector vals={teams}
-                    index={this.state.index}
-                    setIndex={this.setTeam} />
+          <h3>
+            Team: <Selector vals={teams}
+                            index={this.state.index}
+                            setIndex={this.setTeam} />
+          </h3>
         </div>
         <Team team={team}
               map={map} />

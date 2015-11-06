@@ -21,9 +21,11 @@ export default React.createClass({
     let conference = this.props.conferences[this.state.index];
     return (
       <div className="app">
-        <Selector vals={conferences}
-                  index={this.state.index}
-                  setIndex={this.setConference} />
+        <h3>
+          Conference: <Selector vals={conferences}
+                    index={this.state.index}
+                    setIndex={this.setConference} />
+        </h3>
         <Conference map={map}
                     {...conference} />
       </div>

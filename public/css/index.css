@@ -1,8 +1,8 @@
 #content, header {
-    font-size: 16px;
-    font-family: 'Josefin Sans', sans-serif;
-    padding: 0;
-    box-sizing: border-box;
+  font-size: 16px;
+  font-family: 'Josefin Sans', sans-serif;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .selector {
@@ -74,7 +74,7 @@ circle.school {
 
 .team-info > div {
   padding: 10px;
-  margin: 0 25px 25px 0;
+  margin: 0 25px 10px 0;
 }
 
 .number {

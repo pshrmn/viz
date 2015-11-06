@@ -76,7 +76,7 @@
 
 	  var width = 400;
 	  var height = 300;
-	  var margin = 15;
+	  var margin = 0;
 	  var scale = 550;
 	  var map = {
 	    features: _topojson2["default"].feature(usmap, usmap.objects.states).features,
@@ -303,9 +303,14 @@
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "app" },
-	      _react2["default"].createElement(_Selector2["default"], { vals: conferences,
-	        index: this.state.index,
-	        setIndex: this.setConference }),
+	      _react2["default"].createElement(
+	        "h3",
+	        null,
+	        "Conference: ",
+	        _react2["default"].createElement(_Selector2["default"], { vals: conferences,
+	          index: this.state.index,
+	          setIndex: this.setConference })
+	      ),
 	      _react2["default"].createElement(_Conference2["default"], _extends({ map: map
 	      }, conference))
 	    );
@@ -664,11 +669,11 @@
 	        _react2["default"].createElement(
 	          "h3",
 	          null,
-	          "Teams"
-	        ),
-	        _react2["default"].createElement(_Selector2["default"], { vals: teams,
-	          index: this.state.index,
-	          setIndex: this.setTeam })
+	          "Team: ",
+	          _react2["default"].createElement(_Selector2["default"], { vals: teams,
+	            index: this.state.index,
+	            setIndex: this.setTeam })
+	        )
 	      ),
 	      _react2["default"].createElement(_Team2["default"], { team: team,
 	        map: map })

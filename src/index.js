@@ -16,7 +16,7 @@ queue()
 
     let width = 400;
     let height = 300;
-    let margin = 15;
+    let margin = 0;
     let scale = 550;
     let map = {
       features: topojson.feature(usmap, usmap.objects.states).features, 
