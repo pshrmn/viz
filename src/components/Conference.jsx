@@ -4,6 +4,19 @@ import StateChart from "./StateChart";
 import Selector from "./Selector";
 import Team from "./Team";
 
+/*
+ * Conference
+ * ----------
+ * Render a NCAA conference
+ *
+ * Props:
+ * map - how to render a map
+ * name - name of the conference
+ * teams - the teams in the conference
+ *
+ * State:
+ * index - the index of the currently selected team in the conference
+ */
 export default React.createClass({
   getInitialState: function() {
     return {
@@ -51,6 +64,15 @@ export default React.createClass({
   }  
 });
 
+/*
+ * ConferenceStats
+ * ---------------
+ * Render statistics on the conference
+ *
+ * Props:
+ * name - name of the conference
+ * teams - array of teams in the conference
+ */
 let ConferenceStats = React.createClass({
   render: function() {
     let prettyNumber = d3.format(",.1f");

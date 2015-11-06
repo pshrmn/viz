@@ -18,10 +18,7 @@ export default React.createClass({
   },
   render: function() {
     let { width, height, marginTop, marginRight, marginBottom, marginLeft,
-      name, states, color, min } = this.props;
-
-    let horizontalMargin = marginLeft + marginRight;
-    let verticalMargin = marginTop + marginBottom;
+      states, color, min } = this.props;
 
     // only draw states with > 1 person
     let filteredStates = states.filter(s => s.count >= min)

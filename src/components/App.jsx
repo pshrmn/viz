@@ -3,6 +3,18 @@ import d3 from "d3";
 import Selector from "./Selector";
 import Conference from "./Conference";
 
+/*
+ * App
+ * ---
+ * Render the app
+ *
+ * Props:
+ * map - how to render a us map in the app (height, width, margin, features, scale, projection)
+ * conferences - array of NCAA conferences
+ *
+ * State:
+ * index - the currently selected conference
+ */
 export default React.createClass({
   getInitialState: function() {
     return {

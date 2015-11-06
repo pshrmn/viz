@@ -279,6 +279,18 @@
 
 	var _Conference2 = _interopRequireDefault(_Conference);
 
+	/*
+	 * App
+	 * ---
+	 * Render the app
+	 *
+	 * Props:
+	 * map - how to render a us map in the app (height, width, margin, features, scale, projection)
+	 * conferences - array of NCAA conferences
+	 *
+	 * State:
+	 * index - the currently selected conference
+	 */
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "App",
 
@@ -623,6 +635,19 @@
 
 	var _Team2 = _interopRequireDefault(_Team);
 
+	/*
+	 * Conference
+	 * ----------
+	 * Render a NCAA conference
+	 *
+	 * Props:
+	 * map - how to render a map
+	 * name - name of the conference
+	 * teams - the teams in the conference
+	 *
+	 * State:
+	 * index - the index of the currently selected team in the conference
+	 */
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "Conference",
 
@@ -681,6 +706,15 @@
 	  }
 	});
 
+	/*
+	 * ConferenceStats
+	 * ---------------
+	 * Render statistics on the conference
+	 *
+	 * Props:
+	 * name - name of the conference
+	 * teams - array of teams in the conference
+	 */
 	var ConferenceStats = _react2["default"].createClass({
 	  displayName: "ConferenceStats",
 
@@ -1296,13 +1330,9 @@
 	    var marginRight = _props.marginRight;
 	    var marginBottom = _props.marginBottom;
 	    var marginLeft = _props.marginLeft;
-	    var name = _props.name;
 	    var states = _props.states;
 	    var color = _props.color;
 	    var min = _props.min;
-
-	    var horizontalMargin = marginLeft + marginRight;
-	    var verticalMargin = marginTop + marginBottom;
 
 	    // only draw states with > 1 person
 	    var filteredStates = states.filter(function (s) {
@@ -1480,6 +1510,16 @@
 
 	var _StateChart2 = _interopRequireDefault(_StateChart);
 
+	/*
+	 * Team
+	 * ----
+	 *
+	 *
+	 * Props:
+	 * team - the current team
+	 * map - props for how to render the map including: width, height, margin,
+	 *    features, and projection
+	 */
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "Team",
 
@@ -1521,6 +1561,15 @@
 	  }
 	});
 
+	/*
+	 * TeamStats
+	 * ---------
+	 * Render statistics for a team
+	 *
+	 * Props:
+	 * map - properties used to render a map
+	 * team - the current team
+	 */
 	var TeamStats = _react2["default"].createClass({
 	  displayName: "TeamStats",
 
@@ -1565,10 +1614,6 @@
 	    var _props2 = this.props;
 	    var team = _props2.team;
 	    var map = _props2.map;
-	    var width = map.width;
-	    var height = map.height;
-	    var margin = map.margin;
-	    var projection = map.projection;
 	    var mean = team.mean;
 	    var median = team.median;
 	    var roster = team.roster;
@@ -1583,6 +1628,10 @@
 	    var states = _stateCounts2.states;
 
 	    var inState = counts[state] ? counts[state] : 0;
+	    // function to add the "active" class to the feature matching the current state
+	    var setActive = function setActive(feature) {
+	      return feature.properties.abbr === state ? ["active"] : [];
+	    };
 	    return _react2["default"].createElement(
 	      "div",
 	      { className: "team-info" },
@@ -1611,8 +1660,13 @@
 	          ),
 	          " miles of campus."
 	        ),
-	        _react2["default"].createElement(RosterSVG, _extends({ team: team
-	        }, map))
+	        _react2["default"].createElement(
+	          _USMap2["default"],
+	          _extends({ team: team,
+	            setClasses: setActive
+	          }, map),
+	          _react2["default"].createElement(_TeamMap2["default"], team)
+	        )
 	      ),
 	      _react2["default"].createElement(
 	        "div",
@@ -1645,43 +1699,6 @@
 	    );
 	  }
 	});
-
-	var RosterSVG = _react2["default"].createClass({
-	  displayName: "RosterSVG",
-
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      width: 600,
-	      height: 400,
-	      margin: 15,
-	      team: {}
-	    };
-	  },
-	  render: function render() {
-	    var _props3 = this.props;
-	    var width = _props3.width;
-	    var height = _props3.height;
-	    var margin = _props3.margin;
-	    var projection = _props3.projection;
-	    var features = _props3.features;
-	    var team = _props3.team;
-
-	    return _react2["default"].createElement(
-	      "svg",
-	      { xmlns: "http://www.w3.org/2000/svg",
-	        width: width + margin * 2,
-	        height: height + margin * 2 },
-	      _react2["default"].createElement(
-	        "g",
-	        { translate: "transform(" + margin + "," + margin + ")" },
-	        _react2["default"].createElement(_USMap2["default"], { projection: projection,
-	          features: features,
-	          active: team.state }),
-	        _react2["default"].createElement(_TeamMap2["default"], team)
-	      )
-	    );
-	  }
-	});
 	module.exports = exports["default"];
 
 /***/ },
@@ -1704,53 +1721,143 @@
 
 	var _d32 = _interopRequireDefault(_d3);
 
+	/*
+	 * USMap
+	 * -----
+	 * Render on an SVG a map of the United States using an Albers projection.
+	 *
+	 * Props:
+	 * width - width of the svg
+	 * height - height of the svg
+	 * margin - margin of the svg (might change this to top/right/bottom/left)
+	 * projection - function to map [longitude, latitude] to [x,y]
+	 * features - an array of TOPOJSON features used to draw shapes
+	 * setClasses - a function used to add additional classes to a feature
+	 */
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "USMap",
+
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      width: 600,
+	      height: 400,
+	      margin: 15
+	    };
+	  },
+	  render: function render() {
+	    var _props = this.props;
+	    var width = _props.width;
+	    var height = _props.height;
+	    var margin = _props.margin;
+	    var projection = _props.projection;
+	    var features = _props.features;
+	    var setClasses = _props.setClasses;
+
+	    return _react2["default"].createElement(
+	      "svg",
+	      { xmlns: "http://www.w3.org/2000/svg",
+	        width: width + margin * 2,
+	        height: height + margin * 2 },
+	      _react2["default"].createElement(
+	        "g",
+	        { translate: "transform(" + margin + "," + margin + ")" },
+	        _react2["default"].createElement(States, { projection: projection,
+	          features: features,
+	          setClasses: setClasses }),
+	        this.props.children
+	      )
+	    );
+	  }
+	});
+
+	/*
+	 * States
+	 * ------
+	 * Render an array of states
+	 *
+	 * Props:
+	 * projection - projection function for placing paths in the SVG
+	 * features - array of features, each one corresponding to a state
+	 * setClasses - function to determine any extra classes that a state group should have
+	 *    (by default a state has the "state" class)
+	 */
+	var States = _react2["default"].createClass({
+	  displayName: "States",
 
 	  componentWillMount: function componentWillMount() {
 	    this.setState({
 	      path: _d32["default"].geo.path().projection(this.props.projection)
 	    });
 	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    this.setState({
+	      path: _d32["default"].geo.path().projection(nextProps.projection)
+	    });
+	  },
 	  render: function render() {
 	    var _this = this;
 
-	    var _props = this.props;
-	    var features = _props.features;
-	    var active = _props.active;
+	    var _props2 = this.props;
+	    var features = _props2.features;
+	    var setClasses = _props2.setClasses;
 
 	    var states = features.map(function (s, index) {
 	      return _react2["default"].createElement(State, { key: index,
-	        active: s.properties.abbr === active,
+	        setClasses: setClasses,
 	        path: _this.state.path,
 	        feature: s });
 	    });
 
 	    return _react2["default"].createElement(
 	      "g",
-	      { className: "map", ref: "usmap" },
+	      { className: "map" },
 	      states
 	    );
 	  }
 	});
 
+	/*
+	 * State
+	 * -----
+	 * Render a state group. This is separate from StatePath because it is expensive to
+	 * re-render the path, but we might want to update a state visually using classes, so
+	 * those are updated here.
+	 *
+	 * Props:
+	 * path - a d3 function that converts topojson coordinates to the SVG space
+	 * setClasses - the function to determine classes of the state
+	 * feature - the object that describes how to draw the state
+	 */
 	var State = _react2["default"].createClass({
 	  displayName: "State",
 
 	  render: function render() {
-	    var classes = ["state"];
-	    if (this.props.active) {
-	      classes.push("active");
-	    }
+	    var _props3 = this.props;
+	    var setClasses = _props3.setClasses;
+	    var path = _props3.path;
+	    var feature = _props3.feature;
+
+	    var classes = ["state"].concat(setClasses(feature));
 	    return _react2["default"].createElement(
 	      "g",
 	      { className: classes.join(" ") },
-	      _react2["default"].createElement(StatePath, { path: this.props.path,
-	        feature: this.props.feature })
+	      _react2["default"].createElement(StatePath, { path: path,
+	        feature: feature })
 	    );
 	  }
 	});
 
+	/*
+	 * StatePath
+	 * ---------
+	 * Render the path for the state in the SVG. This should only be rendered once,
+	 * so shouldComponentUpdate returns false. (This might change if re-sizable maps
+	 * are implemented, but for the time being map sizes are static)
+	 *
+	 * Props:
+	 * path - a d3 function that converts topojson coordinates to the SVG space
+	 * feature - the object that the path uses to draw the state
+	 */
 	var StatePath = _react2["default"].createClass({
 	  displayName: "StatePath",
 
@@ -1759,9 +1866,9 @@
 	    return false;
 	  },
 	  render: function render() {
-	    var _props2 = this.props;
-	    var path = _props2.path;
-	    var feature = _props2.feature;
+	    var _props4 = this.props;
+	    var path = _props4.path;
+	    var feature = _props4.feature;
 
 	    return _react2["default"].createElement("path", { d: path(feature) });
 	  }
@@ -1786,6 +1893,25 @@
 
 	var _d3 = __webpack_require__(3);
 
+	/*
+	 * TeamMap
+	 * -------
+	 * Render a school on a map as determined by a projection function
+	 * (ie longitude/latitude converted to x/y)
+	 *
+	 * Props:
+	 * name - the name of the school
+	 * schoolPoint - the [x,y] coordinates of the school
+	 * roster - an array of players' hometowns made up of city, state, latitude, longitude, football
+	 *    position, and point which is the [x,y] coordinates of the city in the map
+	 * colors - an array of school colors. The first color is considered the primary color of the school.
+	 *    If there is a second color in the array, it is considered the secondary color, otherwise
+	 *    default values will be used in place of the secondary color.
+	 * mean - the mean distance of players' hometowns to the school
+	 * median - the median distance of players' hometowns to the school
+	 * meanRadius - mean distance converted to pixel distance in the projection
+	 * medianRadius - median distance converted to pixel distance in the projection
+	 */
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "TeamMap",
 
@@ -1829,7 +1955,7 @@
 	      _react2["default"].createElement(
 	        "title",
 	        null,
-	        this.props.name
+	        name
 	      )
 	    ) : null;
 	    var meanCircle = schoolPoint !== undefined && meanRadius !== undefined ? _react2["default"].createElement(

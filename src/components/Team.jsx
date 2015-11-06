@@ -4,6 +4,16 @@ import USMap from "./USMap";
 import TeamMap from "./TeamMap";
 import StateChart from "./StateChart";
 
+/*
+ * Team
+ * ----
+ *
+ *
+ * Props:
+ * team - the current team
+ * map - props for how to render the map including: width, height, margin,
+ *    features, and projection
+ */
 export default React.createClass({
   shouldComponentUpdate: function(nextProps, nextState) {
     return nextProps.team.name !== this.props.name;
@@ -28,6 +38,15 @@ export default React.createClass({
   }
 });
 
+/*
+ * TeamStats
+ * ---------
+ * Render statistics for a team
+ *
+ * Props:
+ * map - properties used to render a map
+ * team - the current team
+ */
 let TeamStats = React.createClass({
   getDefaultProps: function() {
     return {
@@ -66,13 +85,16 @@ let TeamStats = React.createClass({
     let fPercent = d3.format(".2%");
 
     let { team, map } = this.props;
-    let { width, height, margin, projection } = map;
     let { mean, median, roster, state, colors } = team;
     roster = roster || [];
 
     let { counts, states } = this._stateCounts(roster);
     
     let inState = counts[state] ? counts[state] : 0;
+    // function to add the "active" class to the feature matching the current state
+    let setActive = (feature) => {
+      return feature.properties.abbr === state ? ["active"] : [];
+    }
     return (
       <div className="team-info">
         <div className="city-distances">
@@ -82,8 +104,11 @@ let TeamStats = React.createClass({
           <div>
             50% of players come from within <span className="number">{prettyNumber(median)}</span> miles of campus.
           </div>
-          <RosterSVG team={team}
-                     {...map} />
+          <USMap team={team}
+                 setClasses={setActive}
+                 {...map} >
+            <TeamMap {...team} />
+          </USMap>
         </div>
         <div className="state-counts">
           <StateChart name={name}
@@ -102,28 +127,3 @@ let TeamStats = React.createClass({
   }  
 });
 
-let RosterSVG = React.createClass({
-  getDefaultProps: function() {
-    return {
-      width: 600,
-      height: 400,
-      margin: 15,
-      team: {}
-    };
-  },
-  render: function() {
-    let { width, height, margin, projection, features, team } = this.props;
-    return (
-      <svg xmlns="http://www.w3.org/2000/svg"
-           width={width + margin*2}
-           height={height + margin*2} >
-        <g translate={`transform(${margin},${margin})`} >
-          <USMap projection={projection}
-                 features={features}
-                 active={team.state} />
-          <TeamMap {...team} />
-        </g>
-      </svg>
-    );
-  }
-})
