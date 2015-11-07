@@ -110,7 +110,7 @@ def get_team(name, city, state, colors):
     team = {
         "name": cap_words(name),
         "city": cap_words(city),
-        "state": cap_words(state),
+        "state": state,
         "longitude": school_long,
         "latitude": school_lat,
         "roster": team_coordinates(url),
