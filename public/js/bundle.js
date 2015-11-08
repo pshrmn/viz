@@ -1940,10 +1940,20 @@
 	    var prettyMean = prettyNumber(mean);
 	    var prettyMedian = prettyNumber(median);
 	    var hometowns = roster.map(function (city, index) {
-	      return _react2["default"].createElement("circle", { key: index,
-	        r: "2",
-	        cx: city.point[0],
-	        cy: city.point[1] });
+	      return _react2["default"].createElement(
+	        "circle",
+	        { key: index,
+	          r: "2",
+	          cx: city.point[0],
+	          cy: city.point[1] },
+	        _react2["default"].createElement(
+	          "title",
+	          null,
+	          city.city,
+	          ", ",
+	          city.state
+	        )
+	      );
 	    });
 	    var school = schoolPoint !== undefined ? _react2["default"].createElement(
 	      "circle",

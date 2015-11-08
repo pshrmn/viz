@@ -42,7 +42,9 @@ export default React.createClass({
         <circle key={index}
                 r="2"
                 cx={city.point[0]}
-                cy={city.point[1]} />
+                cy={city.point[1]}>
+          <title>{city.city}, {city.state}</title>
+        </circle>
       );
     });
     let school = schoolPoint !== undefined ? (
