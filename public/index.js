@@ -1,0 +1,268 @@
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _planetData = __webpack_require__(2);
+
+	var _helpers = __webpack_require__(3);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var labelWidth = 200;
+	var radius = Math.min(window.innerHeight, window.innerWidth - labelWidth) / 2;
+	var height = radius * 2;
+	var width = radius * 2 + labelWidth;
+
+	var distancePerPixel = (radius - 25) / _planetData.planets.reduce(function (max, curr) {
+	  return max > curr.distance ? max : curr.distance;
+	}, -Infinity);
+
+	_planetData.planets.forEach(function (p, i) {
+	  // normalize the distance to the size of the svg
+	  p.normDistance = p.distance * distancePerPixel;
+	  p.orbits = 0;
+	});
+
+	function distanceOffset(d, i) {
+	  return d.normDistance;
+	}
+
+	var offset = (radius - 25) / _planetData.planets.length;
+	function positionOffset(d, i) {
+	  return 25 + i * offset;
+	}
+
+	var offsetFunction = positionOffset;
+
+	// create the SVG
+	var svg = _d2.default.select("#solar-system").append("svg").attr("width", width).attr("height", height);
+	var solarSystem = svg.append("g").attr("transform", "translate(" + radius + "," + radius + ")");
+
+	// create the arcs which depict the orbital path of the planets
+	var arcs = solarSystem.append("g").classed({ "arcs": true }).selectAll("circle.arc").data(_planetData.planets).enter().append("circle").classed({ "arc": true }).attr("r", offsetFunction);
+
+	// create the labels
+	var labelSize = radius / _planetData.planets.length;
+	var labels = solarSystem.append("g").classed({ "labels": true }).selectAll("g.label").data(_planetData.planets).enter().append("g").classed({ "label": true }).attr("transform", function (d, i) {
+	  var y = i * labelSize;
+	  return "translate(" + radius + ", -" + y + ")";
+	});
+
+	var labelMarkers = labels.append("path").attr("d", function (d, i) {
+	  var y = i * labelSize;
+	  var diff = y - offsetFunction(d, i);
+	  return "M 0,0 L -20," + diff + " L " + -radius + "," + diff;
+	});
+
+	var descriptions = labels.append("text").attr("dy", 5).text(function (d) {
+	  return d.name + " - " + d.orbits;
+	});
+
+	// create the planets
+	var planetCircles = solarSystem.append("g").classed({ "planets": true }).selectAll("circle.planet").data(_planetData.planets);
+
+	planetCircles.enter().append("circle").classed({ "planet": true }).attr("r", 3).attr("transform", function (d, i) {
+	  return "translate(0, -" + offsetFunction(d, i) + ")";
+	});
+
+	var sun = solarSystem.append("circle").classed({ "sun": true }).attr("r", 5);
+
+	// the animation callback
+	var start = null;
+	var period = 3650;
+	function step(timestamp) {
+	  if (start === null) {
+	    start = timestamp;
+	  }
+	  var diff = timestamp - start;
+
+	  planetCircles.attr("transform", function (d, i) {
+	    var rotate = 360 * (diff / (period * d.period)) % 360;
+	    return "rotate(" + -rotate + ")translate(0, -" + offsetFunction(d, i) + ")";
+	  }).each(function (d, i) {
+	    d.orbits = Math.floor(diff / (period * d.period));
+	  });
+
+	  descriptions.text(function (d) {
+	    return d.name + " - " + d.orbits;
+	  });
+
+	  window.requestAnimationFrame(step);
+	}
+
+	var resize = (0, _helpers.debounce)(function () {
+	  // calculate the new dimensions of the SVG
+	  radius = Math.min(window.innerHeight, window.innerWidth - labelWidth) / 2;
+	  height = radius * 2;
+	  width = radius * 2 + labelWidth;
+	  offset = (radius - 25) / _planetData.planets.length;
+	  labelSize = radius / _planetData.planets.length;
+
+	  // resize the SVG
+	  svg.attr("width", width).attr("height", height);
+	  solarSystem.attr("transform", "translate(" + radius + "," + radius + ")");
+
+	  // recalculate the normalized distance for each planet (translation will
+	  // be handled in the step function)
+	  var distancePerPixel = (radius - 25) / _planetData.planets.reduce(function (max, curr) {
+	    return max > curr.distance ? max : curr.distance;
+	  }, -Infinity);
+	  _planetData.planets.forEach(function (p, i) {
+	    // normalize the distance to the size of the svg
+	    p.normDistance = p.distance * distancePerPixel;
+	  });
+
+	  // resize the arcs
+	  arcs.attr("r", offsetFunction);
+
+	  // translate the labels
+	  labels.attr("transform", function (d, i) {
+	    var y = i * labelSize;
+	    return "translate(" + radius + ", -" + y + ")";
+	  });
+	  labelMarkers.attr("d", function (d, i) {
+	    var y = i * labelSize;
+	    var diff = y - offsetFunction(d, i);
+	    return "M 0,0 L -20," + diff + " L " + -radius + "," + diff;
+	  });
+	}, 250);
+
+	window.requestAnimationFrame(step);
+	window.onresize = resize;
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	module.exports = d3;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var planets = exports.planets = [{
+	  name: "Mercury",
+	  radius: 2440,
+	  period: 0.240846,
+	  distance: 57
+	}, {
+	  name: "Venus",
+	  radius: 6052,
+	  period: 0.615,
+	  distance: 108
+	}, {
+	  name: "Earth",
+	  radius: 6378,
+	  period: 1,
+	  distance: 150
+	}, {
+	  name: "Mars",
+	  radius: 3397,
+	  period: 1.881,
+	  distance: 228
+	}, {
+	  name: "Jupiter",
+	  radius: 71492,
+	  period: 11.86,
+	  distance: 779
+	}, {
+	  name: "Saturn",
+	  radius: 60268,
+	  period: 29.46,
+	  distance: 1430
+	}, {
+	  name: "Uranus",
+	  radius: 25559,
+	  period: 84.01,
+	  distance: 2880
+	}, {
+	  name: "Neptune",
+	  radius: 24766,
+	  period: 164.8,
+	  distance: 4500
+	}];
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.debounce = debounce;
+	function debounce(func, wait, immediate) {
+	  var timeout = undefined;
+	  return function () {
+	    var _this = this,
+	        _arguments = arguments;
+
+	    clearTimeout(timeout);
+	    timeout = setTimeout(function () {
+	      timeout = null;
+	      if (!immediate) {
+	        func.apply(_this, _arguments);
+	      }
+	    }, wait);
+	    if (immediate && !timeout) {
+	      func.apply(this, arguments);
+	    }
+	  };
+	};
+
+/***/ }
+/******/ ]);

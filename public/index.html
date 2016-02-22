@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Planetary Orbits</title>
+  <style type="text/css">
+
+  #solar-system svg {
+    background: #223;
+  }
+
+  .arc {
+    fill: none;
+    stroke: #5A5A77;
+    stroke-width: 1px;
+  }
+
+  circle.planet {
+    fill: #efefef;
+  }
+
+  .label path {
+    stroke: #5A5A77;
+    stroke-dasharray: 2px;
+    fill: none;
+  }
+
+  .label text {
+    fill: #ccc;
+    font-family: sans-serif;
+  }
+
+  .sun {
+    fill: #FFDB04;
+  }
+  </style>
+</head>
+<body>
+  <div id="solar-system"></div>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+  <script async type="text/javascript" src="./index.js"></script>
+</body>
+</html>
