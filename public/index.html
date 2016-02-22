@@ -2,7 +2,14 @@
 <html>
 <head>
   <title>Planetary Orbits</title>
+  <link href='http://fonts.googleapis.com/css?family=Nova+Mono' rel='stylesheet' type='text/css'>
   <style type="text/css">
+
+  body {
+    margin: 0;
+  }
+
+  #soler-system .controls {}
 
   #solar-system svg {
     background: #223;
@@ -20,18 +27,24 @@
 
   .label path {
     stroke: #5A5A77;
-    stroke-dasharray: 2px;
     fill: none;
+    shape-rendering: crispEdges;
   }
 
   .label text {
     fill: #ccc;
-    font-family: sans-serif;
+    font-family: "Nova Mono", sans-serif;
   }
 
   .sun {
     fill: #FFDB04;
   }
+
+  .meridian {
+    stroke: #5A5A77;
+    stroke-dasharray: 2px 10px;
+  }
+
   </style>
 </head>
 <body>

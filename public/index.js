@@ -56,44 +56,70 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function bestRadius() {
+	  return Math.min(window.innerHeight - 50, window.innerWidth - labelWidth, 800) / 2;
+	}
+
+	function distancePerPixel(planets, radius) {
+	  return radius / planets.reduce(function (max, curr) {
+	    return max > curr.distance ? max : curr.distance;
+	  }, -Infinity);
+	}
+
 	var labelWidth = 200;
-	var radius = Math.min(window.innerHeight, window.innerWidth - labelWidth) / 2;
+	var radius = bestRadius();
 	var height = radius * 2;
 	var width = radius * 2 + labelWidth;
 
-	var distancePerPixel = (radius - 25) / _planetData.planets.reduce(function (max, curr) {
-	  return max > curr.distance ? max : curr.distance;
-	}, -Infinity);
-
+	var pixelLength = distancePerPixel(_planetData.planets, radius - 25);
 	_planetData.planets.forEach(function (p, i) {
 	  // normalize the distance to the size of the svg
-	  p.normDistance = p.distance * distancePerPixel;
+	  p.normDistance = p.distance * pixelLength;
 	  p.orbits = 0;
 	});
 
-	function distanceOffset(d, i) {
-	  return d.normDistance;
-	}
-
+	// functions used to draw the radius of the planets orbit
 	var offset = (radius - 25) / _planetData.planets.length;
-	function positionOffset(d, i) {
-	  return 25 + i * offset;
-	}
+	var planetOffsets = [{
+	  label: "By Distance",
+	  fn: function fn(d, i) {
+	    return d.normDistance;
+	  }
+	}, {
+	  label: "By Position",
+	  fn: function fn(d, i) {
+	    return 25 + i * offset;
+	  }
+	}];
+	var activeOffset = 0;
+	var offsetFunction = planetOffsets[activeOffset].fn;
 
-	var offsetFunction = positionOffset;
+	var solarSystem = _d2.default.select("#solar-system");
+
+	var controls = solarSystem.append("div").classed({ "controls": true });
+
+	var offsetControl = controls.append("div").selectAll("label").data(planetOffsets).enter().append("label").text(function (d) {
+	  return d.label;
+	}).append("input").attr("type", "radio").attr("name", "offset").property("checked", function (d, i) {
+	  return i === activeOffset;
+	}).on("change", function (d, i) {
+	  activeOffset = i;
+	  offsetFunction = d.fn;
+	  redraw(radius);
+	});
 
 	// create the SVG
-	var svg = _d2.default.select("#solar-system").append("svg").attr("width", width).attr("height", height);
-	var solarSystem = svg.append("g").attr("transform", "translate(" + radius + "," + radius + ")");
+	var svg = solarSystem.append("svg").attr("width", width).attr("height", height);
+	var holder = svg.append("g").attr("transform", "translate(" + radius + "," + radius + ")");
 
 	// create the arcs which depict the orbital path of the planets
-	var arcs = solarSystem.append("g").classed({ "arcs": true }).selectAll("circle.arc").data(_planetData.planets).enter().append("circle").classed({ "arc": true }).attr("r", offsetFunction);
+	var arcs = holder.append("g").classed({ "arcs": true }).selectAll("circle.arc").data(_planetData.planets).enter().append("circle").classed({ "arc": true }).attr("r", offsetFunction);
 
 	// create the labels
 	var labelSize = radius / _planetData.planets.length;
-	var labels = solarSystem.append("g").classed({ "labels": true }).selectAll("g.label").data(_planetData.planets).enter().append("g").classed({ "label": true }).attr("transform", function (d, i) {
+	var labels = holder.append("g").classed({ "labels": true }).selectAll("g.label").data(_planetData.planets).enter().append("g").classed({ "label": true }).attr("transform", function (d, i) {
 	  var y = i * labelSize;
-	  return "translate(" + radius + ", -" + y + ")";
+	  return "translate(" + radius + ", " + -1 * y + ")";
 	});
 
 	var labelMarkers = labels.append("path").attr("d", function (d, i) {
@@ -103,17 +129,18 @@
 	});
 
 	var descriptions = labels.append("text").attr("dy", 5).text(function (d) {
-	  return d.name + " - " + d.orbits;
+	  return d.name + " " + d.orbits;
 	});
+
+	// the starting line
+	holder.append("line").classed({ "meridian": true }).attr("x1", 0).attr("x2", 0).attr("y1", 0).attr("y2", -radius);
+
+	var sun = holder.append("circle").classed({ "sun": true }).attr("r", 4);
 
 	// create the planets
-	var planetCircles = solarSystem.append("g").classed({ "planets": true }).selectAll("circle.planet").data(_planetData.planets);
-
-	planetCircles.enter().append("circle").classed({ "planet": true }).attr("r", 3).attr("transform", function (d, i) {
-	  return "translate(0, -" + offsetFunction(d, i) + ")";
+	var planetCircles = holder.append("g").classed({ "planets": true }).selectAll("circle.planet").data(_planetData.planets).enter().append("circle").classed({ "planet": true }).attr("r", 3).attr("transform", function (d, i) {
+	  return "translate(0, " + -1 * offsetFunction(d, i) + ")";
 	});
-
-	var sun = solarSystem.append("circle").classed({ "sun": true }).attr("r", 5);
 
 	// the animation callback
 	var start = null;
@@ -126,21 +153,19 @@
 
 	  planetCircles.attr("transform", function (d, i) {
 	    var rotate = 360 * (diff / (period * d.period)) % 360;
-	    return "rotate(" + -rotate + ")translate(0, -" + offsetFunction(d, i) + ")";
+	    return "rotate(" + -rotate + ")translate(0, " + -1 * offsetFunction(d, i) + ")";
 	  }).each(function (d, i) {
 	    d.orbits = Math.floor(diff / (period * d.period));
 	  });
 
 	  descriptions.text(function (d) {
-	    return d.name + " - " + d.orbits;
+	    return d.name + " " + d.orbits;
 	  });
 
 	  window.requestAnimationFrame(step);
 	}
 
-	var resize = (0, _helpers.debounce)(function () {
-	  // calculate the new dimensions of the SVG
-	  radius = Math.min(window.innerHeight, window.innerWidth - labelWidth) / 2;
+	var redraw = function redraw(radius) {
 	  height = radius * 2;
 	  width = radius * 2 + labelWidth;
 	  offset = (radius - 25) / _planetData.planets.length;
@@ -148,17 +173,20 @@
 
 	  // resize the SVG
 	  svg.attr("width", width).attr("height", height);
-	  solarSystem.attr("transform", "translate(" + radius + "," + radius + ")");
+	  holder.attr("transform", "translate(" + radius + "," + radius + ")");
 
 	  // recalculate the normalized distance for each planet (translation will
 	  // be handled in the step function)
-	  var distancePerPixel = (radius - 25) / _planetData.planets.reduce(function (max, curr) {
-	    return max > curr.distance ? max : curr.distance;
-	  }, -Infinity);
+	  var pixelLength = distancePerPixel(_planetData.planets, radius - 25);
 	  _planetData.planets.forEach(function (p, i) {
 	    // normalize the distance to the size of the svg
-	    p.normDistance = p.distance * distancePerPixel;
+	    p.normDistance = p.distance * pixelLength;
 	  });
+
+	  // change radius of planets based on radius of svg
+	  var planetRadius = radius > 500 ? 3 : 2;
+	  planetCircles.attr("r", planetRadius);
+	  sun.attr("r", radius > 500 ? 4 : 2);
 
 	  // resize the arcs
 	  arcs.attr("r", offsetFunction);
@@ -166,13 +194,22 @@
 	  // translate the labels
 	  labels.attr("transform", function (d, i) {
 	    var y = i * labelSize;
-	    return "translate(" + radius + ", -" + y + ")";
+	    return "translate(" + radius + ", " + -1 * y + ")";
 	  });
 	  labelMarkers.attr("d", function (d, i) {
 	    var y = i * labelSize;
 	    var diff = y - offsetFunction(d, i);
 	    return "M 0,0 L -20," + diff + " L " + -radius + "," + diff;
 	  });
+	};
+
+	// calculate the new dimensions of the SVG then redraw
+	var resize = (0, _helpers.debounce)(function () {
+	  radius = bestRadius();
+	  if (radius < 0) {
+	    return;
+	  }
+	  redraw(radius);
 	}, 250);
 
 	window.requestAnimationFrame(step);
@@ -251,14 +288,16 @@
 	    var _this = this,
 	        _arguments = arguments;
 
-	    clearTimeout(timeout);
-	    timeout = setTimeout(function () {
+	    var later = function later() {
 	      timeout = null;
 	      if (!immediate) {
 	        func.apply(_this, _arguments);
 	      }
-	    }, wait);
-	    if (immediate && !timeout) {
+	    };
+	    var callNow = immediate && !timeout;
+	    clearTimeout(timeout);
+	    timeout = setTimeout(later, wait);
+	    if (callNow) {
 	      func.apply(this, arguments);
 	    }
 	  };
