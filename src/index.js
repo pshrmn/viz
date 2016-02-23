@@ -1,9 +1,12 @@
-import d3 from "d3";
+import d3_selection from "d3-selection";
 import { planets } from "./planetData";
 import { debounce } from "./helpers";
 
 function bestRadius() {
-  return Math.min(window.innerHeight-50, window.innerWidth - labelWidth, 800) / 2;
+  return Math.max(
+    100, 
+    Math.min(window.innerHeight-50, window.innerWidth - labelWidth, 800) / 2
+  );
 }
 
 function distancePerPixel(planets, radius) {
@@ -24,7 +27,7 @@ planets.forEach((p, i) => {
   p.orbits = 0;
 });
 
-// functions used to draw the radius of the planets orbit
+// control variable
 let offset = (radius-25)/planets.length;
 const planetOffsets = [
   {
@@ -36,14 +39,15 @@ const planetOffsets = [
     fn: (d,i) => 25 + i*offset
   },
 ];
-let activeOffset = 0;
-let offsetFunction = planetOffsets[activeOffset].fn;
+// default to drawing by distance from the sun
+let offsetFunction = planetOffsets[0].fn;
+let showLines = true;
 
-const solarSystem = d3.select("#solar-system");
+
+const solarSystem = d3_selection.select("#solar-system");
 
 const controls = solarSystem.append("div")
-  .classed({"controls": true});
-
+  .classed("controls", true);
 const offsetControl = controls.append("div")
   .selectAll("label")
     .data(planetOffsets)
@@ -52,45 +56,56 @@ const offsetControl = controls.append("div")
     .append("input")
       .attr("type", "radio")
       .attr("name", "offset")
-      .property("checked", (d,i) => i === activeOffset)
+      .property("checked", (d,i) => i === 0)
       .on("change", (d,i) => {
-        activeOffset = i;
         offsetFunction = d.fn;
-        redraw(radius);
+        redraw(radius, planets);
       });
 
+const toggleLines = controls.append("div")
+  .append("label")
+    .text("Show Orbit Lines")
+    .append("input")
+    .attr("type", "checkbox")
+    .property("checked", showLines)
+    .on("change", (d,i) => {
+      showLines = !showLines;
+      arcs.classed("hidden", !showLines);
+      labelMarkers.classed("hidden", !showLines);
+    });
 
 // create the SVG
 const svg = solarSystem
   .append("svg")
     .attr("width", width)
     .attr("height", height);
-const holder = svg
+const g = svg
   .append("g")
     .attr("transform", `translate(${radius},${radius})`);
 
 // create the arcs which depict the orbital path of the planets
-const arcs = holder.append("g")
-    .classed({"arcs": true})
+const arcs = g.append("g")
+    .classed("arcs", true)
   .selectAll("circle.arc")
     .data(planets)
   .enter().append("circle")
-    .classed({"arc": true})
+    .classed("arc", true)
     .attr("r", offsetFunction);
 
 // create the labels
 let labelSize = radius / planets.length;
-const labels = holder.append("g")
-    .classed({"labels": true})
+const labels = g.append("g")
+    .classed("labels", true)
   .selectAll("g.label")
     .data(planets)
   .enter().append("g")
-    .classed({"label": true})
+    .classed("label", true)
     .attr("transform", (d, i) => {
       const y = i*labelSize;
-      return `translate(${radius}, ${-1*y})`
+      return `translate(${radius}, ${-y})`
     });
 
+// lines connecting the orbital arcs to the labels
 const labelMarkers = labels.append("path")
   .attr("d", (d,i) => {
     const y = i*labelSize;
@@ -102,29 +117,27 @@ const descriptions = labels.append("text")
   .attr("dy", 5)
   .text(d => `${d.name} ${d.orbits}`);
 
-
 // the starting line
-holder.append("line")
-  .classed({"meridian": true})
+const meridian = g.append("line")
+  .classed("meridian", true)
   .attr("x1", 0)
   .attr("x2", 0)
   .attr("y1", 0)
   .attr("y2", -radius);
 
-const sun = holder.append("circle")
-  .classed({"sun": true})
+const sun = g.append("circle")
+  .classed("sun", true)
   .attr("r", 4);
 
-
 // create the planets
-const planetCircles = holder.append("g")
-    .classed({"planets": true})
+const planetCircles = g.append("g")
+    .classed("planets", true)
   .selectAll("circle.planet")
     .data(planets)
   .enter().append("circle")
-  .classed({"planet": true})
+  .classed("planet", true)
   .attr("r", 3)
-  .attr("transform", (d, i) => `translate(0, ${-1*offsetFunction(d,i)})`)
+  .attr("transform", (d, i) => `translate(0, ${-offsetFunction(d,i)})`)
 
 // the animation callback
 let start = null;
@@ -138,7 +151,7 @@ function step(timestamp) {
   planetCircles
     .attr("transform", (d, i) => {
       const rotate = (360 * (diff / (period * d.period))) % 360;
-      return `rotate(${-rotate})translate(0, ${-1*offsetFunction(d,i)})`
+      return `rotate(${-rotate})translate(0, ${-offsetFunction(d,i)})`
     })
     .each((d,i) => {
       d.orbits = Math.floor(diff / (period*d.period));
@@ -149,7 +162,7 @@ function step(timestamp) {
   window.requestAnimationFrame(step);
 }
 
-const redraw = function(radius) {
+function redraw(radius, planets) {
   height = radius * 2;
   width = radius * 2 + labelWidth
   offset = (radius-25)/planets.length;
@@ -159,14 +172,12 @@ const redraw = function(radius) {
   svg
     .attr("width", width)
     .attr("height", height);
-  holder
-    .attr("transform", `translate(${radius},${radius})`);
+  g.attr("transform", `translate(${radius},${radius})`);
 
   // recalculate the normalized distance for each planet (translation will
   // be handled in the step function)
   let pixelLength = distancePerPixel(planets, radius-25)
   planets.forEach((p, i) => {
-    // normalize the distance to the size of the svg
     p.normDistance = p.distance * pixelLength;
   });
 
@@ -176,31 +187,24 @@ const redraw = function(radius) {
   sun.attr("r", radius > 500 ? 4 : 2)
 
   // resize the arcs
-  arcs
-    .attr("r", offsetFunction);
+  arcs.attr("r", offsetFunction);
 
   // translate the labels
-  labels
-    .attr("transform", (d, i) => {
-      const y = i*labelSize;
-      return `translate(${radius}, ${-1*y})`
-    });
-  labelMarkers
-    .attr("d", (d,i) => {
-      const y = i*labelSize;
-      const diff = y - offsetFunction(d,i);
-      return `M 0,0 L -20,${diff} L ${-radius},${diff}`;
-    });
-  
+  labels.attr("transform", (d, i) => {
+    return `translate(${radius}, ${-i*labelSize})`
+  });
+  labelMarkers.attr("d", (d,i) => {
+    const y = i*labelSize;
+    const diff = y - offsetFunction(d,i);
+    return `M 0,0 L -20,${diff} L ${-radius},${diff}`;
+  });
+  meridian.attr("y2", -radius);
 }
 
 // calculate the new dimensions of the SVG then redraw
 const resize = debounce(function() {
   radius = bestRadius();
-  if ( radius < 0 ) {
-    return;
-  }
-  redraw(radius);
+  redraw(radius, planets);
 }, 250);
 
 window.requestAnimationFrame(step);

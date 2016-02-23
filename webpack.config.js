@@ -5,9 +5,6 @@ module.exports = {
   resolve: {
     extensions: ["", ".js"]
   },
-  externals: {
-    "d3": "d3"
-  },
   output: {
     path: __dirname + "/public/",
     filename: "[name].js",

@@ -1,6 +1,6 @@
 {
   "name": "orbits",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "planetary orbital periods",
   "main": "src/index.js",
   "scripts": {
@@ -22,5 +22,7 @@
     "babel-preset-es2015": "^6.5.0",
     "webpack": "^1.12.13"
   },
-  "dependencies": {}
+  "dependencies": {
+    "d3-selection": "^0.7.0"
+  }
 }

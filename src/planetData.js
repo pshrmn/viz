@@ -1,4 +1,4 @@
-export const planets = [
+export let planets = [
   {
     name: "Mercury",
     radius: 2440,
