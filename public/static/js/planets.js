@@ -40,6 +40,7 @@ var builder = (function(holder) {
    */
   function rowsAndColumns(holderWidth){
     var maxWidth = holderWidth > 1000 ? 1000 : holderWidth;
+    var maxWidth = Math.max(maxWidth, 250);
     // the number of cells that can fit in a row
     var columnsCount = Math.floor(maxWidth / 250);
     // hard coded for 8 planets
