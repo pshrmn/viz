@@ -38,13 +38,13 @@ body {
 
 .specs {
     line-height: 1.5em;
-    padding: 15px;
-    display: none;
-    background: #fff;
-    color: #222233;
+    height: 0;
     margin: 0 0 15px;
+    overflow: hidden;
+    transition: height 1s;
 }
 
 .specs.active {
-    display: block;
+    height: 200px;
+    transition: height 1s;
 }
