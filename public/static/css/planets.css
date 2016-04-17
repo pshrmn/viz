@@ -1,7 +1,7 @@
 body {
     background: #222233;
-    font-family: 'Press Start 2P', cursive;
-    color: rgb(228, 213, 106);
+    color: #fff;
+    font-family: sans-serif;
 }
 
 .content {
@@ -13,18 +13,18 @@ body {
     padding: 4px;
     margin: 0 5px 0;
     display: inline-block;
-    border: 2px solid rgb(228, 213, 106);
+    border: 2px solid #fff;
     border-radius: 5px;
     cursor: pointer;
 }
 
-.toggleable input {
-    display: none;
+.toggleable.active {
+    background: #fff;
+    color: #222233;
 }
 
-.toggleable.active {
-    background: rgb(228, 213, 106);
-    color: #222233;
+.planet { 
+    cursor: pointer;
 }
 
 .planet rect {
@@ -32,18 +32,17 @@ body {
 }
 
 .selected {
-    stroke: rgb(228, 213, 106);
+    stroke: #fff;
     stroke-width: 2px;
 }
 
 .specs {
-    font-family: 'Oswald', sans-serif;
-    color: #222233;
     line-height: 1.5em;
-    border-radius: 15px;
-    background: #A2E7EA;
     padding: 15px;
     display: none;
+    background: #fff;
+    color: #222233;
+    margin: 0 0 15px;
 }
 
 .specs.active {
