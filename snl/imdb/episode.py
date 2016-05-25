@@ -11,7 +11,7 @@ RULES_DIR = os.path.join(LOCAL_DIR, "rules")
 
 ROLE_REG = re.compile("(Various|Weekend Update Anchor)")
 MULTIPLE_ROLES_REG = re.compile(" / ")
-HOST_REG = re.compile("Host")
+ALT_REG = re.compile("(Host|Musical Guest)")
 
 with open(os.path.join(RULES_DIR, "cast.json")) as fp:
     cast_json = json.load(fp)
@@ -58,16 +58,18 @@ def cast_member(description):
             MULTIPLE_ROLES_REG.search(description) is not None)
 
 
-def not_host(description):
+def not_alternate(description):
     """
-    The host of an episode is marked as "Host" in the description,
-    so filter them out based on that.
+    Figure out if someone has an alternate role from a regular cast member
+    in an episode (eg. host). The host of an episode is marked as "Host"
+    in the description, so filter them out based on that. Similarly,
+    the musical guest is marked as "Musical Guest".
     """
-    return HOST_REG.search(description) is None
+    return ALT_REG.search(description) is None
 
 
 def only_cast(description):
-    return cast_member(description) and not_host(description)
+    return cast_member(description) and not_alternate(description)
 
 
 def clean_actor(actor):
@@ -86,7 +88,7 @@ def clean_actor(actor):
     }
 
 
-def cast(episode_url):
+def all_cast(episode_url):
     """
     return a dict with the data on the cast members that appeared in an
     episode of Saturday Night Live.
@@ -107,4 +109,13 @@ def cast(episode_url):
         return
     else:
         cast_data = cast_page.gather(dom)
-        return [clean_actor(actor) for actor in cast_data.get("actors") if only_cast(actor.get("description"))]
+        return [clean_actor(actor) for actor in cast_data.get("actors")]
+
+
+def only_regular_cast(episode_url):
+    """
+    return the filtered results from all_cast where only the actors
+    who are regular cast members (based on the only_cast requirements)
+    are listed
+    """
+    return [actor for actor in all_cast(episode_url) if only_cast(actor.get("description"))]

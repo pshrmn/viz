@@ -6,7 +6,7 @@ import json
 import argparse
 import os
 
-from snl.imdb import episodes, cast
+from snl.imdb import episodes, only_regular_cast
 
 LOCAL_DIR = os.path.dirname(__file__)
 os.makedirs(os.path.join(LOCAL_DIR, "data", "episodes"), exist_ok=True)
@@ -15,7 +15,7 @@ os.makedirs(os.path.join(LOCAL_DIR, "data", "episodes"), exist_ok=True)
 def get_season_casts(season):
     casts = []
     for episode in episodes(season).get("episodes", []):
-        episode_cast = cast(episode.get("url"))
+        episode_cast = only_regular_cast(episode.get("url"))
         casts.append(episode_cast)
     return casts
 
