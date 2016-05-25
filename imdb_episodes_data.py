@@ -4,8 +4,12 @@ which cast members appear in which episodes.
 """
 import json
 import argparse
+import os
 
 from snl.imdb import episodes, cast
+
+LOCAL_DIR = os.path.dirname(__file__)
+os.makedirs(os.path.join(LOCAL_DIR, "data", "episodes"), exist_ok=True)
 
 
 def get_season_casts(season):
@@ -24,5 +28,5 @@ if __name__ == "__main__":
     season = args.season
 
     data = get_season_casts(season)
-    with open("data/season_{}_episode_casts.json".format(season), "w") as fp:
+    with open("data/episodes/season_{}_episode_casts.json".format(season), "w") as fp:
         json.dump(data, fp)
