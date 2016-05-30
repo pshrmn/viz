@@ -3,3 +3,6 @@ cache
 data
 __pycache__
 *.py[co]
+
+planning.txt
+*.db
