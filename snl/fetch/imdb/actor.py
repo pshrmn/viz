@@ -21,7 +21,8 @@ def clean_profile(data):
         "name": data.get("name"),
         "birthdate": parse_date(data.get("birthdate")),
         "hometown": data.get("hometown"),
-        "gender": infer_gender(data.get("description"))
+        "gender": infer_gender(data.get("description")),
+        "roles": data.get("roles")
     }
 
 
@@ -33,7 +34,14 @@ def profile(actor_url):
         "name": <string>,
         "birthdate": <string>,
         "hometown": <string>,
-        "description": <string>
+        "description": <string>,
+        "roles": [
+            {
+                "title": <string>,
+                "url": <string>,
+                "release": <string>
+            }
+        ]
     }
 
     and the returned dict will have the form:
@@ -41,7 +49,14 @@ def profile(actor_url):
         "name": <string>,
         "birthdate": <date>,
         "hometown": <string>,
-        "gender": <string>
+        "gender": <string>,
+        "roles": [
+            {
+                "title": <string>,
+                "url": <string>,
+                "release": <string>
+            }
+        ]
     }
 
     """
