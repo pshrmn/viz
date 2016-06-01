@@ -2,7 +2,7 @@ import json
 import os
 
 from gatherer import Page
-from snl.pages import get
+from snl.fetch import get_dom
 
 LOCAL_DIR = os.path.dirname(__file__)
 RULES_DIR = os.path.join(LOCAL_DIR, "rules")
@@ -29,14 +29,14 @@ def episodes(season):
     {
         "episodes": [
             {
-                "url": "...",
-                "date": "..."
+                "url": <string>,
+                "date": <string>
             }
         ]
     }
     """
     url = season_url(season)
-    dom = get(url)
+    dom = get_dom(url)
     if dom is None:
         print("failed to get season data")
         return

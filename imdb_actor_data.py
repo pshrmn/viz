@@ -6,7 +6,7 @@ import json
 import argparse
 import os
 
-from snl.imdb.actor import profile
+from snl.fetch.imdb import profile
 
 LOCAL_DIR = os.path.dirname(__file__)
 os.makedirs(os.path.join(LOCAL_DIR, "data", "actors"), exist_ok=True)
@@ -21,5 +21,8 @@ if __name__ == "__main__":
     name = args.name
     filename_name = name.replace(" ", "_")
     data = profile(url)
+    # format to play nice with json
+    if data["birthdate"] is not None:
+        data["birthdate"] = data["birthdate"].strftime("%Y-%m-%d")
     with open("data/actors/{}.json".format(filename_name), "w") as fp:
         json.dump(data, fp)

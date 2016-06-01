@@ -6,7 +6,7 @@ import json
 import argparse
 import os
 
-from snl.wiki import cast
+from snl.fetch.wiki import cast
 
 LOCAL_DIR = os.path.dirname(__file__)
 os.makedirs(os.path.join(LOCAL_DIR, "data", "casts"), exist_ok=True)

@@ -4,14 +4,11 @@ import re
 from urllib.parse import urlparse, urlunparse
 
 from gatherer import Page
-from snl.pages import get
+from snl.fetch import get_dom
+from snl.fetch.helpers import only_cast
 
 LOCAL_DIR = os.path.dirname(__file__)
 RULES_DIR = os.path.join(LOCAL_DIR, "rules")
-
-ROLE_REG = re.compile("(Various|Weekend Update Anchor)")
-MULTIPLE_ROLES_REG = re.compile(" / ")
-ALT_REG = re.compile("(Host|Musical Guest)")
 
 with open(os.path.join(RULES_DIR, "cast.json")) as fp:
     cast_json = json.load(fp)
@@ -35,41 +32,6 @@ def full_credits_url(episode_url):
         full_path = "{}{}".format(start_path, "fullcredits")
         full_credit_parts = url_parts._replace(path=full_path)
         return urlunparse(full_credit_parts)
-
-
-def cast_member(description):
-    """
-    There isn't a perfect system for deciding that an actor is a cast
-    member, but there are a few indicators of one. These will all be
-    done by checking the actor's description:
-
-    Various / ... (21 episodes, 2013-2014)
-
-    For most cast members, the word "Various" will be included in the
-    description. For cast members who anchor Weekend Update, the string
-    "Weekend Update Anchor" will be in their description. Some descriptions
-    do not include the "Various" string, but there will be multiple roles
-    which are separated by spaces and forward slashes (" / ").
-
-    This will miss some people, especially in earlier seasons, but for
-    the most part will correctly separate the cast members from others
-    """
-    return (ROLE_REG.search(description) is not None or
-            MULTIPLE_ROLES_REG.search(description) is not None)
-
-
-def not_alternate(description):
-    """
-    Figure out if someone has an alternate role from a regular cast member
-    in an episode (eg. host). The host of an episode is marked as "Host"
-    in the description, so filter them out based on that. Similarly,
-    the musical guest is marked as "Musical Guest".
-    """
-    return ALT_REG.search(description) is None
-
-
-def only_cast(description):
-    return cast_member(description) and not_alternate(description)
 
 
 def clean_actor(actor):
@@ -96,14 +58,14 @@ def all_cast(episode_url):
     {
         "actors": [
             {
-                "name": "...",
-                "profile": "...",
-                "description": "..."
+                "name": <string>,
+                "profile": <string>,
+                "description": <string>
             }
         ]
     }
     """
-    dom = get(full_credits_url(episode_url))
+    dom = get_dom(full_credits_url(episode_url))
     if dom is None:
         print("failed to get episode cast data")
         return

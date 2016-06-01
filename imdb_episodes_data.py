@@ -6,7 +6,7 @@ import json
 import argparse
 import os
 
-from snl.imdb import episodes, only_regular_cast
+from snl.fetch.imdb import episodes, only_regular_cast
 
 LOCAL_DIR = os.path.dirname(__file__)
 os.makedirs(os.path.join(LOCAL_DIR, "data", "episodes"), exist_ok=True)
