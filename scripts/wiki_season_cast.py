@@ -19,7 +19,7 @@ def get_cast(season):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Get the main cast and featured playes for a season")
+    parser = argparse.ArgumentParser(description="Get the main cast and featured players for a season")
     parser.add_argument("--season", "-S", dest="season", help="Which season (1-41)", type=int)
     args = parser.parse_args()
 
