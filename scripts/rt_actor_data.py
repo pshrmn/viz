@@ -1,11 +1,11 @@
 """
-Get basic information about an actor.
+Basic information on an actor.
 """
 import json
 import argparse
 import os
 
-from snl.fetch.imdb import profile
+from snl.fetch.tomatoes import profile
 
 SCRIPTS_DIR = os.path.dirname(__file__)
 BASE_DIR = os.path.abspath(os.path.join(SCRIPTS_DIR, os.pardir))
@@ -13,7 +13,7 @@ os.makedirs(os.path.join(BASE_DIR, "data", "actors"), exist_ok=True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Get basic information on an actor")
-    parser.add_argument("--url", "-U", dest="url", help="IMDB URL of actor")
+    parser.add_argument("--url", "-U", dest="url", help="Rotten Tomatoes URL of actor")
     parser.add_argument("--name", "-N", dest="name", help="The name of the actor")
     args = parser.parse_args()
 

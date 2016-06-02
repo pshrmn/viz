@@ -3,7 +3,7 @@ import os
 
 from gatherer import Page
 from snl.fetch import get_dom
-from snl.fetch.helpers import parse_date, infer_gender
+from snl.fetch.helpers import full_month, infer_gender
 
 LOCAL_DIR = os.path.dirname(__file__)
 RULES_DIR = os.path.join(LOCAL_DIR, "rules")
@@ -19,7 +19,7 @@ def clean_profile(data):
         return
     return {
         "name": data.get("name"),
-        "birthdate": parse_date(data.get("birthdate")),
+        "birthdate": full_month(data.get("birthdate")),
         "hometown": data.get("hometown"),
         "gender": infer_gender(data.get("description")),
         "roles": data.get("roles")
