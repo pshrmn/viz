@@ -8,8 +8,9 @@ import os
 
 from snl.fetch.wiki import cast
 
-LOCAL_DIR = os.path.dirname(__file__)
-os.makedirs(os.path.join(LOCAL_DIR, "data", "casts"), exist_ok=True)
+SCRIPTS_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.abspath(os.path.join(SCRIPTS_DIR, os.pardir))
+os.makedirs(os.path.join(BASE_DIR, "data", "casts"), exist_ok=True)
 
 
 def get_cast(season):

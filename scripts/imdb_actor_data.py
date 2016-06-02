@@ -8,8 +8,9 @@ import os
 
 from snl.fetch.imdb import profile
 
-LOCAL_DIR = os.path.dirname(__file__)
-os.makedirs(os.path.join(LOCAL_DIR, "data", "actors"), exist_ok=True)
+SCRIPTS_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.abspath(os.path.join(SCRIPTS_DIR, os.pardir))
+os.makedirs(os.path.join(BASE_DIR, "data", "actors"), exist_ok=True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Get basic information on an actor")

@@ -8,8 +8,9 @@ import os
 
 from snl.fetch.imdb import episodes, only_regular_cast
 
-LOCAL_DIR = os.path.dirname(__file__)
-os.makedirs(os.path.join(LOCAL_DIR, "data", "episodes"), exist_ok=True)
+SCRIPTS_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.abspath(os.path.join(SCRIPTS_DIR, os.pardir))
+os.makedirs(os.path.join(BASE_DIR, "data", "episodes"), exist_ok=True)
 
 
 def get_season_casts(season):
