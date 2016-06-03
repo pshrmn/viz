@@ -2,7 +2,7 @@
 
 Data on various Saturday Night Live cast members and their careers
 
-Sourced from rotten tomatoes, imdb, and wikipedia.
+Sourced from rotten tomatoes and wikipedia.
 
 ###Scripts
 
@@ -26,16 +26,8 @@ python -m scripts.wiki_season_cast --season <season number>
 
 ####Actor Data
 
-Get information on an actor from their IMDB profile.
+Get basic profile information about an actor from Rotten Tomatoes
 
 ```
-python -m scripts.imdb_actor_data --name <actor's name> --url <imdb profile url>
-```
-
-####Episode Data
-
-Get information on the cast of each episode for a season of Saturday Night Live (currently 1-41).
-
-```
-python -m scripts.imdb_episodes_data --season <season number>
+python -m scripts.rt_actor_data --name <actor's name> --url <rotten tomatoes profile url>
 ```
