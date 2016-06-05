@@ -18,6 +18,12 @@ season_page gathers data formatted as:
         {
             "url": <string>
         }
+    ],
+    "cast_members": [
+        {
+            "name": <string>,
+            "url": <string>
+        }
     ]
 }
 """
@@ -40,5 +46,6 @@ def season(season,):
         return
     return {
         "season": season,
-        "episodes": data.get("episodes")
+        "episodes": data.get("episodes"),
+        "cast_members": data.get("cast_members")
     }

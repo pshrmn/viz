@@ -18,9 +18,9 @@ class CastMember(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(50))
-    dob = Column(Date)
+    dob = Column(Date, nullable=True)
     hometown = Column(String(100), nullable=True)
-    gender = Column(String(10))
+    gender = Column(String(10), nullable=True)
 
     def __repr__(self):
         return "<CastMember(name={}, dob={}, hometown={}, gender={})>".format(
