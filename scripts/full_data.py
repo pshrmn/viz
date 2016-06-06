@@ -60,7 +60,7 @@ def save_episodes():
 
 
 def save_roles():
-    header = ["cast_member", "season", "main"]
+    header = ["cast_member", "season", "type"]
     save_csv(header, ROLE_ROWS, ROLE_FILENAME)
 
 
@@ -155,8 +155,8 @@ def get_season_cast(season, cast_members, season_cast_members, known_cast):
             cast_member = fetch_cast_member(url)
             if cast_member is not None:
                 known_cast[name] = cast_member
-    for (name, is_main) in season_cast_members.items():
-        cast_member_roles.append((name, is_main))
+    for (name, role) in season_cast_members.items():
+        cast_member_roles.append((name, role))
     create_season_roles(set(cast_member_roles), season)
 
 
