@@ -56,7 +56,7 @@ def clean_profile(data):
         if key == "Birthday:":
             birthdate = full_month(value)
         elif key == "Birthplace:":
-            hometown = value
+            hometown = value if value != "Not Available" else None
         elif key == "Bio:":
             bio = value
     return {
