@@ -1,8 +1,4 @@
 from gatherer import Fetch, Cache
 
-c = Cache("cache")
-fetcher = Fetch(headers={"User-Agent": "Gatherer Agent"}, cache=c)
-
-
-def get_dom(url):
-    return fetcher.get(url)
+fs_cache = Cache("cache")
+fetcher = Fetch(headers={"User-Agent": "Saturday Night Live Data"}, cache=fs_cache)

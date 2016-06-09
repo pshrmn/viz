@@ -1,1 +1,1 @@
-from .pages import get_dom
+from .pages import fetcher

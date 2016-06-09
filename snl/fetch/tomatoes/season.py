@@ -2,7 +2,7 @@ import json
 import os
 
 from gatherer import Page
-from snl.fetch import get_dom
+from snl.fetch import fetcher
 
 LOCAL_DIR = os.path.dirname(__file__)
 RULES_DIR = os.path.join(LOCAL_DIR, "rules")
@@ -36,7 +36,7 @@ def season_url(season):
 
 def season(season,):
     url = season_url(season)
-    dom = get_dom(url)
+    dom = fetcher.get(url)
     if dom is None:
         print("failed to get season for url {}".format(url))
         return

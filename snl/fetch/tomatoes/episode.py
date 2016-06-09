@@ -3,7 +3,7 @@ import os
 import re
 
 from gatherer import Page
-from snl.fetch import get_dom
+from snl.fetch import fetcher
 from snl.fetch.helpers import abbr_month
 
 LOCAL_DIR = os.path.dirname(__file__)
@@ -46,7 +46,7 @@ def clean_episode(season, episode, data):
 
 def episode(season, episode):
     url = episode_url(season, episode)
-    dom = get_dom(url)
+    dom = fetcher.get(url)
     if dom is None:
         print("failed to get episode for url {}".format(url))
         return
@@ -70,7 +70,7 @@ def parse_url(url):
 
 
 def episode_by_url(url):
-    dom = get_dom(url)
+    dom = fetcher.get(url)
     if dom is None:
         print("failed to get episode for url {}".format(url))
         return

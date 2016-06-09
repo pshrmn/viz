@@ -2,7 +2,7 @@
 
 Data on various Saturday Night Live cast members and their careers
 
-Sourced from rotten tomatoes and wikipedia.
+Sourced from rotten tomatoes, wikipedia, and imdb.
 
 ###Scripts
 

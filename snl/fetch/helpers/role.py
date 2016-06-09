@@ -1,8 +1,9 @@
 import re
 
-ROLE_REG = re.compile("(Various|Weekend Update Anchor)")
+ROLE_REG = re.compile("(Bee|Various|Weekend Update Anchor)")
 MULTIPLE_ROLES_REG = re.compile(" / ")
 ALT_REG = re.compile("(Host|Musical Guest)")
+UNCREDITED = re.compile("\(uncredited\)")
 
 
 def cast_member(description):
@@ -21,11 +22,15 @@ def cast_member(description):
 
     This will miss some people, especially in earlier seasons, but for
     the most part will correctly separate the cast members from others
+
+    For some reason, in some credits on imdb cast members are credited with
+    the role of "Bee"...
     """
     if description is None:
         return False
     return (ROLE_REG.search(description) is not None or
-            MULTIPLE_ROLES_REG.search(description) is not None)
+            MULTIPLE_ROLES_REG.search(description) is not None) and \
+        UNCREDITED.search(description) is None
 
 
 def not_alternate(description):

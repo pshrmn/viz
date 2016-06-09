@@ -2,7 +2,7 @@ import json
 import os
 
 from gatherer import Page
-from snl.fetch import get_dom
+from snl.fetch import fetcher
 from snl.fetch.helpers import main_cast_member
 
 LOCAL_DIR = os.path.dirname(__file__)
@@ -74,7 +74,7 @@ def cast(season):
     """
 
     url = "https://en.wikipedia.org/wiki/Saturday_Night_Live_(season_{})".format(season)
-    dom = get_dom(url)
+    dom = fetcher.get(url)
     if dom is None:
         print("failed to get season data")
         return

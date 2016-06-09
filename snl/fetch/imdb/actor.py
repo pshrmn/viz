@@ -2,7 +2,7 @@ import json
 import os
 
 from gatherer import Page
-from snl.fetch import get_dom
+from snl.fetch import fetcher
 from snl.fetch.helpers import full_month, infer_gender
 
 LOCAL_DIR = os.path.dirname(__file__)
@@ -60,7 +60,7 @@ def profile(actor_url):
     }
 
     """
-    dom = get_dom(actor_url)
+    dom = fetcher.get(actor_url)
     if dom is None:
         print("failed to get season data")
         return

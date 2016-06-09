@@ -11,7 +11,9 @@ class CastMemberTestCase(unittest.TestCase):
             ("Weekend Update Anchor", True),
             ("One / Two / Three", True),
             ("Host / Various", True),
+            ("Bee", True),
             ("One, Two, Three", False),
+            ("Various (uncredited)", False),
             (None, False)
         ]
         for (desc, expected) in descs:

@@ -4,7 +4,7 @@ import re
 from urllib.parse import urlparse, urlunparse
 
 from gatherer import Page
-from snl.fetch import get_dom
+from snl.fetch import fetcher
 from snl.fetch.helpers import only_cast
 
 LOCAL_DIR = os.path.dirname(__file__)
@@ -65,7 +65,7 @@ def all_cast(episode_url):
         ]
     }
     """
-    dom = get_dom(full_credits_url(episode_url))
+    dom = fetcher.get(full_credits_url(episode_url))
     if dom is None:
         print("failed to get episode cast data")
         return

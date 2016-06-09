@@ -2,7 +2,7 @@ import json
 import os
 
 from gatherer import Page
-from snl.fetch import get_dom
+from snl.fetch import fetcher
 from snl.fetch.helpers import full_month, infer_gender
 
 LOCAL_DIR = os.path.dirname(__file__)
@@ -68,7 +68,7 @@ def clean_profile(data):
 
 
 def profile(url):
-    dom = get_dom(url)
+    dom = fetcher.get(url)
     if dom is None:
         print("failed to get episode for url {}".format(url))
         return
