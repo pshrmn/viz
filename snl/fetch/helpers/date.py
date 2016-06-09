@@ -27,9 +27,19 @@ def abbr_month(date_string):
     """
     if date_string is None:
         return None
-    # remove any extra whitespace and periods (want Jan not Jan.)
-    clean_string = re.sub(r"\s+", " ", date_string).replace(".", "")
+    # remove any extra whitespace, periods (want Jan not Jan.), and commas
+    clean_string = re.sub(r"\s+", " ", date_string).replace(".", "").replace(",", "")
     try:
-        return datetime.strptime(clean_string, "%b %d, %Y").date()
+        return datetime.strptime(clean_string, "%b %d %Y").date()
+    except ValueError:
+        return None
+
+
+def day_month_year(date_string):
+    if date_string is None:
+        return None
+    clean_string = re.sub(r"\s+", " ", date_string).replace(".", "").replace(",", "")
+    try:
+        return datetime.strptime(clean_string, "%d %b %Y").date()
     except ValueError:
         return None

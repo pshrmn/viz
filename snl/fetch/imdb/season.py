@@ -3,7 +3,7 @@ import os
 
 from gatherer import Page
 from snl.fetch import fetcher
-from snl.fetch.helpers import abbr_month
+from snl.fetch.helpers import day_month_year
 
 LOCAL_DIR = os.path.dirname(__file__)
 RULES_DIR = os.path.join(LOCAL_DIR, "rules")
@@ -35,7 +35,7 @@ def clean_episodes(data, season):
             "season": season,
             "episode": number + 1,
             "url": episode.get("url"),
-            "air_date": abbr_month(episode.get("date"))
+            "air_date": day_month_year(episode.get("date"))
         })
     return episodes
 

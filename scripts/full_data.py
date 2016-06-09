@@ -31,10 +31,7 @@ FAILED_ROWS = []
 
 """
 Known Deficiencies:
-1.  Rotten Tomatoes is missing season 38 episode 15 (hosted by Kevin Hart).
-    All episodes after that are listed one number earlier and the season
-    finale is listed twice (although the second one contains no cast).
-2.  Several actors have incomplete profiles on Rotten Tomatoes. These include:
+1.  Several actors have incomplete profiles on Rotten Tomatoes. These include:
     John Milhiser
     Brooks Wheelan
     Pete Davidson
