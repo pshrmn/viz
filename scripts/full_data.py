@@ -2,7 +2,7 @@ import logging
 import csv
 import os
 
-from snl.fetch import wiki, tomatoes
+from snl.fetch import wiki, tomatoes, imdb
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -160,25 +160,26 @@ def get_season_cast(season, cast_members, season_cast_members, known_cast):
     create_season_roles(set(cast_member_roles), season)
 
 
-def get_episodes(season, episodes, season_cast_members, known_cast):
-    # for each episode in the season, create a row in the database
-    # iterate over every actor credited with appearing in the episode,
-    # and if he/she is a cast member, give them a credit.
+def get_imdb_episodes(episodes, season_cast_members):
     for episode in episodes:
-        episode_data = tomatoes.episode_by_url(episode.get("url"))
-        if episode_data is None:
+        # add a row to the EPISODE_ROWS list
+        create_episode(episode)
+        # get the cast members that appeared in the episode
+        episode_cast_members = imdb.all_credited(episode.get("url"))
+        if len(episode_cast_members) == 0:
             FAILED_ROWS.append((episode.get("url"),))
             continue
-        logger.info("episode {}".format(episode_data.get("episode")))
-        create_episode(episode_data)
-        # determine which actors listed in the cast are actually cast members
-        # and give them a credit
+        logger.info("episode {}".format(episode.get("episode")))
         cast_member_names = []
-        for actor in episode_data.get("cast"):
-            name = actor.get("name")
-            if name in season_cast_members and name in known_cast:
+        for person in episode_cast_members:
+            name = person["name"]
+            if name in season_cast_members:
                 cast_member_names.append(name)
-        create_episode_credits(set(cast_member_names), season, episode_data.get("episode"))
+        create_episode_credits(
+            set(cast_member_names),
+            episode.get("season"),
+            episode.get("episode")
+        )
 
 
 def run():
@@ -189,21 +190,17 @@ def run():
     for season in range(1, SEASON_COUNT + 1):
         logger.info("Getting Season {}".format(season))
         season_cast_members = season_cast(season)
-        season_data = tomatoes.season(season)
+        rt_season_data = tomatoes.season(season)
 
         get_season_cast(
             season,
-            season_data.get("cast_members"),
+            rt_season_data.get("cast_members"),
             season_cast_members,
             known_cast
         )
 
-        get_episodes(
-            season,
-            season_data.get("episodes"),
-            season_cast_members,
-            known_cast
-        )
+        episodes = imdb.episodes(season)
+        get_imdb_episodes(episodes, season_cast_members)
 
     save_cast_members()
     save_episodes()
