@@ -34,7 +34,8 @@ class AbbrShortMonthTestCase(unittest.TestCase):
         good_dates = [
             "Jan 17, 1940",
             "Oct 01, 1990",
-            "Nov 2, 1978"
+            "Nov 2, 1978",
+            "Feb. 14, 2011"
         ]
         for gd in good_dates:
             date = abbr_month(gd)
@@ -44,8 +45,7 @@ class AbbrShortMonthTestCase(unittest.TestCase):
         bad_dates = [
             None,
             "January 17, 1940",
-            "10-01-1990",
-            "Nov. 2, 1978"
+            "10-01-1990"
         ]
         for bd in bad_dates:
             date = abbr_month(bd)

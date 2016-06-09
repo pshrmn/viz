@@ -33,6 +33,12 @@ def cast_member(description):
         UNCREDITED.search(description) is None
 
 
+def credited(description):
+    if description is None:
+        return False
+    return UNCREDITED.search(description) is None
+
+
 def not_alternate(description):
     """
     Figure out if someone has an alternate role from a regular cast member

@@ -1,6 +1,6 @@
 import unittest
 
-from snl.fetch.helpers.role import cast_member, not_alternate, only_cast
+from snl.fetch.helpers.role import cast_member, not_alternate, only_cast, credited
 
 
 class CastMemberTestCase(unittest.TestCase):
@@ -31,6 +31,19 @@ class NotAlternateTestCase(unittest.TestCase):
         ]
         for (desc, expected) in descs:
             self.assertEqual(not_alternate(desc), expected)
+
+
+class CreditedTestCase(unittest.TestCase):
+
+    def test_matches_uncredited_reg(self):
+        descs = [
+            ("Bill Nye (uncredited)", False),
+            ("Various", True),
+            ("Uncredited", True),
+            ("Neil Degrasse Tyson (Uncredited)", True)
+        ]
+        for (desc, expected) in descs:
+            self.assertEqual(credited(desc), expected)
 
 
 class OnlyCastTestCase(unittest.TestCase):

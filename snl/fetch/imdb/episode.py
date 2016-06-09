@@ -5,7 +5,7 @@ from urllib.parse import urlparse, urlunparse
 
 from gatherer import Page
 from snl.fetch import fetcher
-from snl.fetch.helpers import only_cast
+from snl.fetch.helpers import only_cast, credited
 
 LOCAL_DIR = os.path.dirname(__file__)
 RULES_DIR = os.path.join(LOCAL_DIR, "rules")
@@ -72,6 +72,10 @@ def all_cast(episode_url):
     else:
         cast_data = cast_page.gather(dom)
         return [clean_actor(actor) for actor in cast_data.get("actors")]
+
+
+def all_credited(episode_url):
+    return [actor for actor in all_cast(episode_url) if credited(actor.get("description"))]
 
 
 def only_regular_cast(episode_url):
