@@ -67,13 +67,23 @@ def clean_profile(data):
     }
 
 
+def url_from_name(name):
+    url_name = name.lower().replace(" ", "_").replace(".", "")
+    return "https://www.rottentomatoes.com/celebrity/{}/".format(url_name)
+
+
 def profile(url):
     dom = fetcher.get(url)
     if dom is None:
-        print("failed to get episode for url {}".format(url))
+        print("failed to get actor for url {}".format(url))
         return
     data = actor_page.gather(dom)
     if data is None:
-        print("failed to get data for episode at url {}".format(url))
+        print("failed to get data for actor at url {}".format(url))
         return
     return clean_profile(data)
+
+
+def profile_from_name(name):
+    url = url_from_name(name)
+    return profile(url)

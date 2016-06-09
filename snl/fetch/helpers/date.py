@@ -43,3 +43,16 @@ def day_month_year(date_string):
         return datetime.strptime(clean_string, "%d %b %Y").date()
     except ValueError:
         return None
+
+
+def Y_m_d(date_string):
+    """
+    date format: <year>-<month>-<day> eg 1980-12-02
+    """
+    if date_string is None:
+        return None
+    clean_string = re.sub(r"\s+", " ", date_string).replace(".", "").replace(",", "")
+    try:
+        return datetime.strptime(clean_string, "%Y-%m-%d").date()
+    except ValueError:
+        return None
