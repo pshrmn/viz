@@ -36,6 +36,9 @@ Known Deficiencies:
     Brooks Wheelan
     Pete Davidson
     Jon Rudnitsky
+2.  On Wikipedia's SNL Season 6 page, Patrick Weathers does not have a bio
+    page, so there is no link to it to get his name/url. Instead a citation is
+    matched, which returns a text value of [6].
 """
 
 
@@ -74,13 +77,12 @@ def save_failed():
 def writeable_date(date):
     if date is None:
         return
+    elif isinstance(date, str):
+        return date
     return date.strftime("%Y-%m-%d")
 
 
 def create_episode(data):
-    """
-    add an Episode to the database and return the row
-    """
     season = data.get("season")
     episode = data.get("episode")
     air_date = data.get("air_date")
@@ -88,10 +90,6 @@ def create_episode(data):
 
 
 def create_episode_credits(member_names, season, episode):
-    """
-    for each cast member that appeared in an episode, add a Credit to them
-    in the database
-    """
     for name in member_names:
         CREDIT_ROWS.append((name, season, episode))
 
@@ -125,8 +123,8 @@ def season_cast(season):
         cast_members = full_cast.get(member_type)
         for member in cast_members:
             name = member["name"]
-            # check if the actor exists in our db
-            season_cast_members[name] = member_type
+            member["role"] = member_type
+            season_cast_members[name] = member
     return season_cast_members
 
 
@@ -139,22 +137,48 @@ def fetch_cast_member(url):
     return create_cast_member(profile)
 
 
-def get_season_cast(season, cast_members, season_cast_members, known_cast):
-    # for each actor that appears in a season, check if they are a cast
-    # member. if they are, make sure that their data has been fetched
-    cast_member_roles = []
-    for actor in cast_members:
-        name = actor.get("name")
-        url = actor.get("url")
-        if name not in season_cast_members:
-            continue
-        elif name not in known_cast:
-            cast_member = fetch_cast_member(url)
-            if cast_member is not None:
-                known_cast[name] = cast_member
-    for (name, role) in season_cast_members.items():
-        cast_member_roles.append((name, role))
-    create_season_roles(set(cast_member_roles), season)
+def complete_cast_member(data):
+    keys = ["name", "birthdate", "hometown", "gender"]
+    for key in keys:
+        if data.get(key) is None:
+            return False
+    return True
+
+
+def get_cast_member_profile(cast_member):
+    """
+    first, try to get the information from wikipedia
+    then, try to get the information from rotten tomatoes
+    """
+    # only cast member without a wikipedia page...
+    if cast_member["name"] == "[6]":
+        return create_cast_member({
+            "name": "Patrick Weathers",
+            "birthdate": "1954-01-22",
+            "hometown": "Hattieburg, Mississippia, USA",
+            "gender": "male"
+        })
+    name = cast_member.get("name")
+
+    data = wiki.profile(cast_member.get("profile"))
+    if data is not None and complete_cast_member(data):
+        logger.info("{} from wikipedia".format(name))
+        return create_cast_member(data)
+    # if the wikipedia data was incomplete, get data from rotten tomatoes
+    # merge that if there was partial wiki information
+    rt_data = tomatoes.profile_from_name(name)
+    if rt_data is not None:
+        if data is not None:
+            data.update(rt_data)
+        else:
+            data = rt_data
+        logger.info("{} from rotten tomatoes".format(name))
+    # if we have any data, create the row
+    if data is not None:
+        return create_cast_member(data)
+    logger.warning("{} <MISSING>".format(name))
+    FAILED_ROWS.append((name,))
+    return
 
 
 def get_imdb_episodes(episodes, season_cast_members):
@@ -180,21 +204,19 @@ def get_imdb_episodes(episodes, season_cast_members):
 
 
 def run():
-    # a dict containing references to all actors that are in the database
-    # the key is the actor's name
     known_cast = {}
 
     for season in range(1, SEASON_COUNT + 1):
         logger.info("Getting Season {}".format(season))
         season_cast_members = season_cast(season)
-        rt_season_data = tomatoes.season(season)
 
-        get_season_cast(
-            season,
-            rt_season_data.get("cast_members"),
-            season_cast_members,
-            known_cast
-        )
+        cast_member_roles = []
+        for name in season_cast_members.keys():
+            cast_member = season_cast_members[name]
+            if name not in known_cast:
+                known_cast[name] = get_cast_member_profile(cast_member)
+            cast_member_roles.append((name, cast_member.get("role")))
+        create_season_roles(set(cast_member_roles), season)
 
         episodes = imdb.episodes(season)
         get_imdb_episodes(episodes, season_cast_members)
