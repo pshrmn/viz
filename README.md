@@ -6,28 +6,16 @@ Sourced from rotten tomatoes, wikipedia, and imdb.
 
 ###Scripts
 
-These are liable to break if the markup of any of the respective web pages changes.
-
-####All Cast Data
-
-Get a list of main cast and other cast members (eg featured players) for every season of Saturday Night Live (currently 1-41).
+1. Get the data
 
 ```
-python -m scripts.wiki_all_casts
+python -m scripts.full_data
 ```
 
-####Season Cast Data
+2. Fill in data for incomplete cast members (in `data/full/cast_members.csv`) and save as `data/full/full_cast_members.csv`
 
-Get a list of main cast and other cast members (eg featured players) for a given season of Saturday Night Live (currently 1-41).
-
-```
-python -m scripts.wiki_season_cast --season <season number>
-```
-
-####Actor Data
-
-Get basic profile information about an actor from Rotten Tomatoes
+3. Import the data into a database
 
 ```
-python -m scripts.rt_actor_data --name <actor's name> --url <rotten tomatoes profile url>
+python -m scripts.db_import
 ```

@@ -201,6 +201,7 @@ def get_imdb_episodes(episodes, season_cast_members):
         cast_member_names = []
         for person in episode_cast_members:
             name = only_name(person["name"])
+            # only give credits to cast members
             if name in season_cast_members:
                 cast_member_names.append(name)
         create_episode_credits(
@@ -211,14 +212,14 @@ def get_imdb_episodes(episodes, season_cast_members):
 
 
 def run():
-    known_cast = {}
+    known_cast = set()
 
     for season in range(1, SEASON_COUNT + 1):
         logger.info("Getting Season {}".format(season))
         season_cast_members = season_cast(season)
 
         cast_member_roles = []
-        season_cast_names = {}
+        season_cast_names = set()
         for name in season_cast_members.keys():
             cast_member = season_cast_members[name]
             if name not in known_cast:
@@ -226,8 +227,8 @@ def run():
                 # use the name returned by get_cast_member_profile
                 if cast_member_tuple is not None:
                     name = cast_member_tuple[0]
-                known_cast[name] = cast_member_tuple
-            season_cast_names[name] = True
+                known_cast.add(name)
+            season_cast_names.add(name)
             cast_member_roles.append((name, cast_member.get("role")))
         create_season_roles(set(cast_member_roles), season)
 

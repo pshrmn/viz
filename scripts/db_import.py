@@ -1,10 +1,9 @@
 import os
 import csv
 from datetime import datetime
+import argparse
 
 from snl import db
-
-session = db.connect("sqlite:///snl.db")
 
 SCRIPTS_DIR = os.path.dirname(__file__)
 BASE_DIR = os.path.abspath(os.path.join(SCRIPTS_DIR, os.pardir))
@@ -51,7 +50,7 @@ def parse_date(date):
     return datetime.strptime(date, "%Y-%m-%d")
 
 
-def run():
+def run(session):
     # keep track of the episode ids in the database
     saved_episodes = {}
     # keep track of the cast member ids in the database
@@ -126,4 +125,11 @@ def run():
     session.commit()
 
 if __name__ == "__main__":
-    run()
+    parser = argparse.ArgumentParser(description="Import the data from csv files to a database")
+    parser.add_argument
+    parser.add_argument("--database", "-DB", dest="db_url", default="sqlite:///snl.db",
+                        help="The database's URL")
+    args = parser.parse_args()
+
+    session = db.connect(args.db_url)
+    run(session)
