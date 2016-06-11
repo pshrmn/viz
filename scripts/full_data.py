@@ -1,6 +1,7 @@
 import logging
 import csv
 import os
+import re
 
 from snl.fetch import wiki, tomatoes, imdb
 
@@ -31,19 +32,28 @@ FAILED_ROWS = []
 
 """
 Known Deficiencies:
-1.  Several actors have incomplete profiles on Rotten Tomatoes. These include:
-    John Milhiser
-    Brooks Wheelan
-    Pete Davidson
-    Jon Rudnitsky
-2.  On Wikipedia's SNL Season 6 page, Patrick Weathers does not have a bio
-    page, so there is no link to it to get his name/url. Instead a citation is
-    matched, which returns a text value of [6].
+1.  Problem: Several actors have incomplete profiles even when data is
+    gathered from both Wikipedia and Rotten Tomatoes
+    Solution: Manual lookup, save as full_cast_members.csv
+2.  Problem: On Wikipedia's SNL Season 6 page, Patrick Weathers does not have a
+    bio page, so there is no link to it to get his name/url. Instead a citation
+    is matched, which returns a text value of [6].
+    Solution: Manually create data in get_cast_member_profile
+3.  Problem: Season 10 Episode 16 on IMDB only lists the year it was aired, not
+    the date. That episode aired on 1985-04-06
+    Solution: Manually set in create_episode
+4.  Problem: Some actors have different names used on different sites. The
+    primary cause of this is name change from marriage. For this, the actor's
+    current name will be used since most resources will refer to them using it.
+    Solution: Use the name returned in the tuple by get_cast_member_profile
+5.  Problem: Along with #4, some actors have additional descriptions alongside
+    their name when they have a common name.
+    Solution: only_name regex matches the " (...)" pattern and removes it
 """
 
 
 def save_csv(header, rows, filename):
-    with open("{}/{}".format(OUTPUT_DIR, filename), "w", newline="") as fp:
+    with open("{}/{}".format(OUTPUT_DIR, filename), "w", newline="", encoding="utf-8") as fp:
         writer = csv.writer(fp)
         writer.writerow(header)
         writer.writerows(rows)
@@ -82,10 +92,16 @@ def writeable_date(date):
     return date.strftime("%Y-%m-%d")
 
 
+def only_name(name):
+    return re.sub(r"\s+\(.+\)", "", name)
+
+
 def create_episode(data):
     season = data.get("season")
     episode = data.get("episode")
     air_date = data.get("air_date")
+    if season == 10 and episode == 16:
+        air_date = "1985-04-06"
     EPISODE_ROWS.append((season, episode, writeable_date(air_date)))
 
 
@@ -95,7 +111,7 @@ def create_episode_credits(member_names, season, episode):
 
 
 def create_cast_member(data):
-    name = data.get("name")
+    name = only_name(data.get("name"))
     dob = data.get("birthdate")
     hometown = data.get("hometown")
     gender = data.get("gender")
@@ -126,15 +142,6 @@ def season_cast(season):
             member["role"] = member_type
             season_cast_members[name] = member
     return season_cast_members
-
-
-def fetch_cast_member(url):
-    profile = tomatoes.profile(url)
-    if profile is None:
-        FAILED_ROWS.append((url,))
-        return
-    logger.info(profile.get("name"))
-    return create_cast_member(profile)
 
 
 def complete_cast_member(data):
@@ -193,7 +200,7 @@ def get_imdb_episodes(episodes, season_cast_members):
         logger.info("episode {}".format(episode.get("episode")))
         cast_member_names = []
         for person in episode_cast_members:
-            name = person["name"]
+            name = only_name(person["name"])
             if name in season_cast_members:
                 cast_member_names.append(name)
         create_episode_credits(
@@ -211,15 +218,21 @@ def run():
         season_cast_members = season_cast(season)
 
         cast_member_roles = []
+        season_cast_names = {}
         for name in season_cast_members.keys():
             cast_member = season_cast_members[name]
             if name not in known_cast:
-                known_cast[name] = get_cast_member_profile(cast_member)
+                cast_member_tuple = get_cast_member_profile(cast_member)
+                # use the name returned by get_cast_member_profile
+                if cast_member_tuple is not None:
+                    name = cast_member_tuple[0]
+                known_cast[name] = cast_member_tuple
+            season_cast_names[name] = True
             cast_member_roles.append((name, cast_member.get("role")))
         create_season_roles(set(cast_member_roles), season)
 
         episodes = imdb.episodes(season)
-        get_imdb_episodes(episodes, season_cast_members)
+        get_imdb_episodes(episodes, season_cast_names)
 
     save_cast_members()
     save_episodes()
