@@ -1,3 +1,7 @@
+"""
+This relies on the csv files created by full_data
+"""
+
 import os
 import csv
 from datetime import datetime
@@ -127,9 +131,10 @@ def run(session):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Import the data from csv files to a database")
     parser.add_argument
-    parser.add_argument("--database", "-DB", dest="db_url", default="sqlite:///snl.db",
+    parser.add_argument("--database", "-DB", dest="db_url", default="sqlite:///data/snl.db",
                         help="The database's URL")
+    parser.add_argument("--echo", "-E", dest="echo", default=False, help="echo sql statements")
     args = parser.parse_args()
 
-    session = db.connect(args.db_url)
+    session = db.connect(args.db_url, args.echo)
     run(session)
