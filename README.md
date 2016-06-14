@@ -19,3 +19,9 @@ python -m scripts.full_data
 ```
 python -m scripts.db_import
 ```
+
+4. Compile some data on cast members and seasons
+
+```
+python -m scripts.stats
+```

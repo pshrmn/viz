@@ -7,6 +7,7 @@ def starting_age(session):
     """
     for each cast member, determine their age during the episode that they have
     their first credited appearance during
+    returns a list sorted based on age of the cast member at the first episode
     """
     first_credits = session.query(func.min(Credit.episode_id))\
         .join(CastMember)\
@@ -20,7 +21,7 @@ def starting_age(session):
         episode_id, name, dob, air_date = credit
         if dob is None:
             continue
-        age = air_date - dob
+        age = (air_date - dob).days
         ages_at_first_credit.append((name, age, dob, air_date))
     sorted_ages = sorted(ages_at_first_credit, key=lambda t: t[1])
     return sorted_ages
@@ -28,7 +29,7 @@ def starting_age(session):
 
 def ending_age(session):
     """
-    for each cast member,d etermine their age during the psisode that they have
+    for each cast member, determine their age during the psisode that they have
     their last credited appearance during (this will include current actors, so
     this won't necessarily actually be their ending age)
     """
@@ -44,10 +45,22 @@ def ending_age(session):
         episode_id, name, dob, air_date = credit
         if dob is None:
             continue
-        age = air_date - dob
+        age = (air_date - dob).days
         ages_at_first_credit.append((name, age, dob, air_date))
     sorted_ages = sorted(ages_at_first_credit, key=lambda t: t[1])
     return sorted_ages
+
+
+def total_credits(session):
+    """
+    for each cast member, determine the number of episodes that they are credited
+    as appearing in
+    """
+    return session.query(func.count(Credit.cast_member_id))\
+        .join(CastMember)\
+        .add_column(CastMember.name)\
+        .group_by(Credit.cast_member_id)\
+        .all()
 
 
 def season_gender_ratios(session):
@@ -80,7 +93,17 @@ def season_gender_ratios(session):
     for season in seasons.values():
         season["male"] = season["main"]["male"] + season["featured"]["male"]
         season["female"] = season["main"]["female"] + season["featured"]["female"]
-        season["total"] = season["male"] + season["female"]
+        season["total_cast"] = season["male"] + season["female"]
+    return seasons
+
+
+def episodes_per_season(session):
+    """
+    a list of episodes per season (each value is a tuple of the season # and the # of episodes)
+    """
+    seasons = session.query(Episode.season, func.count(Episode.season))\
+        .group_by(Episode.season)\
+        .all()
     return seasons
 
 
@@ -92,7 +115,6 @@ def cast_member_role_seasons(session):
     all_roles = session.query(CastMember, Role)\
         .filter(CastMember.id == Role.cast_member_id)\
         .all()
-    print(len(all_roles))
     cast_members = {}
     for (cast_member, role) in all_roles:
         name = cast_member.name

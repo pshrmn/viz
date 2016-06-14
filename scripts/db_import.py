@@ -9,34 +9,30 @@ import argparse
 
 from snl import db
 
-SCRIPTS_DIR = os.path.dirname(__file__)
-BASE_DIR = os.path.abspath(os.path.join(SCRIPTS_DIR, os.pardir))
-DATA_DIR = os.path.join(BASE_DIR, "data", "full")
 
-
-def load_cast_members():
+def load_cast_members(csv_path):
     CAST_MEMBER_FILENAME = "full_cast_members.csv"
-    return load_csv_file(CAST_MEMBER_FILENAME)
+    return load_csv_file(os.path.join(csv_path, CAST_MEMBER_FILENAME))
 
 
-def load_episodes():
+def load_episodes(csv_path):
     EPISODE_FILENAME = "episodes.csv"
-    return load_csv_file(EPISODE_FILENAME)
+    return load_csv_file(os.path.join(csv_path, EPISODE_FILENAME))
 
 
-def load_roles():
+def load_roles(csv_path):
     ROLE_FILENAME = "roles.csv"
-    return load_csv_file(ROLE_FILENAME)
+    return load_csv_file(os.path.join(csv_path, ROLE_FILENAME))
 
 
-def load_credits():
+def load_credits(csv_path):
     CREDIT_FILENAME = "credits.csv"
-    return load_csv_file(CREDIT_FILENAME)
+    return load_csv_file(os.path.join(csv_path, CREDIT_FILENAME))
 
 
 def load_csv_file(filename):
     rows = []
-    with open(os.path.join(DATA_DIR, filename), newline="", encoding="utf-8") as fp:
+    with open(filename, newline="", encoding="utf-8") as fp:
         reader = csv.reader(fp)
         first = True
         for row in reader:
@@ -54,7 +50,7 @@ def parse_date(date):
     return datetime.strptime(date, "%Y-%m-%d")
 
 
-def run(session):
+def run(session, csv_path):
     # keep track of the episode ids in the database
     saved_episodes = {}
     # keep track of the cast member ids in the database
@@ -62,7 +58,7 @@ def run(session):
 
     # save all of the cast members at once
     cms_to_save = []
-    for cm in load_cast_members():
+    for cm in load_cast_members(csv_path):
         name, dob, hometown, gender = cm
         if hometown == "":
             hometown = None
@@ -76,7 +72,7 @@ def run(session):
 
     # save all of the rows at once
     eps_to_save = []
-    for ep in load_episodes():
+    for ep in load_episodes(csv_path):
         season, episode, air_date = ep
         air_date = parse_date(air_date)
         episode_row = db.Episode(air_date=air_date, season=season, episode=episode)
@@ -91,7 +87,7 @@ def run(session):
 
     unknowns = set()
     roles_to_save = []
-    for role in load_roles():
+    for role in load_roles(csv_path):
         cast_member, season, _type = role
         if cast_member not in saved_cast_members:
             print("Unknown Cast Member for role: {}\n{}".format(cast_member, role))
@@ -104,7 +100,7 @@ def run(session):
     session.add_all(roles_to_save)
 
     credits_to_save = []
-    for credit in load_credits():
+    for credit in load_credits(csv_path):
         cast_member, season, episode = credit
         if cast_member not in saved_cast_members:
             print("Unknown Cast Member for credit: {}\n{}".format(cast_member, credit))
@@ -133,8 +129,10 @@ if __name__ == "__main__":
     parser.add_argument
     parser.add_argument("--database", "-DB", dest="db_url", default="sqlite:///data/snl.db",
                         help="The database's URL")
-    parser.add_argument("--echo", "-E", dest="echo", default=False, help="echo sql statements")
+    parser.add_argument("--echo", "-E", dest="echo", action="store_true", help="echo sql statements")
+    parser.add_argument("--csv", dest="csv", default="./data/full/",
+                        help="path to folder that contains the csv files")
     args = parser.parse_args()
 
     session = db.connect(args.db_url, args.echo)
-    run(session)
+    run(session, args.csv)
