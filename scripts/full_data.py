@@ -40,7 +40,7 @@ Known Deficiencies:
     is matched, which returns a text value of [6].
     Solution: Manually create data in get_cast_member_profile
 3.  Problem: Season 10 Episode 16 on IMDB only lists the year it was aired, not
-    the date. That episode aired on 1985-04-06
+    the date. That episode aired on 1985-03-30
     Solution: Manually set in create_episode
 4.  Problem: Some actors have different names used on different sites. The
     primary cause of this is name change from marriage. For this, the actor's
@@ -49,6 +49,8 @@ Known Deficiencies:
 5.  Problem: Along with #4, some actors have additional descriptions alongside
     their name when they have a common name.
     Solution: only_name regex matches the " (...)" pattern and removes it
+3.  Problem: IMDB includes two episodes that are not considered episodes elsewhere:
+    S2 E14 (Live from Mardi Gras) and S10 E15 (SNL Film Festival).
 """
 
 
@@ -100,8 +102,8 @@ def create_episode(data):
     season = data.get("season")
     episode = data.get("episode")
     air_date = data.get("air_date")
-    if season == 10 and episode == 16:
-        air_date = "1985-04-06"
+    if season == 10 and episode == 15:
+        air_date = "1985-03-30"
     EPISODE_ROWS.append((season, episode, writeable_date(air_date)))
 
 
@@ -233,6 +235,16 @@ def run():
         create_season_roles(set(cast_member_roles), season)
 
         episodes = imdb.episodes(season)
+        if season == 2:
+            episodes.pop(13)
+            for episode in episodes:
+                if episode["episode"] > 13:
+                    episode["episode"] -= 1
+        elif season == 10:
+            episodes.pop(14)
+            for episode in episodes:
+                if episode["episode"] > 14:
+                    episode["episode"] -= 1
         get_imdb_episodes(episodes, season_cast_names)
 
     save_cast_members()
