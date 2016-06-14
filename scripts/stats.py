@@ -37,15 +37,16 @@ def cast_member_data(session):
             continue
         cast_members[name]["credits"] = count
 
-    return cast_members
+    return list(cast_members.values())
 
 
 def season_data(session):
     seasons = queries.season_gender_ratios(session)
     for season in queries.episodes_per_season(session):
         number, count = season
+        seasons[number]["season"] = number
         seasons[number]["episodes"] = count
-    return seasons
+    return list(seasons.values())
 
 
 def run(session):
