@@ -3,6 +3,93 @@ from sqlalchemy import func
 from .models import CastMember, Episode, Credit, Role
 
 
+"""
+Season Queries
+"""
+
+
+def season_gender_ratios(session):
+    """
+    the count of male and female cast members in a given season, both in general
+    and by the type of their role
+    """
+    all_roles = session.query(Role)\
+        .join(CastMember)\
+        .add_column(CastMember.gender)\
+        .all()
+    seasons = {}
+    for role, gender in all_roles:
+        if role.season not in seasons:
+            seasons[role.season] = {
+                "main": {
+                    "male": 0,
+                    "female": 0
+                },
+                "featured": {
+                    "male": 0,
+                    "female": 0
+                }
+            }
+        if role.main:
+            seasons[role.season]["main"][gender] += 1
+        else:
+            seasons[role.season]["featured"][gender] += 1
+
+    for season in seasons.values():
+        season["male"] = season["main"]["male"] + season["featured"]["male"]
+        season["female"] = season["main"]["female"] + season["featured"]["female"]
+        season["total_cast"] = season["male"] + season["female"]
+    return seasons
+
+
+def episodes_per_season(session):
+    """
+    a list of episodes per season (each value is a tuple of the season # and the # of episodes)
+    """
+    seasons = session.query(Episode.season, func.count(Episode.season))\
+        .group_by(Episode.season)\
+        .all()
+    return seasons
+
+"""
+Cast Member Queries
+"""
+
+
+def all_cast_members(session):
+    cast_members = {}
+    for member in session.query(CastMember).all():
+        cast_members[member.name] = {
+            "name": member.name,
+            "id": member.id,
+            "gender": member.gender
+        }
+    return cast_members
+
+
+def cast_member_role_seasons(session):
+    """
+    determine which seasons an actor was a main cast member and which they were
+    a featured player in
+    """
+    all_roles = session.query(CastMember, Role)\
+        .filter(CastMember.id == Role.cast_member_id)\
+        .all()
+    cast_members = {}
+    for (cast_member, role) in all_roles:
+        name = cast_member.name
+        if name not in cast_members:
+            cast_members[name] = {
+                "main": [],
+                "featured": []
+            }
+        if role.main:
+            cast_members[name]["main"].append(role.season)
+        else:
+            cast_members[name]["featured"].append(role.season)
+    return cast_members
+
+
 def starting_age(session):
     """
     for each cast member, determine their age during the episode that they have
@@ -63,72 +150,3 @@ def total_credits(session):
         .add_column(CastMember.name)\
         .group_by(Credit.cast_member_id)\
         .all()
-
-
-def season_gender_ratios(session):
-    """
-    the count of male and female cast members in a given season, both in general
-    and by the type of their role
-    """
-    all_roles = session.query(Role)\
-        .join(CastMember)\
-        .add_column(CastMember.gender)\
-        .all()
-    seasons = {}
-    for role, gender in all_roles:
-        if role.season not in seasons:
-            seasons[role.season] = {
-                "main": {
-                    "male": 0,
-                    "female": 0
-                },
-                "featured": {
-                    "male": 0,
-                    "female": 0
-                }
-            }
-        if role.main:
-            seasons[role.season]["main"][gender] += 1
-        else:
-            seasons[role.season]["featured"][gender] += 1
-
-    for season in seasons.values():
-        season["male"] = season["main"]["male"] + season["featured"]["male"]
-        season["female"] = season["main"]["female"] + season["featured"]["female"]
-        season["total_cast"] = season["male"] + season["female"]
-    return seasons
-
-
-def episodes_per_season(session):
-    """
-    a list of episodes per season (each value is a tuple of the season # and the # of episodes)
-    """
-    seasons = session.query(Episode.season, func.count(Episode.season))\
-        .group_by(Episode.season)\
-        .all()
-    return seasons
-
-
-def cast_member_role_seasons(session):
-    """
-    determine which seasons an actor was a main cast member and which they were
-    a featured player in
-    """
-    all_roles = session.query(CastMember, Role)\
-        .filter(CastMember.id == Role.cast_member_id)\
-        .all()
-    cast_members = {}
-    for (cast_member, role) in all_roles:
-        name = cast_member.name
-        if name not in cast_members:
-            cast_members[name] = {
-                "name": name,
-                "id": cast_member.id,
-                "main": [],
-                "featured": []
-            }
-        if role.main:
-            cast_members[name]["main"].append(role.season)
-        else:
-            cast_members[name]["featured"].append(role.season)
-    return cast_members

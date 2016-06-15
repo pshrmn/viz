@@ -13,7 +13,12 @@ def writeable_date(date):
 
 
 def cast_member_data(session):
-    cast_members = queries.cast_member_role_seasons(session)
+
+    cast_members = queries.all_cast_members(session)
+
+    for name, roles in queries.cast_member_role_seasons(session).items():
+        cast_members[name].update(roles)
+
     for row in queries.starting_age(session):
         name, age, dob, air_date = row
         if name not in cast_members:
