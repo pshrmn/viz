@@ -27,7 +27,7 @@ def starting_age(session):
     return sorted_ages
 
 
-def ending_age(session):
+def ending_age(session, current_season):
     """
     for each cast member, determine their age during the psisode that they have
     their last credited appearance during (this will include current actors, so
@@ -36,18 +36,20 @@ def ending_age(session):
     first_credits = session.query(func.max(Credit.episode_id))\
         .join(CastMember)\
         .join(Episode)\
-        .add_columns(CastMember.name, CastMember.dob, Episode.air_date)\
+        .add_columns(CastMember.name, CastMember.dob, Episode.air_date, Episode.season)\
         .group_by(Credit.cast_member_id)
 
-    ages_at_first_credit = []
+    ages_at_last_credit = []
     for credit in first_credits.all():
-        # episode id, name, dob, air_date
-        episode_id, name, dob, air_date = credit
-        if dob is None:
+        # episode id, name, dob, air_date, season
+        episode_id, name, dob, air_date, season = credit
+        # skip if the cast member has no known birthdate or their last credit
+        # is in the most current season
+        if dob is None or season == current_season:
             continue
         age = (air_date - dob).days
-        ages_at_first_credit.append((name, age, dob, air_date))
-    sorted_ages = sorted(ages_at_first_credit, key=lambda t: t[1])
+        ages_at_last_credit.append((name, age, dob, air_date))
+    sorted_ages = sorted(ages_at_last_credit, key=lambda t: t[1])
     return sorted_ages
 
 

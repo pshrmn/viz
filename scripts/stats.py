@@ -22,7 +22,8 @@ def cast_member_data(session):
             "start_age": age,
             "first_episode": writeable_date(air_date)
         })
-    for row in queries.ending_age(session):
+    # hard-coded for the most recent season
+    for row in queries.ending_age(session, 41):
         name, age, dob, air_date = row
         if name not in cast_members:
             continue

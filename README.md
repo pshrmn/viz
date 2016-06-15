@@ -1,4 +1,4 @@
-#Saturday Night Life
+#Saturday Night Lives
 
 Data on various Saturday Night Live cast members and their careers
 
