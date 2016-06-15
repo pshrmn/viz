@@ -123,6 +123,7 @@ def cast_member_role_seasons(session):
         if name not in cast_members:
             cast_members[name] = {
                 "name": name,
+                "id": cast_member.id,
                 "main": [],
                 "featured": []
             }
