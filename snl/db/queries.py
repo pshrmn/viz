@@ -21,7 +21,7 @@ def season_gender_ratios(session):
     for role, gender in all_roles:
         if role.season not in seasons:
             seasons[role.season] = {
-                "main": {
+                "repertory": {
                     "male": 0,
                     "female": 0
                 },
@@ -30,14 +30,14 @@ def season_gender_ratios(session):
                     "female": 0
                 }
             }
-        if role.main:
-            seasons[role.season]["main"][gender] += 1
+        if role.repertory:
+            seasons[role.season]["repertory"][gender] += 1
         else:
             seasons[role.season]["featured"][gender] += 1
 
     for season in seasons.values():
-        season["male"] = season["main"]["male"] + season["featured"]["male"]
-        season["female"] = season["main"]["female"] + season["featured"]["female"]
+        season["male"] = season["repertory"]["male"] + season["featured"]["male"]
+        season["female"] = season["repertory"]["female"] + season["featured"]["female"]
         season["total_cast"] = season["male"] + season["female"]
     return seasons
 
@@ -69,7 +69,7 @@ def all_cast_members(session):
 
 def cast_member_role_seasons(session):
     """
-    determine which seasons an actor was a main cast member and which they were
+    determine which seasons an actor was a repertory cast member and which they were
     a featured player in
     """
     all_roles = session.query(CastMember, Role)\
@@ -80,11 +80,11 @@ def cast_member_role_seasons(session):
         name = cast_member.name
         if name not in cast_members:
             cast_members[name] = {
-                "main": [],
+                "repertory": [],
                 "featured": []
             }
-        if role.main:
-            cast_members[name]["main"].append(role.season)
+        if role.repertory:
+            cast_members[name]["repertory"].append(role.season)
         else:
             cast_members[name]["featured"].append(role.season)
     return cast_members

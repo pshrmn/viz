@@ -48,7 +48,7 @@ class Episode(Base):
 class Role(Base):
     """
     A Role is the role for a given cast member in a given season.
-    If main is True the actor was a "main" cast member, otherwise
+    If repertory is True the actor was a "repertory" cast member, otherwise
     he/she was a "featured player".
     """
     __tablename__ = "roles"
@@ -56,13 +56,13 @@ class Role(Base):
     id = Column(Integer, primary_key=True)
     cast_member_id = Column(Integer, ForeignKey("cast_members.id"))
     season = Column(Integer)
-    main = Column(Boolean)
+    repertory = Column(Boolean)
 
     cast_member = relationship(CastMember, backref="roles")
 
     def __repr__(self):
-        return "<Role(cast_member_id={}, season={}, main={})>".format(
-               self.cast_member_id, self.season, self.main)
+        return "<Role(cast_member_id={}, season={}, repertory={})>".format(
+               self.cast_member_id, self.season, self.repertory)
 
 
 class Credit(Base):

@@ -126,18 +126,18 @@ def create_season_roles(cast_members, season):
     """
     create a Role for every cast member in a given season
     """
-    for (name, is_main) in cast_members:
-        ROLE_ROWS.append((name, season, is_main))
+    for (name, is_repertory) in cast_members:
+        ROLE_ROWS.append((name, season, is_repertory))
 
 
 def season_cast(season):
     """
     return a dict where the keys are cast members for a given season and the
-    values are the cast type (either "main_cast" or "featured_players")
+    values are the cast type (either "repertory_cast" or "featured_players")
     """
     season_cast_members = {}
     full_cast = wiki.cast(season)
-    for member_type in ["main_cast", "featured_players"]:
+    for member_type in ["repertory", "featured"]:
         cast_members = full_cast.get(member_type)
         for member in cast_members:
             name = member["name"]

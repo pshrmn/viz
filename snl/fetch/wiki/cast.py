@@ -3,7 +3,7 @@ import os
 
 from gatherer import Page
 from snl.fetch import fetcher
-from snl.fetch.helpers import main_cast_member
+from snl.fetch.helpers import repertory_cast_member
 
 LOCAL_DIR = os.path.dirname(__file__)
 RULES_DIR = os.path.join(LOCAL_DIR, "rules")
@@ -15,17 +15,17 @@ cast_page = Page.from_json(cast_json)
 
 
 def sort_actors(casts):
-    main = []
+    repertory = []
     featured = []
     for cast_group in casts:
         for members in cast_group.get("members"):
-            if main_cast_member(members.get("description")):
-                main.extend(members.get("actors"))
+            if repertory_cast_member(members.get("description")):
+                repertory.extend(members.get("actors"))
             else:
                 featured.extend(members.get("actors"))
     return {
-        "main_cast": main,
-        "featured_players": featured
+        "repertory": repertory,
+        "featured": featured
     }
 
 
@@ -51,20 +51,20 @@ def cast(season):
         ]
     }
 
-    The main cast members will always be in a column which includes the word
+    The repertory cast members will always be in a column which includes the word
     "Repertory" in it. For the purposes of this, cast members in any column
     that does not contain the word "Repertory" in its title will be considered
     "Featured Players".
 
     The return dict will have the form:
     {
-        "main_cast": [
+        "repertory": [
             {
                 "name": <string>,
                 "profile": <string>
             }
         ],
-        "featured_players": [
+        "featured": [
             {
                 "name": <string>,
                 "profile": <string>

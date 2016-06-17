@@ -95,7 +95,7 @@ def run(session, csv_path):
             continue
         cast_member_row = saved_cast_members[cast_member]
         cast_member_id = cast_member_row.id
-        role = db.Role(cast_member_id=cast_member_id, season=season, main=_type == "main_cast")
+        role = db.Role(cast_member_id=cast_member_id, season=season, repertory=_type == "repertory")
         roles_to_save.append(role)
     session.add_all(roles_to_save)
 

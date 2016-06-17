@@ -1,6 +1,6 @@
 import unittest
 
-from snl.fetch.helpers.cast import main_cast_member
+from snl.fetch.helpers.cast import repertory_cast_member
 
 
 class CastMemberTestCase(unittest.TestCase):
@@ -14,7 +14,7 @@ class CastMemberTestCase(unittest.TestCase):
             (None, False)
         ]
         for (desc, expected) in descs:
-            self.assertEqual(main_cast_member(desc), expected)
+            self.assertEqual(repertory_cast_member(desc), expected)
 
 
 if __name__ == "__main__":
