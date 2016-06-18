@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Saturday Night Lives</title>
+  <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/index.css">
+</head>
+<body>
+  <section id="intro">
+    <h1>Saturday Night Lives</h1>
+    <p>
+      Statistics on the cast members behind the show.
+    </p>
+    <p>
+      Data sourced from <a href="https://en.wikipedia.org/wiki/Main_Page">Wikipedia</a>, <a href="https://www.rottentomatoes.com/">Rotten Tomatoes</a>, and <a href="http://www.imdb.com/">IMDb</a> using <a href="https://github.com/pshrmn/gatherer">Gatherer</a>.
+    </p>
+  </section>
+
+  <section id="seasons">
+    <h2>Season Statistics</h2>
+    <p>
+      Saturday Night Live has been on the air for 41 seasons. Across these seasons, there have been 808 episodes. The season with the highest number of episodes was the first season, with 24 episodes. The 33rd season is the season with the least number of episodes. There were only 12 episodes that season due to a writers strike. Similarly, seasons 6 and 13 had thirteen episode seasons due to writers strikes.
+    </p>
+
+    <div id="season-casts"></div>
+    <div id="season-genders"></div>
+    <div id="season-percents"></div>
+  </section>
+
+  <section id="casts">
+    <h2>Cast Statistics</h2>
+
+    <p>
+      143 actors have been cast members on Saturday Night Live.
+    </p>
+
+    <div id="starting-ages">
+      <h3>Starting Ages</h3>
+      <div id="starting-age-table"></div>
+      <div id="starting-age"></div>
+      <div id="starting-age-gender"></div>
+      <div id="starting-age-normalized"></div>
+    </div>
+
+    <div id="ending-ages">
+      <h3>Ending Ages</h3>
+      <p>
+        To state the obvious, when cast members leave the show, they are older than they were when they started. How much? Cast members on average stay for three seasons, so about three years older.
+      </p>
+      <p>
+        This data only includes cast members who have left the show.
+      </p>
+      <div id="ending-age-table"></div>
+      <div id="ending-age"></div>
+      <div id="ending-age-gender"></div>
+      <div id="ending-age-normalized"></div>
+    </div>
+
+    <div id="career-lengths">
+      <h3>Career Lengths</h3>
+      <div id="start-and-end"></div>
+    </div>
+
+  </section>
+
+  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="/js/bundle.js"></script>
+</body>
+</html>
