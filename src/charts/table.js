@@ -26,5 +26,5 @@ export default function table(data, holderID, headers = [], title) {
       .selectAll('td')
           .data(d => d)
         .enter().append('td')
-          .html(d => d);
+          .text(d => d);
 }

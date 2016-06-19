@@ -9,6 +9,6 @@ export function roundUp(age, int) {
 /*
  * this doesn't have to be years
  */
-export function roundYears(years) {
-  return years.toFixed(2);
+export function roundFloat(f, count = 2) {
+  return f.toFixed(count);
 }

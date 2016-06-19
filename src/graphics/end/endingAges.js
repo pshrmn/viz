@@ -1,7 +1,8 @@
-import { chartBase } from '../charts/base';
-import { drawAxis } from '../charts/axis';
-import { addTitle } from '../charts/addons';
-import { roundUp } from '../round';
+import { chartBase } from '../../charts/base';
+import { drawAxis } from '../../charts/axis';
+import { addTitle } from '../../charts/addons';
+import { roundUp } from '../../round';
+import { green } from '../../colors';
 
 export default function chartEndingAges(data, holderID) {
   // normalize the genders to cover the same time frame
@@ -60,7 +61,7 @@ export default function chartEndingAges(data, holderID) {
       .attr('x', (d,i) => ageScale(i+offset))
       .attr('y', d => yScale(d))
       .attr('height', d => base.main.height - yScale(d))
-      .style('fill', '#83b95d');
+      .style('fill', green);
 
   addTitle(base.top, 'Ending Age of SNL Cast Members');
 

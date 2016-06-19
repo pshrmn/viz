@@ -1,7 +1,9 @@
-import { chartBase } from '../charts/base';
-import { drawAxis } from '../charts/axis';
-import { addTitle } from '../charts/addons';
-import { roundUp } from '../round';
+import { chartBase } from '../../charts/base';
+import { drawAxis } from '../../charts/axis';
+import { addTitle } from '../../charts/addons';
+import { roundUp, roundFloat } from '../../round';
+import { meanProperty } from '../../average';
+import { green } from '../../colors';
 
 export default function chartCasts(seasons, holderID) {
   // normalize the genders to cover the same time frame
@@ -58,12 +60,27 @@ export default function chartCasts(seasons, holderID) {
       .attr('x', d => seasonScale(d.season))
       .attr('y', d => yScale(d.total_cast))
       .attr('height', d => base.main.height - yScale(d.total_cast))
-      .style('fill', '#83b95d');
+      .style('fill', green);
 
   addTitle(base.top, 'Cast Members Per Season');
 
   base.bottom.element.append('text')
     .text('Season')
     .classed('centered', true)
-    .attr('transform', `translate(${base.bottom.width/2}, ${base.bottom.height-5})`)
+    .attr('transform', `translate(${base.bottom.width/2}, ${base.bottom.height-5})`);
+
+  const meanCount = meanProperty(seasons, 'total_cast');
+  const meanLine = base.main.element.append('g')
+    .attr('transform', `translate(0, ${yScale(meanCount)})`)
+    .classed('mean', true);
+
+  meanLine.append('line')
+    .attr('x1', 0)
+    .attr('x2', base.main.width)
+    .attr('y1', 0)
+    .attr('y2', 0);
+  meanLine.append('text')
+    .text(`Mean = ${roundFloat(meanCount, 1)}`)
+    .attr('x', 3)
+    .attr('y', -3);
 }

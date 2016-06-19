@@ -1,13 +1,13 @@
-import { chartBase } from '../charts/base';
-import { drawAxis } from '../charts/axis';
-import { addTitle, verticalLegend } from '../charts/addons';
-import { roundUp } from '../round';
+import { chartBase } from '../../charts/base';
+import { drawAxis } from '../../charts/axis';
+import { addTitle, verticalLegend } from '../../charts/addons';
+import { roundUp } from '../../round';
+import { genderColors } from '../../colors';
 
 export default function chartGroupedSeasonGenders(seasons, holderID) {
   // normalize the genders to cover the same time frame
 
   const tickValues = seasons.map(s => s.season);
-  const colors = ['#459DBA', '#C2D400'];
   
   const base = chartBase({
     main: {width: 750, height: 300},
@@ -71,17 +71,17 @@ export default function chartGroupedSeasonGenders(seasons, holderID) {
       .attr('x', (d,i) => groupScale(i))
       .attr('y', d => yScale(d))
       .attr('height', d => base.main.height - yScale(d))
-      .style('fill', (d,i) => colors[i]);
+      .style('fill', (d,i) => genderColors[i]);
 
-  addTitle(base.top, 'Number of Actors Per Season (by Gender)');
+  addTitle(base.top, 'Cast Members Per Season (by Gender)');
 
   verticalLegend(base.right, [
     {
-      color: colors[0],
+      color: genderColors[0],
       text: 'Male'
     },
     {
-      color: colors[1],
+      color: genderColors[1],
       text: 'Female'
     }
   ], {

@@ -1,11 +1,18 @@
-import { chartBase } from '../charts/base';
-import { drawAxis } from '../charts/axis';
-import { addTitle, verticalLegend } from '../charts/addons';
+import { chartBase } from '../../charts/base';
+import { drawAxis } from '../../charts/axis';
+import { addTitle, verticalLegend } from '../../charts/addons';
+import { meanProperty, standardDeviation } from '../../average';
+import { roundFloat } from '../../round';
+import { lightBlue, brightPink } from '../../colors';
 
-export default function chartGenderPercents(seasons, holderID) {
-  // normalize the genders to cover the same time frame
+const colors = [brightPink, lightBlue];
+
+export default function chartRolePercents(seasons, holderID) {
   const tickValues = seasons.map(s => s.season);
-  const colors = ['#459DBA', '#C2D400'];
+
+  seasons.forEach(s => {
+    s.repertory_percent = s.male / s.total_cast;
+  });
 
   const base = chartBase({
     main: {width: 850, height: 300},
@@ -49,8 +56,8 @@ export default function chartGenderPercents(seasons, holderID) {
     .enter().append('rect')
       .attr('width', bandWidth)
       .attr('x', d => seasonScale(d.season))
-      .attr('y', d => yScale(d.male / d.total_cast))
-      .attr('height', d => base.main.height - yScale(d.male / d.total_cast))
+      .attr('y', d => yScale(d.repertory_percent))
+      .attr('height', d => base.main.height - yScale(d.repertory_percent))
       .style('fill', colors[0]);
 
   base.main.element.append('g')
@@ -61,7 +68,7 @@ export default function chartGenderPercents(seasons, holderID) {
       .attr('width', bandWidth)
       .attr('x', d => seasonScale(d.season))
       .attr('y', 0)
-      .attr('height', d => yScale(d.male / d.total_cast))
+      .attr('height', d => yScale(d.repertory_percent))
       .style('fill', colors[1]);
 
   const halfWidth = seasonScale.rangeBand() / 2;
@@ -78,16 +85,16 @@ export default function chartGenderPercents(seasons, holderID) {
       .text(d => Math.floor((d.male / d.total_cast)*100))
       .style('text-anchor', 'middle');
 
-  addTitle(base.top, 'Cast Member Genders');
+  addTitle(base.top, 'Cast Member Roles');
 
   verticalLegend(base.right, [
     {
       color: colors[0],
-      text: 'Male'
+      text: 'Repertory'
     },
     {
       color: colors[1],
-      text: 'Female'
+      text: 'Featured'
     }
   ], {
     offset: {
@@ -100,14 +107,4 @@ export default function chartGenderPercents(seasons, holderID) {
     .text('Season')
     .classed('centered', true)
     .attr('transform', `translate(${base.bottom.width/2}, ${base.bottom.height-5})`)
-
-  // draw a line representing what 50% gender ratio would be
-  const halfGroup = base.main.element.append('g');
-  halfGroup.append('line')
-    .attr('x1', 0)
-    .attr('y1', yScale(0.5))
-    .attr('x2', base.main.width)
-    .attr('y2', yScale(0.5))
-    .style('stroke', '#000')
-    .style('stroke-width', 1);
 }

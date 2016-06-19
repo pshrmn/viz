@@ -2,13 +2,15 @@ import { chartBase } from '../charts/base';
 import { drawAxis } from '../charts/axis';
 import { addTitle, verticalLegend } from '../charts/addons';
 import { roundUp } from '../round';
+import { lightBlue, brightPink } from '../colors';
+
+const colors = [lightBlue, brightPink];
 
 export default function chartStartingAndEndingAges(data, holderID) {
   // normalize the genders to cover the same time frame
   const { start, end } = data.all;
   const { ages, offset } = mergeAges(start, end);
   const tickValues = Array.from(new Array(ages.length)).map((u, i) => i+offset);
-  const colors = ['#80cbc4', '#ec407a'];
   
   /*
    * CREATE SVG ELEMENTS

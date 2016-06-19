@@ -1,6 +1,6 @@
-import { roundYears } from '../round';
-import { daysToYears } from '../date';
-import table from '../charts/table';
+import { roundFloat } from '../../round';
+import { daysToYears } from '../../date';
+import table from '../../charts/table';
 
 
 export default function endingAgesTable(data, holderID) {
@@ -10,10 +10,10 @@ export default function endingAgesTable(data, holderID) {
     const { mean, median, oldest, youngest, standardDev } = endData;
     return [
       key,
-      roundYears(median),
-      `${roundYears(mean)} &plusmn; ${roundYears(standardDev)}`,
-      `${youngest.name} (${roundYears(daysToYears(youngest.end_age))})`,
-      `${oldest.name} (${roundYears(daysToYears(oldest.end_age))})`
+      roundFloat(median),
+      `${roundFloat(mean)} ± ${roundFloat(standardDev)}`,
+      `${youngest.name} (${roundFloat(daysToYears(youngest.end_age))})`,
+      `${oldest.name} (${roundFloat(daysToYears(oldest.end_age))})`
     ];
   });
 

@@ -1,14 +1,14 @@
-import { chartBase } from '../charts/base';
-import { drawAxis } from '../charts/axis';
-import { addTitle, verticalLegend } from '../charts/addons';
-import { roundUp } from '../round';
+import { chartBase } from '../../charts/base';
+import { drawAxis } from '../../charts/axis';
+import { addTitle, verticalLegend } from '../../charts/addons';
+import { roundUp } from '../../round';
+import { genderColors } from '../../colors';
 
 export default function chartGroupedEndingAges(data, holderID) {
   // normalize the genders to cover the same time frame
   const { male, female } = data;
   const { ages, offset } = mergeAges(male, female);
   const tickValues = Array.from(new Array(ages.length)).map((u, i) => i+offset);
-  const colors = ['#459DBA', '#C2D400'];
   
   const base = chartBase({
     main: {width: 650, height: 300},
@@ -72,17 +72,17 @@ export default function chartGroupedEndingAges(data, holderID) {
       .attr('x', (d,i) => groupScale(i))
       .attr('y', d => yScale(d))
       .attr('height', d => base.main.height - yScale(d))
-      .style('fill', (d,i) => colors[i]);
+      .style('fill', (d,i) => genderColors[i]);
 
   addTitle(base.top, 'Ending Age of SNL Cast Members (by Gender)');
 
   verticalLegend(base.right, [
     {
-      color: colors[0],
+      color: genderColors[0],
       text: 'Male'
     },
     {
-      color: colors[1],
+      color: genderColors[1],
       text: 'Female'
     }
   ], {

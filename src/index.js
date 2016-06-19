@@ -4,20 +4,9 @@ import { newCastPerSeason, lastSeasonForCastMembers } from './stats/cast';
 import { roleCounts, seasonsByRole } from './stats/roles';
 import genderStats from './stats/gender';
 
-// genders
-import chartSeasonCastMembers from './graphics/seasonCastMembers';
-import chartSeasonCastMembersByGender from './graphics/groupedSeasonGenders';
-import chartSeasonGenderPercents from './graphics/seasonGenderPercents';
-// starting ages
-import chartStartingAges from './graphics/startingAges';
-import chartGroupedStartingAges from './graphics/groupedStartingAges';
-import chartNormalziedStartingAges from './graphics/normalizedStartingAges';
-import startingAgesTable from './graphics/startingAgesTable';
-// ending ages
-import chartEndingAges from './graphics/endingAges';
-import chartGroupedEndingAges from './graphics/groupedEndingAges';
-import chartNormalziedEndingAges from './graphics/normalizedEndingAges';
-import endingAgesTable from './graphics/endingAgesTable';
+import drawSeasonCastMemberGraphics from './graphics/seasonCastMemberGraphics';
+import drawStartingAgeGraphics from './graphics/startingAgeGraphics';
+import drawEndingAgeGraphics from './graphics/endingAgeGraphics';
 
 import chartStartAndEnd from './graphics/startingAndEndingAges';
 
@@ -70,19 +59,11 @@ d3.json('/stats.json', (error, data) => {
   console.log(lastSeasonForCastMembers(castMembers, seasons.length));
   console.log(seasonsByRole(castMembers));
   */
-  chartSeasonCastMembers(seasons, '#season-casts');
-  chartSeasonCastMembersByGender(seasons, '#season-genders');
-  chartSeasonGenderPercents(seasons, '#season-percents')
 
-  chartStartingAges(genders, '#starting-age');
-  chartGroupedStartingAges(genders, '#starting-age-gender');
-  chartNormalziedStartingAges(genders, '#starting-age-normalized');
-  startingAgesTable(genders, '#starting-age-table');
 
-  chartEndingAges(genders, '#ending-age');
-  chartGroupedEndingAges(genders, '#ending-age-gender');
-  chartNormalziedEndingAges(genders, '#ending-age-normalized');
-  endingAgesTable(genders, '#ending-age-table');
+  drawSeasonCastMemberGraphics(seasons);  
+  drawStartingAgeGraphics(genders);
+  drawEndingAgeGraphics(genders);
 
   chartStartAndEnd(genders, '#start-and-end');
 });

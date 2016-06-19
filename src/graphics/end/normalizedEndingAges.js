@@ -1,14 +1,14 @@
-import { chartBase } from '../charts/base';
-import { drawAxis } from '../charts/axis';
-import { addTitle, verticalLegend } from '../charts/addons';
-import { roundUp } from '../round';
+import { chartBase } from '../../charts/base';
+import { drawAxis } from '../../charts/axis';
+import { addTitle, verticalLegend } from '../../charts/addons';
+import { roundUp } from '../../round';
+import { genderColors } from '../../colors';
 
-export default function chartGroupedStartingAges(data, holderID) {
+export default function chartNormalizedEndingAges(data, holderID) {
   // normalize the genders to cover the same time frame
   const { male, female } = data;
   const { ages, offset } = mergeAges(male, female);
   const tickValues = Array.from(new Array(ages.length)).map((u, i) => i+offset);
-  const colors = ['#459DBA', '#C2D400'];
   
   const base = chartBase({
     main: {width: 650, height: 300},
@@ -29,7 +29,7 @@ export default function chartGroupedStartingAges(data, holderID) {
     .rangeRoundBands([0, ageScale.rangeBand()]);
 
   let yMax = d3.max(ages, (a) => Math.max(a[0], a[1]));
-  yMax = roundUp(yMax*100, 5)/100
+  yMax = roundUp(yMax*100, 3)/100
   const formatPercent = d3.format('.0%');
 
   const yScale = d3.scale.linear()
@@ -81,17 +81,17 @@ export default function chartGroupedStartingAges(data, holderID) {
       .attr('x', (d,i) => groupScale(i))
       .attr('y', d => yScale(d))
       .attr('height', d => base.main.height - yScale(d))
-      .style('fill', (d,i) => colors[i]);
+      .style('fill', (d,i) => genderColors[i]);
 
-  addTitle(base.top, 'Starting Age of SNL Cast Members (by Gender)');
+  addTitle(base.top, 'Ending Age of SNL Cast Members (by Gender)');
 
   verticalLegend(base.right, [
     {
-      color: colors[0],
+      color: genderColors[0],
       text: 'Male'
     },
     {
-      color: colors[1],
+      color: genderColors[1],
       text: 'Female'
     }
   ], {
@@ -111,8 +111,8 @@ export default function chartGroupedStartingAges(data, holderID) {
  * merge the male and female ages so that they can be displaed side by side in a bar chart
  */
 function mergeAges(male, female) {
-  const ms = male.start.ages;
-  const fs = female.start.ages;
+  const ms = male.end.ages;
+  const fs = female.end.ages;
 
   const totalMale = ms.ages.reduce((acc, curr) => {
     return acc + curr;
