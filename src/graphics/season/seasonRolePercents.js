@@ -11,7 +11,8 @@ export default function chartRolePercents(seasons, holderID) {
   const tickValues = seasons.map(s => s.season);
 
   seasons.forEach(s => {
-    s.repertory_percent = s.male / s.total_cast;
+    const rep_count = s.repertory.male + s.repertory.female;
+    s.repertory_percent = rep_count / s.total_cast;
   });
 
   const base = chartBase({
@@ -50,7 +51,7 @@ export default function chartRolePercents(seasons, holderID) {
 
   // create a group for every age
   base.main.element.append('g')
-    .classed('male-percent', true)
+    .classed('repertory-percent', true)
     .selectAll('rect')
       .data(seasons)
     .enter().append('rect')
@@ -61,7 +62,7 @@ export default function chartRolePercents(seasons, holderID) {
       .style('fill', colors[0]);
 
   base.main.element.append('g')
-    .classed('female-percent', true)
+    .classed('featured-percent', true)
     .selectAll('rect')
       .data(seasons)
     .enter().append('rect')
@@ -78,12 +79,13 @@ export default function chartRolePercents(seasons, holderID) {
       .classed('percent', true)
       .attr('transform', d => {
         const x = seasonScale(d.season) + halfWidth;
-        const y = yScale(d.male / d.total_cast);
+        const y = yScale(d.repertory_percent) + 15;
         return `translate(${x},${y})`;
       })
-      .attr('dy', -3)
-      .text(d => Math.floor((d.male / d.total_cast)*100))
-      .style('text-anchor', 'middle');
+      .text(d => Math.floor((d.repertory_percent)*100))
+      .style('text-anchor', 'middle')
+      .style('font-size', '14px')
+      .style('fill', '#fff');
 
   addTitle(base.top, 'Cast Member Roles');
 

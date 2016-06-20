@@ -77,12 +77,12 @@ export default function chartGenderPercents(seasons, holderID) {
       .classed('percent', true)
       .attr('transform', d => {
         const x = seasonScale(d.season) + halfWidth;
-        const y = yScale(d.male / d.total_cast);
+        const y = yScale(d.male_percent) + 15;
         return `translate(${x},${y})`;
       })
-      .attr('dy', -3)
       .text(d => Math.floor((d.male / d.total_cast)*100))
-      .style('text-anchor', 'middle');
+      .style('text-anchor', 'middle')
+      .style('font-size', '14px');
 
   addTitle(base.top, 'Cast Member Genders');
 

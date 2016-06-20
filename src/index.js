@@ -62,7 +62,7 @@ d3.json('/stats.json', (error, data) => {
 
 
   drawSeasonCastMemberGraphics(seasons);  
-  drawStartingAgeGraphics(genders);
+  drawStartingAgeGraphics(genders, castMembers);
   drawEndingAgeGraphics(genders);
 
   chartStartAndEnd(genders, '#start-and-end');
