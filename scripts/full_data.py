@@ -49,8 +49,16 @@ Known Deficiencies:
 5.  Problem: Along with #4, some actors have additional descriptions alongside
     their name when they have a common name.
     Solution: only_name regex matches the " (...)" pattern and removes it
-3.  Problem: IMDB includes two episodes that are not considered episodes elsewhere:
+6.  Problem: IMDB includes two episodes that are not considered episodes elsewhere:
     S2 E14 (Live from Mardi Gras) and S10 E15 (SNL Film Festival).
+7.  Problem: Some cast members were upgraded to repertory status during their
+    first seasons. This will not be seen since on Wikipedia they are only listed
+    as repertory if they were both repertory and featured in the same season.
+    Solution: Hard code these few people for the roles during their first season.
+    (ignore for actors that were upgraded mid-season during their 2nd+ seasons)
+        Harry Shearer (season 5)
+        Eddie Murphy (season 6)
+        Amy Poehler (season 27)
 """
 
 
@@ -126,8 +134,16 @@ def create_season_roles(cast_members, season):
     """
     create a Role for every cast member in a given season
     """
-    for (name, is_repertory) in cast_members:
-        ROLE_ROWS.append((name, season, is_repertory))
+    special_cases = [
+        ("Harry Shearer", 5),
+        ("Eddie Murphy", 6),
+        ("Amy Poehler", 27)
+    ]
+    for (name, role) in cast_members:
+        if (name, season) in special_cases:
+            ROLE_ROWS.append((name, season, "featured"))
+        else:
+            ROLE_ROWS.append((name, season, role))
 
 
 def season_cast(season):
