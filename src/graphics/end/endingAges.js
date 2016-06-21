@@ -1,6 +1,6 @@
 import { chartBase } from '../../charts/base';
 import { drawAxis } from '../../charts/axis';
-import { addTitle, addLabel } from '../../charts/addons';
+import { addTitle, addLabel } from '../../charts/text';
 import { roundUp } from '../../helpers/round';
 import { green } from '../../helpers/colors';
 

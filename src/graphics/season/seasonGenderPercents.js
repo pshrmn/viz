@@ -1,6 +1,7 @@
 import { chartBase } from '../../charts/base';
 import { drawAxis } from '../../charts/axis';
-import { addTitle, addLabel, verticalLegend } from '../../charts/addons';
+import { addTitle, addLabel } from '../../charts/text';
+import { verticalLegend } from '../../charts/legend';
 import { genderColors } from '../../helpers/colors';
 import { meanProperty, standardDeviation } from '../../helpers/average';
 import { roundFloat } from '../../helpers/round';

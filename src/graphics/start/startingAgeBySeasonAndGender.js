@@ -1,6 +1,7 @@
 import { chartBase } from '../../charts/base';
 import { drawAxis } from '../../charts/axis';
-import { addTitle, addLabel, verticalLegend } from '../../charts/addons';
+import { addTitle, addLabel } from '../../charts/text';
+import { verticalLegend } from '../../charts/legend';
 import { roundUp } from '../../helpers/round';
 import { daysToYears } from '../../helpers/date';
 import { genderColors } from '../../helpers/colors';

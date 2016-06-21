@@ -64,15 +64,15 @@
 
 	var _seasonCastMemberGraphics2 = _interopRequireDefault(_seasonCastMemberGraphics);
 
-	var _startingAgeGraphics = __webpack_require__(18);
+	var _startingAgeGraphics = __webpack_require__(19);
 
 	var _startingAgeGraphics2 = _interopRequireDefault(_startingAgeGraphics);
 
-	var _endingAgeGraphics = __webpack_require__(27);
+	var _endingAgeGraphics = __webpack_require__(28);
 
 	var _endingAgeGraphics2 = _interopRequireDefault(_endingAgeGraphics);
 
-	var _startingAndEndingAges = __webpack_require__(32);
+	var _startingAndEndingAges = __webpack_require__(33);
 
 	var _startingAndEndingAges2 = _interopRequireDefault(_startingAndEndingAges);
 
@@ -522,11 +522,11 @@
 
 	var _groupedSeasonGenders2 = _interopRequireDefault(_groupedSeasonGenders);
 
-	var _seasonGenderPercents = __webpack_require__(16);
+	var _seasonGenderPercents = __webpack_require__(17);
 
 	var _seasonGenderPercents2 = _interopRequireDefault(_seasonGenderPercents);
 
-	var _seasonRolePercents = __webpack_require__(17);
+	var _seasonRolePercents = __webpack_require__(18);
 
 	var _seasonRolePercents2 = _interopRequireDefault(_seasonRolePercents);
 
@@ -554,7 +554,7 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
 
 	var _round = __webpack_require__(13);
 
@@ -594,8 +594,8 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _addons.addTitle)(base.top, 'Cast Members Per Season');
-	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _text.addTitle)(base.top, 'Cast Members Per Season');
+	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
 
 	  // CHART
 	  var bandWidth = seasonScale.rangeBand();
@@ -777,8 +777,6 @@
 	});
 	exports.addTitle = addTitle;
 	exports.addLabel = addLabel;
-	exports.verticalLegend = verticalLegend;
-	exports.horizontalLegend = horizontalLegend;
 	function addTitle(section, text) {
 	  var element = section.element;
 	  var width = section.width;
@@ -817,6 +815,156 @@
 	  element.append('text').text(text).style('text-anchor', 'middle').attr('transform', transformed);
 	}
 
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.roundDown = roundDown;
+	exports.roundUp = roundUp;
+	exports.roundFloat = roundFloat;
+	function roundDown(age, int) {
+	  return Math.floor(age / int) * int;
+	}
+
+	function roundUp(age, int) {
+	  return Math.ceil(age / int) * int;
+	}
+
+	/*
+	 * this doesn't have to be years
+	 */
+	function roundFloat(f) {
+	  var count = arguments.length <= 1 || arguments[1] === undefined ? 2 : arguments[1];
+
+	  return f.toFixed(count);
+	}
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var brightBlue = exports.brightBlue = '#459DBA';
+	var yellowGreen = exports.yellowGreen = '#C2D400';
+	var green = exports.green = '#83b95d';
+
+	var lightBlue = exports.lightBlue = '#80cbc4';
+	var brightPink = exports.brightPink = '#ec407a';
+	var purple = exports.purple = '#b6869f';
+
+	var genderColors = exports.genderColors = [brightBlue, yellowGreen];
+
+	/*
+	 * Don't Mix:
+	 *   brightBlue + brightPink (similar saturation, bad for achromatopsia)
+	 */
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = chartGroupedSeasonGenders;
+
+	var _base = __webpack_require__(10);
+
+	var _axis = __webpack_require__(11);
+
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(16);
+
+	var _round = __webpack_require__(13);
+
+	var _colors = __webpack_require__(14);
+
+	function chartGroupedSeasonGenders(seasons, holderID) {
+	  var tickValues = seasons.map(function (s) {
+	    return s.season;
+	  });
+	  var yMax = (0, _round.roundUp)(d3.max(seasons, function (s) {
+	    return Math.max(s.male, s.female);
+	  }), 5);
+
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 750, height: 300 },
+	    left: { width: 50 },
+	    bottom: { height: 50 },
+	    top: { height: 30 },
+	    right: { width: 100 }
+	  }, holderID);
+
+	  // SCALES
+	  // the scale for each age group
+	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+
+	  // the scale for each bar within an age group
+	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, seasonScale.rangeBand()]);
+
+	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+
+	  // AXES
+	  var groupedXAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+
+	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
+
+	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+
+	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
+	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
+	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  (0, _text.addTitle)(base.top, 'Cast Members Per Season (by Gender)');
+	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	    offset: {
+	      left: 10,
+	      top: 50
+	    }
+	  });
+
+	  // CHART
+	  var seasonGroups = base.main.element.selectAll('g.age').data(seasons).enter().append('g').classed('age', true).attr('transform', function (d, i) {
+	    return 'translate(' + seasonScale(d.season) + ', 0)';
+	  });
+
+	  seasonGroups.selectAll('rect').data(function (d) {
+	    return [d.male, d.female];
+	  }).enter().append('rect').attr('width', groupScale.rangeBand()).attr('x', function (d, i) {
+	    return groupScale(i);
+	  }).attr('y', function (d) {
+	    return yScale(d);
+	  }).attr('height', function (d) {
+	    return base.main.height - yScale(d);
+	  }).style('fill', function (d, i) {
+	    return _colors.genderColors[i];
+	  });
+	}
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.verticalLegend = verticalLegend;
+	exports.horizontalLegend = horizontalLegend;
 	/*
 	 * add a vertical (stacked) legend to the specified @section
 	 * @keys is an array of keys to draw in the legend. Each one should specify
@@ -892,144 +1040,7 @@
 	}
 
 /***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.roundDown = roundDown;
-	exports.roundUp = roundUp;
-	exports.roundFloat = roundFloat;
-	function roundDown(age, int) {
-	  return Math.floor(age / int) * int;
-	}
-
-	function roundUp(age, int) {
-	  return Math.ceil(age / int) * int;
-	}
-
-	/*
-	 * this doesn't have to be years
-	 */
-	function roundFloat(f) {
-	  var count = arguments.length <= 1 || arguments[1] === undefined ? 2 : arguments[1];
-
-	  return f.toFixed(count);
-	}
-
-/***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var brightBlue = exports.brightBlue = '#459DBA';
-	var yellowGreen = exports.yellowGreen = '#C2D400';
-	var green = exports.green = '#83b95d';
-
-	var lightBlue = exports.lightBlue = '#80cbc4';
-	var brightPink = exports.brightPink = '#ec407a';
-	var purple = exports.purple = '#b6869f';
-
-	var genderColors = exports.genderColors = [brightBlue, yellowGreen];
-
-	/*
-	 * Don't Mix:
-	 *   brightBlue + brightPink (similar saturation, bad for achromatopsia)
-	 */
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = chartGroupedSeasonGenders;
-
-	var _base = __webpack_require__(10);
-
-	var _axis = __webpack_require__(11);
-
-	var _addons = __webpack_require__(12);
-
-	var _round = __webpack_require__(13);
-
-	var _colors = __webpack_require__(14);
-
-	function chartGroupedSeasonGenders(seasons, holderID) {
-	  var tickValues = seasons.map(function (s) {
-	    return s.season;
-	  });
-	  var yMax = (0, _round.roundUp)(d3.max(seasons, function (s) {
-	    return Math.max(s.male, s.female);
-	  }), 5);
-
-	  // BASE
-	  var base = (0, _base.chartBase)({
-	    main: { width: 750, height: 300 },
-	    left: { width: 50 },
-	    bottom: { height: 50 },
-	    top: { height: 30 },
-	    right: { width: 100 }
-	  }, holderID);
-
-	  // SCALES
-	  // the scale for each age group
-	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
-
-	  // the scale for each bar within an age group
-	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, seasonScale.rangeBand()]);
-
-	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
-
-	  // AXES
-	  var groupedXAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
-
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
-
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
-
-	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
-	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _addons.addTitle)(base.top, 'Cast Members Per Season (by Gender)');
-	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
-	    offset: {
-	      left: 10,
-	      top: 50
-	    }
-	  });
-
-	  // CHART
-	  var seasonGroups = base.main.element.selectAll('g.age').data(seasons).enter().append('g').classed('age', true).attr('transform', function (d, i) {
-	    return 'translate(' + seasonScale(d.season) + ', 0)';
-	  });
-
-	  seasonGroups.selectAll('rect').data(function (d) {
-	    return [d.male, d.female];
-	  }).enter().append('rect').attr('width', groupScale.rangeBand()).attr('x', function (d, i) {
-	    return groupScale(i);
-	  }).attr('y', function (d) {
-	    return yScale(d);
-	  }).attr('height', function (d) {
-	    return base.main.height - yScale(d);
-	  }).style('fill', function (d, i) {
-	    return _colors.genderColors[i];
-	  });
-	}
-
-/***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1043,7 +1054,9 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(16);
 
 	var _colors = __webpack_require__(14);
 
@@ -1084,9 +1097,9 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 
-	  (0, _addons.addTitle)(base.top, 'Cast Member Genders');
-	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[1], text: 'Female' }, { color: _colors.genderColors[0], text: 'Male' }], {
+	  (0, _text.addTitle)(base.top, 'Cast Member Genders');
+	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[1], text: 'Female' }, { color: _colors.genderColors[0], text: 'Male' }], {
 	    offset: {
 	      left: 10,
 	      top: 50
@@ -1120,7 +1133,7 @@
 	}
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1134,7 +1147,9 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(16);
 
 	var _average = __webpack_require__(7);
 
@@ -1177,9 +1192,9 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 
-	  (0, _addons.addTitle)(base.top, 'Cast Member Roles');
-	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _addons.verticalLegend)(base.right, [{ color: colors[0], text: 'Repertory' }, { color: colors[1], text: 'Featured' }], {
+	  (0, _text.addTitle)(base.top, 'Cast Member Roles');
+	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _legend.verticalLegend)(base.right, [{ color: colors[0], text: 'Repertory' }, { color: colors[1], text: 'Featured' }], {
 	    offset: {
 	      left: 10,
 	      top: 50
@@ -1213,7 +1228,7 @@
 	}
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1223,27 +1238,27 @@
 	});
 	exports.default = render;
 
-	var _startingAges = __webpack_require__(19);
+	var _startingAges = __webpack_require__(20);
 
 	var _startingAges2 = _interopRequireDefault(_startingAges);
 
-	var _groupedStartingAges = __webpack_require__(20);
+	var _groupedStartingAges = __webpack_require__(21);
 
 	var _groupedStartingAges2 = _interopRequireDefault(_groupedStartingAges);
 
-	var _normalizedStartingAges = __webpack_require__(22);
+	var _normalizedStartingAges = __webpack_require__(23);
 
 	var _normalizedStartingAges2 = _interopRequireDefault(_normalizedStartingAges);
 
-	var _startingAgesTable = __webpack_require__(23);
+	var _startingAgesTable = __webpack_require__(24);
 
 	var _startingAgesTable2 = _interopRequireDefault(_startingAgesTable);
 
-	var _startingAgeBySeasonAndGender = __webpack_require__(25);
+	var _startingAgeBySeasonAndGender = __webpack_require__(26);
 
 	var _startingAgeBySeasonAndGender2 = _interopRequireDefault(_startingAgeBySeasonAndGender);
 
-	var _startingAgeBySeasonAndRole = __webpack_require__(26);
+	var _startingAgeBySeasonAndRole = __webpack_require__(27);
 
 	var _startingAgeBySeasonAndRole2 = _interopRequireDefault(_startingAgeBySeasonAndRole);
 
@@ -1259,7 +1274,7 @@
 	}
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1273,7 +1288,7 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
 
 	var _round = __webpack_require__(13);
 
@@ -1314,8 +1329,8 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members');
-	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _text.addTitle)(base.top, 'Starting Age of SNL Cast Members');
+	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
 
 	  // CHART
 	  var halfWidth = ageScale.rangeBand();
@@ -1329,7 +1344,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1343,13 +1358,15 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(16);
 
 	var _round = __webpack_require__(13);
 
 	var _colors = __webpack_require__(14);
 
-	var _merge = __webpack_require__(21);
+	var _merge = __webpack_require__(22);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -1399,9 +1416,9 @@
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members (by Gender)');
-	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
-	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	  (0, _text.addTitle)(base.top, 'Starting Age of SNL Cast Members (by Gender)');
+	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
 	      left: 10,
 	      top: 100
@@ -1427,7 +1444,7 @@
 	}
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1495,7 +1512,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1509,13 +1526,15 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(16);
 
 	var _round = __webpack_require__(13);
 
 	var _colors = __webpack_require__(14);
 
-	var _merge = __webpack_require__(21);
+	var _merge = __webpack_require__(22);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -1591,9 +1610,9 @@
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members (by Gender)');
-	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
-	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	  (0, _text.addTitle)(base.top, 'Starting Age of SNL Cast Members (by Gender)');
+	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
 	      left: 10,
 	      top: 100
@@ -1619,7 +1638,7 @@
 	}
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1633,7 +1652,7 @@
 
 	var _date = __webpack_require__(2);
 
-	var _table = __webpack_require__(24);
+	var _table = __webpack_require__(25);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -1656,7 +1675,7 @@
 	}
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1699,7 +1718,7 @@
 	}
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1716,7 +1735,9 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(16);
 
 	var _round = __webpack_require__(13);
 
@@ -1772,10 +1793,10 @@
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _addons.addTitle)(base.top, 'Starting Age By Season');
-	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _addons.addLabel)(base.left, 'Starting Age', 'left');
-	  (0, _addons.verticalLegend)(base.right, [{ color: maleColor, text: 'Male' }, { color: femaleColor, text: 'Female' }], {
+	  (0, _text.addTitle)(base.top, 'Starting Age By Season');
+	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Starting Age', 'left');
+	  (0, _legend.verticalLegend)(base.right, [{ color: maleColor, text: 'Male' }, { color: femaleColor, text: 'Female' }], {
 	    offset: {
 	      left: 10,
 	      top: 100
@@ -1799,7 +1820,7 @@
 	}
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1813,7 +1834,9 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(16);
 
 	var _round = __webpack_require__(13);
 
@@ -1867,10 +1890,10 @@
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members');
-	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _addons.addLabel)(base.left, 'Starting Age', 'left');
-	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.lightBlue, text: 'Repertory' }, { color: _colors.brightPink, text: 'Featured' }], {
+	  (0, _text.addTitle)(base.top, 'Starting Age of SNL Cast Members');
+	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Starting Age', 'left');
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.lightBlue, text: 'Repertory' }, { color: _colors.brightPink, text: 'Featured' }], {
 	    offset: {
 	      left: 10,
 	      top: 100
@@ -1894,7 +1917,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1904,19 +1927,19 @@
 	});
 	exports.default = render;
 
-	var _endingAges = __webpack_require__(28);
+	var _endingAges = __webpack_require__(29);
 
 	var _endingAges2 = _interopRequireDefault(_endingAges);
 
-	var _groupedEndingAges = __webpack_require__(29);
+	var _groupedEndingAges = __webpack_require__(30);
 
 	var _groupedEndingAges2 = _interopRequireDefault(_groupedEndingAges);
 
-	var _normalizedEndingAges = __webpack_require__(30);
+	var _normalizedEndingAges = __webpack_require__(31);
 
 	var _normalizedEndingAges2 = _interopRequireDefault(_normalizedEndingAges);
 
-	var _endingAgesTable = __webpack_require__(31);
+	var _endingAgesTable = __webpack_require__(32);
 
 	var _endingAgesTable2 = _interopRequireDefault(_endingAgesTable);
 
@@ -1930,7 +1953,7 @@
 	}
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1944,7 +1967,7 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
 
 	var _round = __webpack_require__(13);
 
@@ -1987,8 +2010,8 @@
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 
-	  (0, _addons.addTitle)(base.top, 'Ending Age of SNL Cast Members');
-	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down', 'bottom');
+	  (0, _text.addTitle)(base.top, 'Ending Age of SNL Cast Members');
+	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down', 'bottom');
 
 	  // CHART
 	  var halfWidth = ageScale.rangeBand();
@@ -2002,7 +2025,7 @@
 	}
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2016,13 +2039,15 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(16);
 
 	var _round = __webpack_require__(13);
 
 	var _colors = __webpack_require__(14);
 
-	var _merge = __webpack_require__(21);
+	var _merge = __webpack_require__(22);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2073,9 +2098,9 @@
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 
-	  (0, _addons.addTitle)(base.top, 'Ending Age of SNL Cast Members (by Gender)');
-	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
-	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	  (0, _text.addTitle)(base.top, 'Ending Age of SNL Cast Members (by Gender)');
+	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
 	      left: 10,
 	      top: 50
@@ -2101,7 +2126,7 @@
 	}
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2115,13 +2140,15 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(16);
 
 	var _round = __webpack_require__(13);
 
 	var _colors = __webpack_require__(14);
 
-	var _merge = __webpack_require__(21);
+	var _merge = __webpack_require__(22);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2200,9 +2227,9 @@
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 
-	  (0, _addons.addTitle)(base.top, 'Ending Age of SNL Cast Members (by Gender)');
-	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down', 'bottom');
-	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	  (0, _text.addTitle)(base.top, 'Ending Age of SNL Cast Members (by Gender)');
+	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down', 'bottom');
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
 	      left: 10,
 	      top: 100
@@ -2228,7 +2255,7 @@
 	}
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2242,7 +2269,7 @@
 
 	var _date = __webpack_require__(2);
 
-	var _table = __webpack_require__(24);
+	var _table = __webpack_require__(25);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -2265,7 +2292,7 @@
 	}
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2279,13 +2306,15 @@
 
 	var _axis = __webpack_require__(11);
 
-	var _addons = __webpack_require__(12);
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(16);
 
 	var _round = __webpack_require__(13);
 
 	var _colors = __webpack_require__(14);
 
-	var _merge = __webpack_require__(21);
+	var _merge = __webpack_require__(22);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2359,9 +2388,9 @@
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 
-	  (0, _addons.addTitle)(base.top, 'Starting and Ending Ages of SNL Cast Members');
-	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
-	  (0, _addons.verticalLegend)(base.right, [{ color: colors[0], text: 'Start' }, { color: colors[1], text: 'End' }], {
+	  (0, _text.addTitle)(base.top, 'Starting and Ending Ages of SNL Cast Members');
+	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _legend.verticalLegend)(base.right, [{ color: colors[0], text: 'Start' }, { color: colors[1], text: 'End' }], {
 	    offset: {
 	      left: 10,
 	      top: 100
