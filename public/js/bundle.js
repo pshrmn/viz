@@ -68,11 +68,11 @@
 
 	var _startingAgeGraphics2 = _interopRequireDefault(_startingAgeGraphics);
 
-	var _endingAgeGraphics = __webpack_require__(26);
+	var _endingAgeGraphics = __webpack_require__(27);
 
 	var _endingAgeGraphics2 = _interopRequireDefault(_endingAgeGraphics);
 
-	var _startingAndEndingAges = __webpack_require__(31);
+	var _startingAndEndingAges = __webpack_require__(32);
 
 	var _startingAndEndingAges2 = _interopRequireDefault(_startingAndEndingAges);
 
@@ -563,11 +563,14 @@
 	var _colors = __webpack_require__(14);
 
 	function chartCasts(seasons, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var tickValues = seasons.map(function (s) {
 	    return s.season;
 	  });
+	  var yMax = (0, _round.roundUp)(d3.max(seasons, function (s) {
+	    return s.total_cast;
+	  }), 5);
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 750, height: 300 },
 	    left: { width: 50 },
@@ -576,13 +579,12 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
-	  var yMax = (0, _round.roundUp)(d3.max(seasons, function (s) {
-	    return s.total_cast;
-	  }), 5);
 	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
+	  // AXES
 	  var xAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
@@ -592,10 +594,11 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  (0, _addons.addTitle)(base.top, 'Cast Members Per Season');
+	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
 
+	  // CHART
 	  var bandWidth = seasonScale.rangeBand();
-
-	  // create a group for every age
 	  base.main.element.selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
 	    return seasonScale(d.season);
 	  }).attr('y', function (d) {
@@ -603,10 +606,6 @@
 	  }).attr('height', function (d) {
 	    return base.main.height - yScale(d.total_cast);
 	  }).style('fill', _colors.green);
-
-	  (0, _addons.addTitle)(base.top, 'Cast Members Per Season');
-
-	  base.bottom.element.append('text').text('Season').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
 
 	  var meanCount = (0, _average.meanProperty)(seasons, 'total_cast');
 	  var meanLine = base.main.element.append('g').attr('transform', 'translate(0, ' + yScale(meanCount) + ')').classed('mean', true);
@@ -777,6 +776,7 @@
 	  value: true
 	});
 	exports.addTitle = addTitle;
+	exports.addLabel = addLabel;
 	exports.verticalLegend = verticalLegend;
 	exports.horizontalLegend = horizontalLegend;
 	function addTitle(section, text) {
@@ -784,7 +784,37 @@
 	  var width = section.width;
 	  var height = section.height;
 
-	  element.append('text').classed('title centered', true).text(text).attr('transform', 'translate(' + width / 2 + ', ' + height / 2 + ')');
+	  element.append('text').text(text).classed('title centered', true).style('text-anchor', 'middle').attr('transform', 'translate(' + width / 2 + ', ' + height / 2 + ')');
+	}
+
+	/*
+	 * Add a text label that is centered in the provided section's element.
+	 * Takes into account the size of the ticks (as provided by the user) when
+	 * determining the positioning.
+	 */
+	function addLabel(section, text) {
+	  var orient = arguments.length <= 2 || arguments[2] === undefined ? 'bottom' : arguments[2];
+	  var tickSize = arguments.length <= 3 || arguments[3] === undefined ? 25 : arguments[3];
+	  var element = section.element;
+	  var width = section.width;
+	  var height = section.height;
+
+
+	  var transformed = '';
+	  switch (orient) {
+	    case 'top':
+	    case 'bottom':
+	      var heightOffset = (height - tickSize) / 2 + tickSize;
+	      transformed = 'translate(' + width / 2 + ',' + heightOffset + ')';
+	      break;
+	    case 'left':
+	    case 'right':
+	      var widthOffset = (width + tickSize) / 2 - tickSize;
+	      transformed = 'translate(' + widthOffset + ',' + height / 2 + ')rotate(-90)';
+	      break;
+	  }
+
+	  element.append('text').text(text).style('text-anchor', 'middle').attr('transform', transformed);
 	}
 
 	/*
@@ -794,7 +824,7 @@
 	 * @options can be provided to configure the layout of the legend. These include:
 	 *    offset - provide a top and left amount to translate the legend 'g' away
 	 *             from the default position in the top left corner (0,0)
-	 *    padding - the amount of padding around each key
+	 *    padding - the amount of padding around each key (top and bottom)
 	 */
 	function verticalLegend(section, keys) {
 	  var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -824,7 +854,8 @@
 	}
 
 	/*
-	 * same as verticalLegend, but horizontal instead of vertical
+	 * same as verticalLegend, but horizontal instead of vertical.
+	 * padding will be left and right
 	 */
 	function horizontalLegend(section, keys) {
 	  var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -935,12 +966,14 @@
 	var _colors = __webpack_require__(14);
 
 	function chartGroupedSeasonGenders(seasons, holderID) {
-	  // normalize the genders to cover the same time frame
-
 	  var tickValues = seasons.map(function (s) {
 	    return s.season;
 	  });
+	  var yMax = (0, _round.roundUp)(d3.max(seasons, function (s) {
+	    return Math.max(s.male, s.female);
+	  }), 5);
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 750, height: 300 },
 	    left: { width: 50 },
@@ -949,18 +982,16 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  // the scale for each age group
 	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
 	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, seasonScale.rangeBand()]);
 
-	  var yMax = (0, _round.roundUp)(d3.max(seasons, function (s) {
-	    return Math.max(s.male, s.female);
-	  }), 5);
-
 	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
+	  // AXES
 	  var groupedXAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
@@ -970,8 +1001,16 @@
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  (0, _addons.addTitle)(base.top, 'Cast Members Per Season (by Gender)');
+	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	    offset: {
+	      left: 10,
+	      top: 50
+	    }
+	  });
 
-	  // create a group for every age
+	  // CHART
 	  var seasonGroups = base.main.element.selectAll('g.age').data(seasons).enter().append('g').classed('age', true).attr('transform', function (d, i) {
 	    return 'translate(' + seasonScale(d.season) + ', 0)';
 	  });
@@ -987,23 +1026,6 @@
 	  }).style('fill', function (d, i) {
 	    return _colors.genderColors[i];
 	  });
-
-	  (0, _addons.addTitle)(base.top, 'Cast Members Per Season (by Gender)');
-
-	  (0, _addons.verticalLegend)(base.right, [{
-	    color: _colors.genderColors[0],
-	    text: 'Male'
-	  }, {
-	    color: _colors.genderColors[1],
-	    text: 'Female'
-	  }], {
-	    offset: {
-	      left: 10,
-	      top: 50
-	    }
-	  });
-
-	  base.bottom.element.append('text').text('Season').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
 	}
 
 /***/ },
@@ -1030,15 +1052,17 @@
 	var _round = __webpack_require__(13);
 
 	function chartGenderPercents(seasons, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var tickValues = seasons.map(function (s) {
 	    return s.season;
 	  });
+	  var formatPercent = d3.format('.0%');
 
+	  // save here instead of calculating this multiple times
 	  seasons.forEach(function (s) {
 	    s.male_percent = s.male / s.total_cast;
 	  });
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 850, height: 300 },
 	    left: { width: 50 },
@@ -1047,21 +1071,30 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
-	  var formatPercent = d3.format('.0%');
 	  var yScale = d3.scale.linear().domain([0, 1]).range([base.main.height, 0]);
 
+	  // AXES
 	  var xAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left').tickFormat(formatPercent);
+	  var yAxis = d3.svg.axis().scale(yScale).tickValues([0, 0.25, 0.5, 0.75, 1.0]).orient('left').tickFormat(formatPercent);
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 
-	  var bandWidth = seasonScale.rangeBand();
+	  (0, _addons.addTitle)(base.top, 'Cast Member Genders');
+	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[1], text: 'Female' }, { color: _colors.genderColors[0], text: 'Male' }], {
+	    offset: {
+	      left: 10,
+	      top: 50
+	    }
+	  });
 
-	  // create a group for every age
+	  // CHART
+	  var bandWidth = seasonScale.rangeBand();
 	  base.main.element.append('g').classed('male-percent', true).selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
 	    return seasonScale(d.season);
 	  }).attr('y', function (d) {
@@ -1084,37 +1117,6 @@
 	  }).text(function (d) {
 	    return Math.floor(d.male / d.total_cast * 100);
 	  }).style('text-anchor', 'middle').style('font-size', '14px');
-
-	  (0, _addons.addTitle)(base.top, 'Cast Member Genders');
-
-	  (0, _addons.verticalLegend)(base.right, [{
-	    color: _colors.genderColors[0],
-	    text: 'Male'
-	  }, {
-	    color: _colors.genderColors[1],
-	    text: 'Female'
-	  }], {
-	    offset: {
-	      left: 10,
-	      top: 50
-	    }
-	  });
-
-	  base.bottom.element.append('text').text('Season').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
-
-	  /*
-	  // draw a line representing what 50% gender ratio would be
-	  const halfGroup = base.main.element.append('g');
-	  halfGroup.append('line')
-	    .attr('x1', 0)
-	    .attr('y1', yScale(0.5))
-	    .attr('x2', base.main.width)
-	    .attr('y2', yScale(0.5))
-	    .style('stroke', '#000')
-	    .style('stroke-width', 1);
-	    const meanCount = meanProperty(seasons, 'male_percent');
-	  const standardDev = standardDeviation(seasons, 'male_percent', meanCount);
-	  */
 	}
 
 /***/ },
@@ -1146,12 +1148,14 @@
 	  var tickValues = seasons.map(function (s) {
 	    return s.season;
 	  });
+	  var formatPercent = d3.format('.0%');
 
 	  seasons.forEach(function (s) {
 	    var rep_count = s.repertory.male + s.repertory.female;
 	    s.repertory_percent = rep_count / s.total_cast;
 	  });
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 850, height: 300 },
 	    left: { width: 50 },
@@ -1160,21 +1164,30 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
-	  var formatPercent = d3.format('.0%');
 	  var yScale = d3.scale.linear().domain([0, 1]).range([base.main.height, 0]);
 
+	  // AXES
 	  var xAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left').tickFormat(formatPercent);
+	  var yAxis = d3.svg.axis().scale(yScale).tickValues([0, 0.25, 0.5, 0.75, 1.0]).orient('left').tickFormat(formatPercent);
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 
-	  var bandWidth = seasonScale.rangeBand();
+	  (0, _addons.addTitle)(base.top, 'Cast Member Roles');
+	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _addons.verticalLegend)(base.right, [{ color: colors[0], text: 'Repertory' }, { color: colors[1], text: 'Featured' }], {
+	    offset: {
+	      left: 10,
+	      top: 50
+	    }
+	  });
 
-	  // create a group for every age
+	  // CHART
+	  var bandWidth = seasonScale.rangeBand();
 	  base.main.element.append('g').classed('repertory-percent', true).selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
 	    return seasonScale(d.season);
 	  }).attr('y', function (d) {
@@ -1197,23 +1210,6 @@
 	  }).text(function (d) {
 	    return Math.floor(d.repertory_percent * 100);
 	  }).style('text-anchor', 'middle').style('font-size', '14px').style('fill', '#fff');
-
-	  (0, _addons.addTitle)(base.top, 'Cast Member Roles');
-
-	  (0, _addons.verticalLegend)(base.right, [{
-	    color: colors[0],
-	    text: 'Repertory'
-	  }, {
-	    color: colors[1],
-	    text: 'Featured'
-	  }], {
-	    offset: {
-	      left: 10,
-	      top: 50
-	    }
-	  });
-
-	  base.bottom.element.append('text').text('Season').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
 	}
 
 /***/ },
@@ -1235,19 +1231,19 @@
 
 	var _groupedStartingAges2 = _interopRequireDefault(_groupedStartingAges);
 
-	var _normalizedStartingAges = __webpack_require__(21);
+	var _normalizedStartingAges = __webpack_require__(22);
 
 	var _normalizedStartingAges2 = _interopRequireDefault(_normalizedStartingAges);
 
-	var _startingAgesTable = __webpack_require__(22);
+	var _startingAgesTable = __webpack_require__(23);
 
 	var _startingAgesTable2 = _interopRequireDefault(_startingAgesTable);
 
-	var _startingAgeBySeasonAndGender = __webpack_require__(24);
+	var _startingAgeBySeasonAndGender = __webpack_require__(25);
 
 	var _startingAgeBySeasonAndGender2 = _interopRequireDefault(_startingAgeBySeasonAndGender);
 
-	var _startingAgeBySeasonAndRole = __webpack_require__(25);
+	var _startingAgeBySeasonAndRole = __webpack_require__(26);
 
 	var _startingAgeBySeasonAndRole2 = _interopRequireDefault(_startingAgeBySeasonAndRole);
 
@@ -1284,7 +1280,6 @@
 	var _colors = __webpack_require__(14);
 
 	function chartStartingAges(data, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var all = data.all;
 	  var _all$start$ages = all.start.ages;
 	  var ages = _all$start$ages.ages;
@@ -1293,7 +1288,9 @@
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
+	  var yMax = (0, _round.roundUp)(d3.max(ages), 5);
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 650, height: 300 },
 	    left: { width: 50 },
@@ -1302,12 +1299,12 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.5);
-
-	  var yMax = (0, _round.roundUp)(d3.max(ages), 5);
 
 	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
+	  // AXES
 	  var xAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
@@ -1317,10 +1314,11 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members');
+	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
 
+	  // CHART
 	  var halfWidth = ageScale.rangeBand();
-
-	  // create a group for every age
 	  base.main.element.selectAll('rect').data(ages).enter().append('rect').attr('width', halfWidth).attr('x', function (d, i) {
 	    return ageScale(i + offset);
 	  }).attr('y', function (d) {
@@ -1328,10 +1326,6 @@
 	  }).attr('height', function (d) {
 	    return base.main.height - yScale(d);
 	  }).style('fill', _colors.green);
-
-	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members');
-
-	  base.bottom.element.append('text').text('Age (Rounded Down)').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
 	}
 
 /***/ },
@@ -1355,22 +1349,29 @@
 
 	var _colors = __webpack_require__(14);
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	var _merge = __webpack_require__(21);
+
+	var _merge2 = _interopRequireDefault(_merge);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartGroupedStartingAges(data, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var male = data.male;
 	  var female = data.female;
 
-	  var _mergeAges = mergeAges(male, female);
+	  var _mergeData = (0, _merge2.default)({ data: male.start.ages.ages, offset: male.start.ages.offset }, { data: female.start.ages.ages, offset: female.start.ages.offset });
 
-	  var ages = _mergeAges.ages;
-	  var offset = _mergeAges.offset;
+	  var ages = _mergeData.data;
+	  var offset = _mergeData.offset;
 
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
+	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
+	    return Math.max(a[0], a[1]);
+	  }), 5);
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 650, height: 300 },
 	    left: { width: 50 },
@@ -1379,18 +1380,16 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  // the scale for each age group
 	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
 	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
 
-	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
-	    return Math.max(a[0], a[1]);
-	  }), 5);
-
 	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
+	  // AXES
 	  var groupedXAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
@@ -1400,6 +1399,14 @@
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members (by Gender)');
+	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	    offset: {
+	      left: 10,
+	      top: 100
+	    }
+	  });
 
 	  // create a group for every age
 	  var ageGroups = base.main.element.selectAll('g.age').data(ages).enter().append('g').classed('age', true).attr('transform', function (d, i) {
@@ -1417,58 +1424,78 @@
 	  }).style('fill', function (d, i) {
 	    return _colors.genderColors[i];
 	  });
-
-	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members (by Gender)');
-
-	  (0, _addons.verticalLegend)(base.right, [{
-	    color: _colors.genderColors[0],
-	    text: 'Male'
-	  }, {
-	    color: _colors.genderColors[1],
-	    text: 'Female'
-	  }], {
-	    offset: {
-	      left: 10,
-	      top: 100
-	    }
-	  });
-
-	  base.bottom.element.append('text').text('Age (Rounded Down)').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
-	}
-
-	/*
-	 * merge the male and female ages so that they can be displaed side by side in a bar chart
-	 */
-	function mergeAges(male, female) {
-	  var ms = male.start.ages;
-	  var fs = female.start.ages;
-
-	  var youngestMale = ms.offset;
-	  var oldestMale = ms.offset + ms.ages.length;
-
-	  var youngestFemale = fs.offset;
-	  var oldestFemale = fs.offset + fs.ages.length;
-
-	  var youngest = Math.min(youngestMale, youngestFemale);
-	  var oldest = Math.max(oldestMale, oldestFemale);
-
-	  var paddedMales = zeroPadArray(ms.ages, youngestMale - youngest, oldest - oldestMale);
-	  var paddedFemales = zeroPadArray(fs.ages, youngestFemale - youngest, oldest - oldestFemale);
-
-	  return {
-	    ages: paddedMales.map(function (u, index) {
-	      return [paddedMales[index], paddedFemales[index]];
-	    }),
-	    offset: youngest
-	  };
-	}
-
-	function zeroPadArray(arr, front, back) {
-	  return [].concat(_toConsumableArray(Array.from(new Array(front)).fill(0)), _toConsumableArray(arr), _toConsumableArray(Array.from(new Array(back).fill(0))));
 	}
 
 /***/ },
 /* 21 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = mergeData;
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	/*
+	 * merges the first and second data sets. first and second are both objects containing
+	 * an array of data and an offset. Each position in the array represents a value that is
+	 * calculated by adding the offset and the index. For example, given the object:
+	 * {
+	 *   data: [4,5,6],
+	 *   offset: 24
+	 * }
+	 * data[0] represents the value 24, data[1] is 25, and data[2] is 26.
+	 * In order to merge the data arrays together, both need to have the same offset and length.
+	 * This is done by padding the arrays at the beginning and end as needed. The default padding
+	 * is the number 0, but a different one can be used if provided.
+	 *
+	 * This returns an object with two properties, data and offset.
+	 * data is the array of merged data. offset is the lower of the offsets between first and second
+	 */
+	function mergeData(first, second) {
+	  var pad = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+	  var firstData = first.data;
+	  var firstOffset = first.offset;
+	  var secondData = second.data;
+	  var secondOffset = second.offset;
+
+
+	  var lowFirst = firstOffset;
+	  var highFirst = firstOffset + firstData.length;
+
+	  var lowSecond = secondOffset;
+	  var highSecond = secondOffset + secondData.length;
+
+	  var lowest = Math.min(lowFirst, lowSecond);
+	  var highest = Math.max(highFirst, highSecond);
+
+	  var paddedFirst = padArray(firstData, lowFirst - lowest, highest - highFirst, pad);
+	  var paddedSecond = padArray(secondData, lowSecond - lowest, highest - highSecond, pad);
+
+	  return {
+	    data: paddedFirst.map(function (u, index) {
+	      return [paddedFirst[index], paddedSecond[index]];
+	    }),
+	    offset: lowest
+	  };
+	}
+
+	/*
+	 * return a new array of length front + arr.length + back. The front number of items at the
+	 * beginning of the array and the end number of items at the end of the array will have the
+	 * pad value.
+	 */
+	function padArray(arr, front, back) {
+	  var pad = arguments.length <= 3 || arguments[3] === undefined ? 0 : arguments[3];
+
+	  return [].concat(_toConsumableArray(Array.from(new Array(front)).fill(pad)), _toConsumableArray(arr), _toConsumableArray(Array.from(new Array(back).fill(pad))));
+	}
+
+/***/ },
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1488,22 +1515,48 @@
 
 	var _colors = __webpack_require__(14);
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	var _merge = __webpack_require__(21);
+
+	var _merge2 = _interopRequireDefault(_merge);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartNormalizedStartingAges(data, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var male = data.male;
 	  var female = data.female;
 
-	  var _mergeAges = mergeAges(male, female);
+	  // normalize the counts per age as a percentage
 
-	  var ages = _mergeAges.ages;
-	  var offset = _mergeAges.offset;
+	  var maleStartAges = male.start.ages;
+	  var totalMale = maleStartAges.ages.reduce(function (acc, curr) {
+	    return acc + curr;
+	  }, 0);
+	  var malePercents = maleStartAges.ages.map(function (count) {
+	    return count / totalMale;
+	  });
+
+	  var femaleStartAges = female.start.ages;
+	  var totalFemale = femaleStartAges.ages.reduce(function (acc, curr) {
+	    return acc + curr;
+	  }, 0);
+	  var femalePercents = femaleStartAges.ages.map(function (count) {
+	    return count / totalFemale;
+	  });
+
+	  var _mergeData = (0, _merge2.default)({ data: malePercents, offset: maleStartAges.offset }, { data: femalePercents, offset: femaleStartAges.offset });
+
+	  var ages = _mergeData.data;
+	  var offset = _mergeData.offset;
 
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
+	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
+	    return Math.max(a[0], a[1]);
+	  }) * 100, 5) / 100;
+	  var formatPercent = d3.format('.0%');
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 650, height: 300 },
 	    left: { width: 50 },
@@ -1512,20 +1565,16 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  // the scale for each age group
 	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
 	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
 
-	  var yMax = d3.max(ages, function (a) {
-	    return Math.max(a[0], a[1]);
-	  });
-	  yMax = (0, _round.roundUp)(yMax * 100, 5) / 100;
-	  var formatPercent = d3.format('.0%');
-
 	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
+	  // AXES
 	  var groupedXAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var threePercTicks = [];
@@ -1542,8 +1591,16 @@
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members (by Gender)');
+	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	    offset: {
+	      left: 10,
+	      top: 100
+	    }
+	  });
 
-	  // create a group for every age
+	  // CHART
 	  var ageGroups = base.main.element.selectAll('g.age').data(ages).enter().append('g').classed('age', true).attr('transform', function (d, i) {
 	    return 'translate(' + ageScale(i + offset) + ', 0)';
 	  });
@@ -1559,73 +1616,10 @@
 	  }).style('fill', function (d, i) {
 	    return _colors.genderColors[i];
 	  });
-
-	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members (by Gender)');
-
-	  (0, _addons.verticalLegend)(base.right, [{
-	    color: _colors.genderColors[0],
-	    text: 'Male'
-	  }, {
-	    color: _colors.genderColors[1],
-	    text: 'Female'
-	  }], {
-	    offset: {
-	      left: 10,
-	      top: 100
-	    }
-	  });
-
-	  base.bottom.element.append('text').text('Age (Rounded Down)').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
-	}
-
-	/*
-	 * merge the male and female ages so that they can be displaed side by side in a bar chart
-	 */
-	function mergeAges(male, female) {
-	  var ms = male.start.ages;
-	  var fs = female.start.ages;
-
-	  var totalMale = ms.ages.reduce(function (acc, curr) {
-	    return acc + curr;
-	  }, 0);
-
-	  var totalFemale = fs.ages.reduce(function (acc, curr) {
-	    return acc + curr;
-	  }, 0);
-
-	  var femalePercents = fs.ages.map(function (count) {
-	    return count / totalFemale;
-	  });
-	  var malePercents = ms.ages.map(function (count) {
-	    return count / totalMale;
-	  });
-
-	  var youngestMale = ms.offset;
-	  var oldestMale = ms.offset + ms.ages.length;
-
-	  var youngestFemale = fs.offset;
-	  var oldestFemale = fs.offset + fs.ages.length;
-
-	  var youngest = Math.min(youngestMale, youngestFemale);
-	  var oldest = Math.max(oldestMale, oldestFemale);
-
-	  var paddedMales = zeroPadArray(malePercents, youngestMale - youngest, oldest - oldestMale);
-	  var paddedFemales = zeroPadArray(femalePercents, youngestFemale - youngest, oldest - oldestFemale);
-
-	  return {
-	    ages: paddedMales.map(function (u, index) {
-	      return [paddedMales[index], paddedFemales[index]];
-	    }),
-	    offset: youngest
-	  };
-	}
-
-	function zeroPadArray(arr, front, back) {
-	  return [].concat(_toConsumableArray(Array.from(new Array(front)).fill(0)), _toConsumableArray(arr), _toConsumableArray(Array.from(new Array(back).fill(0))));
 	}
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1639,7 +1633,7 @@
 
 	var _date = __webpack_require__(2);
 
-	var _table = __webpack_require__(23);
+	var _table = __webpack_require__(24);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -1662,7 +1656,7 @@
 	}
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1705,7 +1699,7 @@
 	}
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1735,7 +1729,6 @@
 	var maleColor = _genderColors[0];
 	var femaleColor = _genderColors[1];
 	function chartStartingAges(castMembers, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var filteredCastMembers = castMembers.filter(function (cm) {
 	    return cm.start_age !== undefined;
 	  });
@@ -1753,7 +1746,11 @@
 	  var tickValues = Array.from(new Array(maxSeason - minSeason + 1)).map(function (u, i) {
 	    return i + minSeason;
 	  });
+	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(d3.max(filteredCastMembers, function (cm) {
+	    return cm.start_age;
+	  })), 5);
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 750, height: 300 },
 	    left: { width: 50 },
@@ -1762,55 +1759,47 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // find out the oldest starting age, convert to years
-	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(d3.max(filteredCastMembers, function (cm) {
-	    return cm.start_age;
-	  })), 5);
 	  var yScale = d3.scale.linear().domain([0, 50]).range([base.main.height, 0]);
 
+	  // AXES
 	  var xAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
 
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
-
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-
-	  // create a group for every age
-	  base.main.element.selectAll('circle').data(filteredCastMembers).enter().append('circle').attr('r', 4).attr('cx', function (d) {
-	    return seasonScale(d.firstSeason);
-	  }).attr('cy', function (d) {
-	    return yScale((0, _date.daysToYears)(d.start_age));
-	  }).style('opacity', 0.75).style('fill', function (d) {
-	    return d.gender === 'male' ? maleColor : femaleColor;
-	  });
-
-	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members');
-
-	  (0, _addons.verticalLegend)(base.right, [{
-	    color: maleColor,
-	    text: 'Male'
-	  }, {
-	    color: femaleColor,
-	    text: 'Female'
-	  }], {
+	  (0, _addons.addTitle)(base.top, 'Starting Age By Season');
+	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _addons.addLabel)(base.left, 'Starting Age', 'left');
+	  (0, _addons.verticalLegend)(base.right, [{ color: maleColor, text: 'Male' }, { color: femaleColor, text: 'Female' }], {
 	    offset: {
 	      left: 10,
 	      top: 100
 	    }
 	  });
 
-	  base.bottom.element.append('text').text('Season').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
+	  base.main.element.append('g').classed('scale-bars', true).selectAll('rect').data(tickValues).enter().append('rect').attr('x', function (d) {
+	    return seasonScale(d);
+	  }).attr('y', 0).attr('width', seasonScale.rangeBand()).attr('height', base.main.height);
 
-	  base.left.element.append('text').text('Starting Age').classed('centered', true).attr('transform', 'translate(15,' + base.left.height / 2 + ')rotate(-90)');
+	  // CHART
+	  var halfWidth = seasonScale.rangeBand() / 2;
+	  // create a group for every age
+	  base.main.element.selectAll('circle').data(filteredCastMembers).enter().append('circle').attr('r', 2).attr('cx', function (d) {
+	    return seasonScale(d.firstSeason) + halfWidth;
+	  }).attr('cy', function (d) {
+	    return yScale((0, _date.daysToYears)(d.start_age));
+	  }).style('fill', function (d) {
+	    return d.gender === 'male' ? maleColor : femaleColor;
+	  });
 	}
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1833,7 +1822,6 @@
 	var _colors = __webpack_require__(14);
 
 	function chartStartingAges(castMembers, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var filteredCastMembers = castMembers.filter(function (cm) {
 	    return cm.start_age !== undefined;
 	  });
@@ -1851,7 +1839,12 @@
 	  var tickValues = Array.from(new Array(maxSeason - minSeason + 1)).map(function (u, i) {
 	    return i + minSeason;
 	  });
+	  // find out the oldest starting age, convert to years
+	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(d3.max(filteredCastMembers, function (cm) {
+	    return cm.start_age;
+	  })), 5);
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 750, height: 300 },
 	    left: { width: 50 },
@@ -1860,14 +1853,12 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
-	  // find out the oldest starting age, convert to years
-	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(d3.max(filteredCastMembers, function (cm) {
-	    return cm.start_age;
-	  })), 5);
 	  var yScale = d3.scale.linear().domain([0, 50]).range([base.main.height, 0]);
 
+	  // AXES
 	  var xAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
@@ -1876,39 +1867,34 @@
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-
-	  // create a group for every age
-	  base.main.element.selectAll('circle').data(filteredCastMembers).enter().append('circle').attr('r', 4).attr('cx', function (d) {
-	    return seasonScale(d.firstSeason);
-	  }).attr('cy', function (d) {
-	    return yScale((0, _date.daysToYears)(d.start_age));
-	  }).style('opacity', 0.75).style('fill', function (d) {
-	    return d.featured.length === 0 ? _colors.lightBlue : _colors.brightPink;
-	  });
-
 	  (0, _addons.addTitle)(base.top, 'Starting Age of SNL Cast Members');
-
-	  (0, _addons.verticalLegend)(base.right, [{
-	    color: _colors.lightBlue,
-	    text: 'Repertory'
-	  }, {
-	    color: _colors.brightPink,
-	    text: 'Featured'
-	  }], {
+	  (0, _addons.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _addons.addLabel)(base.left, 'Starting Age', 'left');
+	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.lightBlue, text: 'Repertory' }, { color: _colors.brightPink, text: 'Featured' }], {
 	    offset: {
 	      left: 10,
 	      top: 100
 	    }
 	  });
 
-	  base.bottom.element.append('text').text('Season').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
+	  base.main.element.append('g').classed('scale-bars', true).selectAll('rect').data(tickValues).enter().append('rect').attr('x', function (d) {
+	    return seasonScale(d);
+	  }).attr('y', 0).attr('width', seasonScale.rangeBand()).attr('height', base.main.height);
 
-	  base.left.element.append('text').text('Starting Age').classed('centered', true).attr('transform', 'translate(15,' + base.left.height / 2 + ')rotate(-90)');
+	  // CHART
+	  var halfWidth = seasonScale.rangeBand() / 2;
+	  // create a group for every age
+	  base.main.element.selectAll('circle').data(filteredCastMembers).enter().append('circle').attr('r', 2).attr('cx', function (d) {
+	    return seasonScale(d.firstSeason) + halfWidth;
+	  }).attr('cy', function (d) {
+	    return yScale((0, _date.daysToYears)(d.start_age));
+	  }).style('fill', function (d) {
+	    return d.featured.length === 0 ? _colors.lightBlue : _colors.brightPink;
+	  });
 	}
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1918,19 +1904,19 @@
 	});
 	exports.default = render;
 
-	var _endingAges = __webpack_require__(27);
+	var _endingAges = __webpack_require__(28);
 
 	var _endingAges2 = _interopRequireDefault(_endingAges);
 
-	var _groupedEndingAges = __webpack_require__(28);
+	var _groupedEndingAges = __webpack_require__(29);
 
 	var _groupedEndingAges2 = _interopRequireDefault(_groupedEndingAges);
 
-	var _normalizedEndingAges = __webpack_require__(29);
+	var _normalizedEndingAges = __webpack_require__(30);
 
 	var _normalizedEndingAges2 = _interopRequireDefault(_normalizedEndingAges);
 
-	var _endingAgesTable = __webpack_require__(30);
+	var _endingAgesTable = __webpack_require__(31);
 
 	var _endingAgesTable2 = _interopRequireDefault(_endingAgesTable);
 
@@ -1944,7 +1930,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1965,16 +1951,18 @@
 	var _colors = __webpack_require__(14);
 
 	function chartEndingAges(data, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var all = data.all;
 	  var _all$end$ages = all.end.ages;
 	  var ages = _all$end$ages.ages;
 	  var offset = _all$end$ages.offset;
 
+
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
+	  var yMax = (0, _round.roundUp)(d3.max(ages), 5);
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 650, height: 300 },
 	    left: { width: 50 },
@@ -1983,12 +1971,12 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.5);
-
-	  var yMax = (0, _round.roundUp)(d3.max(ages), 5);
 
 	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
+	  // AXES
 	  var xAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
@@ -1999,9 +1987,11 @@
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 
-	  var halfWidth = ageScale.rangeBand();
+	  (0, _addons.addTitle)(base.top, 'Ending Age of SNL Cast Members');
+	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down', 'bottom');
 
-	  // create a group for every age
+	  // CHART
+	  var halfWidth = ageScale.rangeBand();
 	  base.main.element.selectAll('rect').data(ages).enter().append('rect').attr('width', halfWidth).attr('x', function (d, i) {
 	    return ageScale(i + offset);
 	  }).attr('y', function (d) {
@@ -2009,14 +1999,10 @@
 	  }).attr('height', function (d) {
 	    return base.main.height - yScale(d);
 	  }).style('fill', _colors.green);
-
-	  (0, _addons.addTitle)(base.top, 'Ending Age of SNL Cast Members');
-
-	  base.bottom.element.append('text').text('Age (Rounded Down)').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
 	}
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2036,22 +2022,29 @@
 
 	var _colors = __webpack_require__(14);
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	var _merge = __webpack_require__(21);
+
+	var _merge2 = _interopRequireDefault(_merge);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartGroupedEndingAges(data, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var male = data.male;
 	  var female = data.female;
 
-	  var _mergeAges = mergeAges(male, female);
+	  var _mergeData = (0, _merge2.default)({ data: male.start.ages.ages, offset: male.start.ages.offset }, { data: female.start.ages.ages, offset: female.start.ages.offset });
 
-	  var ages = _mergeAges.ages;
-	  var offset = _mergeAges.offset;
+	  var ages = _mergeData.data;
+	  var offset = _mergeData.offset;
 
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
+	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
+	    return Math.max(a[0], a[1]);
+	  }), 5);
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 650, height: 300 },
 	    left: { width: 50 },
@@ -2060,18 +2053,16 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  // the scale for each age group
 	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
 	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
 
-	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
-	    return Math.max(a[0], a[1]);
-	  }), 5);
-
 	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
+	  // AXES
 	  var groupedXAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
@@ -2082,7 +2073,16 @@
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 
-	  // create a group for every age
+	  (0, _addons.addTitle)(base.top, 'Ending Age of SNL Cast Members (by Gender)');
+	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	    offset: {
+	      left: 10,
+	      top: 50
+	    }
+	  });
+
+	  // CHART
 	  var ageGroups = base.main.element.selectAll('g.age').data(ages).enter().append('g').classed('age', true).attr('transform', function (d, i) {
 	    return 'translate(' + ageScale(i + offset) + ', 0)';
 	  });
@@ -2098,58 +2098,10 @@
 	  }).style('fill', function (d, i) {
 	    return _colors.genderColors[i];
 	  });
-
-	  (0, _addons.addTitle)(base.top, 'Ending Age of SNL Cast Members (by Gender)');
-
-	  (0, _addons.verticalLegend)(base.right, [{
-	    color: _colors.genderColors[0],
-	    text: 'Male'
-	  }, {
-	    color: _colors.genderColors[1],
-	    text: 'Female'
-	  }], {
-	    offset: {
-	      left: 10,
-	      top: 50
-	    }
-	  });
-
-	  base.bottom.element.append('text').text('Age (Rounded Down)').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
-	}
-
-	/*
-	 * merge the male and female ages so that they can be displaed side by side in a bar chart
-	 */
-	function mergeAges(male, female) {
-	  var ms = male.end.ages;
-	  var fs = female.end.ages;
-
-	  var youngestMale = ms.offset;
-	  var oldestMale = ms.offset + ms.ages.length;
-
-	  var youngestFemale = fs.offset;
-	  var oldestFemale = fs.offset + fs.ages.length;
-
-	  var youngest = Math.min(youngestMale, youngestFemale);
-	  var oldest = Math.max(oldestMale, oldestFemale);
-
-	  var paddedMales = zeroPadArray(ms.ages, youngestMale - youngest, oldest - oldestMale);
-	  var paddedFemales = zeroPadArray(fs.ages, youngestFemale - youngest, oldest - oldestFemale);
-
-	  return {
-	    ages: paddedMales.map(function (u, index) {
-	      return [paddedMales[index], paddedFemales[index]];
-	    }),
-	    offset: youngest
-	  };
-	}
-
-	function zeroPadArray(arr, front, back) {
-	  return [].concat(_toConsumableArray(Array.from(new Array(front)).fill(0)), _toConsumableArray(arr), _toConsumableArray(Array.from(new Array(back).fill(0))));
 	}
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2169,22 +2121,49 @@
 
 	var _colors = __webpack_require__(14);
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	var _merge = __webpack_require__(21);
+
+	var _merge2 = _interopRequireDefault(_merge);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartNormalizedEndingAges(data, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var male = data.male;
 	  var female = data.female;
 
-	  var _mergeAges = mergeAges(male, female);
+	  // NORMALIZE the counts per age as a percentage
 
-	  var ages = _mergeAges.ages;
-	  var offset = _mergeAges.offset;
+	  var maleEndAges = male.end.ages;
+	  var totalMale = maleEndAges.ages.reduce(function (acc, curr) {
+	    return acc + curr;
+	  }, 0);
+	  var malePercents = maleEndAges.ages.map(function (count) {
+	    return count / totalMale;
+	  });
+
+	  var femaleEndAges = female.end.ages;
+	  var totalFemale = femaleEndAges.ages.reduce(function (acc, curr) {
+	    return acc + curr;
+	  }, 0);
+	  var femalePercents = femaleEndAges.ages.map(function (count) {
+	    return count / totalFemale;
+	  });
+
+	  var _mergeData = (0, _merge2.default)({ data: malePercents, offset: maleEndAges.offset }, { data: femalePercents, offset: femaleEndAges.offset });
+
+	  var ages = _mergeData.data;
+	  var offset = _mergeData.offset;
+
 
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
+	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
+	    return Math.max(a[0], a[1]);
+	  }) * 100, 3) / 100;
+	  var formatPercent = d3.format('.0%');
 
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 650, height: 300 },
 	    left: { width: 50 },
@@ -2193,22 +2172,19 @@
 	    right: { width: 100 }
 	  }, holderID);
 
+	  // SCALES
 	  // the scale for each age group
 	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
 	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
 
-	  var yMax = d3.max(ages, function (a) {
-	    return Math.max(a[0], a[1]);
-	  });
-	  yMax = (0, _round.roundUp)(yMax * 100, 3) / 100;
-	  var formatPercent = d3.format('.0%');
-
 	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
+	  // AXES
 	  var groupedXAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
+	  // create a tick every 3%
 	  var threePercTicks = [];
 	  var perc = 0;
 	  while (perc <= yMax) {
@@ -2224,7 +2200,16 @@
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 
-	  // create a group for every age
+	  (0, _addons.addTitle)(base.top, 'Ending Age of SNL Cast Members (by Gender)');
+	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down', 'bottom');
+	  (0, _addons.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	    offset: {
+	      left: 10,
+	      top: 100
+	    }
+	  });
+
+	  // CHART
 	  var ageGroups = base.main.element.selectAll('g.age').data(ages).enter().append('g').classed('age', true).attr('transform', function (d, i) {
 	    return 'translate(' + ageScale(i + offset) + ', 0)';
 	  });
@@ -2240,73 +2225,10 @@
 	  }).style('fill', function (d, i) {
 	    return _colors.genderColors[i];
 	  });
-
-	  (0, _addons.addTitle)(base.top, 'Ending Age of SNL Cast Members (by Gender)');
-
-	  (0, _addons.verticalLegend)(base.right, [{
-	    color: _colors.genderColors[0],
-	    text: 'Male'
-	  }, {
-	    color: _colors.genderColors[1],
-	    text: 'Female'
-	  }], {
-	    offset: {
-	      left: 10,
-	      top: 100
-	    }
-	  });
-
-	  base.bottom.element.append('text').text('Age (Rounded Down)').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
-	}
-
-	/*
-	 * merge the male and female ages so that they can be displaed side by side in a bar chart
-	 */
-	function mergeAges(male, female) {
-	  var ms = male.end.ages;
-	  var fs = female.end.ages;
-
-	  var totalMale = ms.ages.reduce(function (acc, curr) {
-	    return acc + curr;
-	  }, 0);
-
-	  var totalFemale = fs.ages.reduce(function (acc, curr) {
-	    return acc + curr;
-	  }, 0);
-
-	  var femalePercents = fs.ages.map(function (count) {
-	    return count / totalFemale;
-	  });
-	  var malePercents = ms.ages.map(function (count) {
-	    return count / totalMale;
-	  });
-
-	  var youngestMale = ms.offset;
-	  var oldestMale = ms.offset + ms.ages.length;
-
-	  var youngestFemale = fs.offset;
-	  var oldestFemale = fs.offset + fs.ages.length;
-
-	  var youngest = Math.min(youngestMale, youngestFemale);
-	  var oldest = Math.max(oldestMale, oldestFemale);
-
-	  var paddedMales = zeroPadArray(malePercents, youngestMale - youngest, oldest - oldestMale);
-	  var paddedFemales = zeroPadArray(femalePercents, youngestFemale - youngest, oldest - oldestFemale);
-
-	  return {
-	    ages: paddedMales.map(function (u, index) {
-	      return [paddedMales[index], paddedFemales[index]];
-	    }),
-	    offset: youngest
-	  };
-	}
-
-	function zeroPadArray(arr, front, back) {
-	  return [].concat(_toConsumableArray(Array.from(new Array(front)).fill(0)), _toConsumableArray(arr), _toConsumableArray(Array.from(new Array(back).fill(0))));
 	}
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2320,7 +2242,7 @@
 
 	var _date = __webpack_require__(2);
 
-	var _table = __webpack_require__(23);
+	var _table = __webpack_require__(24);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -2343,7 +2265,7 @@
 	}
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2363,28 +2285,52 @@
 
 	var _colors = __webpack_require__(14);
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	var _merge = __webpack_require__(21);
+
+	var _merge2 = _interopRequireDefault(_merge);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var colors = [_colors.lightBlue, _colors.brightPink];
 
 	function chartStartingAndEndingAges(data, holderID) {
-	  // normalize the genders to cover the same time frame
 	  var _data$all = data.all;
 	  var start = _data$all.start;
 	  var end = _data$all.end;
 
-	  var _mergeAges = mergeAges(start, end);
+	  // NORMALIZE the counts per age as a percentage
 
-	  var ages = _mergeAges.ages;
-	  var offset = _mergeAges.offset;
+	  var startAges = start.ages;
+	  var totalStart = startAges.ages.reduce(function (acc, curr) {
+	    return acc + curr;
+	  }, 0);
+	  var startPercents = startAges.ages.map(function (count) {
+	    return count / totalStart;
+	  });
+
+	  var endAges = end.ages;
+	  var totalEnd = endAges.ages.reduce(function (acc, curr) {
+	    return acc + curr;
+	  }, 0);
+	  var endPercents = endAges.ages.map(function (count) {
+	    return count / totalEnd;
+	  });
+
+	  var _mergeData = (0, _merge2.default)({ data: startPercents, offset: startAges.offset }, { data: endPercents, offset: endAges.offset });
+
+	  var ages = _mergeData.data;
+	  var offset = _mergeData.offset;
+
 
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
+	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
+	    return Math.max(a[0], a[1]);
+	  }) * 100, 3) / 100;
+	  var formatPercent = d3.format('.0%');
 
-	  /*
-	   * CREATE SVG ELEMENTS
-	   */
+	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 650, height: 300 },
 	    left: { width: 50 },
@@ -2393,44 +2339,36 @@
 	    right: { width: 100 }
 	  }, holderID);
 
-	  /*
-	   * CREATE SCALES
-	   */
+	  // SCALES
 	  // the scale for each age group
 	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
 	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
 
-	  var yMax = d3.max(ages, function (a) {
-	    return Math.max(a[0], a[1]);
-	  });
-	  yMax = (0, _round.roundUp)(yMax * 100, 3) / 100;
-	  var formatPercent = d3.format('.0%');
-
 	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
-	  /*
-	   * CREATES AXES
-	   */
-
+	  // AXES
 	  var groupedXAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left').tickFormat(formatPercent);
 
 	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
 
-	  /*
-	   * DRAW AXES
-	   */
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 
-	  /*
-	   * DRAW CHART
-	   */
-	  // create a group for every age
+	  (0, _addons.addTitle)(base.top, 'Starting and Ending Ages of SNL Cast Members');
+	  (0, _addons.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _addons.verticalLegend)(base.right, [{ color: colors[0], text: 'Start' }, { color: colors[1], text: 'End' }], {
+	    offset: {
+	      left: 10,
+	      top: 100
+	    }
+	  });
+
+	  // CHART
 	  var ageGroups = base.main.element.selectAll('g.age').data(ages).enter().append('g').classed('age', true).attr('transform', function (d, i) {
 	    return 'translate(' + ageScale(i + offset) + ', 0)';
 	  });
@@ -2446,71 +2384,6 @@
 	  }).style('fill', function (d, i) {
 	    return colors[i];
 	  });
-
-	  /*
-	   * DRAW ADDONS
-	   */
-	  (0, _addons.addTitle)(base.top, 'Starting and Ending Ages of SNL Cast Members');
-	  (0, _addons.verticalLegend)(base.right, [{
-	    color: colors[0],
-	    text: 'Start'
-	  }, {
-	    color: colors[1],
-	    text: 'End'
-	  }], {
-	    offset: {
-	      left: 10,
-	      top: 100
-	    }
-	  });
-
-	  base.bottom.element.append('text').text('Age (Rounded Down)').classed('centered', true).attr('transform', 'translate(' + base.bottom.width / 2 + ', ' + (base.bottom.height - 5) + ')');
-	}
-
-	/*
-	 * merge the male and female ages so that they can be displaed side by side in a bar chart
-	 */
-	function mergeAges(start, end) {
-	  var sa = start.ages;
-	  var ea = end.ages;
-
-	  var totalStart = sa.ages.reduce(function (acc, curr) {
-	    return acc + curr;
-	  }, 0);
-
-	  var totalEnd = ea.ages.reduce(function (acc, curr) {
-	    return acc + curr;
-	  }, 0);
-
-	  var startPercents = sa.ages.map(function (count) {
-	    return count / totalStart;
-	  });
-	  var endPercents = ea.ages.map(function (count) {
-	    return count / totalEnd;
-	  });
-
-	  var youngestStart = sa.offset;
-	  var oldestStart = sa.offset + sa.ages.length;
-
-	  var youngestEnd = ea.offset;
-	  var oldestEnd = ea.offset + ea.ages.length;
-
-	  var youngest = Math.min(youngestStart, youngestEnd);
-	  var oldest = Math.max(oldestStart, oldestEnd);
-
-	  var paddedStarts = zeroPadArray(startPercents, youngestStart - youngest, oldest - oldestStart);
-	  var paddedEnds = zeroPadArray(endPercents, youngestEnd - youngest, oldest - oldestEnd);
-
-	  return {
-	    ages: paddedStarts.map(function (u, index) {
-	      return [paddedStarts[index], paddedEnds[index]];
-	    }),
-	    offset: youngest
-	  };
-	}
-
-	function zeroPadArray(arr, front, back) {
-	  return [].concat(_toConsumableArray(Array.from(new Array(front)).fill(0)), _toConsumableArray(arr), _toConsumableArray(Array.from(new Array(back).fill(0))));
 	}
 
 /***/ }

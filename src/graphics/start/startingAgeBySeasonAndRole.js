@@ -1,12 +1,11 @@
 import { chartBase } from '../../charts/base';
 import { drawAxis } from '../../charts/axis';
-import { addTitle, verticalLegend } from '../../charts/addons';
-import { roundUp } from '../../round';
-import { daysToYears } from '../../date';
-import { lightBlue as repertoryColor, brightPink as featuredColor } from '../../colors';
+import { addTitle, addLabel, verticalLegend } from '../../charts/addons';
+import { roundUp } from '../../helpers/round';
+import { daysToYears } from '../../helpers/date';
+import { lightBlue as repertoryColor, brightPink as featuredColor } from '../../helpers/colors';
 
 export default function chartStartingAges(castMembers, holderID) {
-  // normalize the genders to cover the same time frame
   const filteredCastMembers = castMembers.filter(cm => cm.start_age !== undefined );
   let minSeason = Infinity;
   let maxSeason = -Infinity;
@@ -20,7 +19,10 @@ export default function chartStartingAges(castMembers, holderID) {
     }
   });
   const tickValues = Array.from(new Array(maxSeason-minSeason+1)).map((u,i) => i+minSeason);
+  // find out the oldest starting age, convert to years
+  const maxYears = roundUp(daysToYears(d3.max(filteredCastMembers, cm => cm.start_age)), 5);
 
+  // BASE
   const base = chartBase({
     main: {width: 750, height: 300},
     left: {width: 50},
@@ -29,16 +31,16 @@ export default function chartStartingAges(castMembers, holderID) {
     right: { width: 100}
   }, holderID);
 
+  // SCALES
   const seasonScale = d3.scale.ordinal()
     .domain(tickValues)
     .rangeRoundBands([0, base.bottom.width], 0.1);
 
-  // find out the oldest starting age, convert to years
-  const maxYears = roundUp(daysToYears(d3.max(filteredCastMembers, cm => cm.start_age)), 5);
   const yScale = d3.scale.linear()
     .domain([0, 50])
     .range([base.main.height, 0]);
 
+  // AXES
   const xAxis = d3.svg.axis()
     .scale(seasonScale)
     .orient('bottom')
@@ -60,29 +62,12 @@ export default function chartStartingAges(castMembers, holderID) {
 
   drawAxis(base.bottom, xAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
-  drawAxis(base.main, yGrid, 'left');
-
-  // create a group for every age
-  base.main.element.selectAll('circle')
-      .data(filteredCastMembers)
-    .enter().append('circle')
-      .attr('r', 4)
-      .attr('cx', d => seasonScale(d.firstSeason))
-      .attr('cy', d => yScale(daysToYears(d.start_age)))
-      .style('opacity', 0.75)
-      .style('fill', d => d.featured.length === 0 ? repertoryColor : featuredColor);
-
   addTitle(base.top, 'Starting Age of SNL Cast Members');
-
+  addLabel(base.bottom, 'Season', 'bottom');
+  addLabel(base.left, 'Starting Age', 'left');
   verticalLegend(base.right, [
-    {
-      color: repertoryColor,
-      text: 'Repertory'
-    },
-    {
-      color: featuredColor,
-      text: 'Featured'
-    }
+    {color: repertoryColor, text: 'Repertory'},
+    {color: featuredColor, text: 'Featured'}
   ], {
     offset: {
       left: 10,
@@ -90,13 +75,25 @@ export default function chartStartingAges(castMembers, holderID) {
     }
   });
 
-  base.bottom.element.append('text')
-    .text('Season')
-    .classed('centered', true)
-    .attr('transform', `translate(${base.bottom.width/2}, ${base.bottom.height-5})`)
+  base.main.element.append('g')
+    .classed('scale-bars', true)
+      .selectAll('rect')
+          .data(tickValues)
+        .enter().append('rect')
+          .attr('x', d => seasonScale(d))
+          .attr('y', 0)
+          .attr('width', seasonScale.rangeBand())
+          .attr('height', base.main.height);
 
-  base.left.element.append('text')
-    .text('Starting Age')
-    .classed('centered', true)
-    .attr('transform', `translate(15,${base.left.height/2})rotate(-90)`);
+  // CHART
+  const halfWidth = seasonScale.rangeBand() / 2;
+  // create a group for every age
+  base.main.element.selectAll('circle')
+      .data(filteredCastMembers)
+    .enter().append('circle')
+      .attr('r', 2)
+      .attr('cx', d => seasonScale(d.firstSeason) + halfWidth)
+      .attr('cy', d => yScale(daysToYears(d.start_age)))
+      .style('fill', d => d.featured.length === 0 ? repertoryColor : featuredColor);
+
 }

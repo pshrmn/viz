@@ -1,20 +1,38 @@
 import { chartBase } from '../charts/base';
 import { drawAxis } from '../charts/axis';
-import { addTitle, verticalLegend } from '../charts/addons';
-import { roundUp } from '../round';
-import { lightBlue, brightPink } from '../colors';
+import { addTitle, addLabel, verticalLegend } from '../charts/addons';
+import { roundUp } from '../helpers/round';
+import { lightBlue, brightPink } from '../helpers/colors';
+import mergeData from '../helpers/merge';
 
 const colors = [lightBlue, brightPink];
 
 export default function chartStartingAndEndingAges(data, holderID) {
-  // normalize the genders to cover the same time frame
   const { start, end } = data.all;
-  const { ages, offset } = mergeAges(start, end);
+
+  // NORMALIZE the counts per age as a percentage
+  const startAges = start.ages;
+  const totalStart = startAges.ages.reduce((acc, curr) => {
+    return acc + curr;
+  }, 0);
+  const startPercents = startAges.ages.map(count => count / totalStart);
+
+  const endAges = end.ages;
+  const totalEnd = endAges.ages.reduce((acc, curr) => {
+    return acc + curr;
+  }, 0);
+  const endPercents = endAges.ages.map(count => count / totalEnd);
+
+  const { data: ages, offset } = mergeData(
+    {data: startPercents, offset: startAges.offset},
+    {data: endPercents, offset: endAges.offset}
+  );
+
   const tickValues = Array.from(new Array(ages.length)).map((u, i) => i+offset);
+  const yMax = roundUp(d3.max(ages, (a) => Math.max(a[0], a[1]))*100, 3) / 100;
+  const formatPercent = d3.format('.0%');
   
-  /*
-   * CREATE SVG ELEMENTS
-   */
+  // BASE
   const base = chartBase({
     main: {width: 650, height: 300},
     left: {width: 50},
@@ -23,9 +41,7 @@ export default function chartStartingAndEndingAges(data, holderID) {
     right: { width: 100}
   }, holderID);
 
-  /*
-   * CREATE SCALES
-   */
+  // SCALES
   // the scale for each age group
   const ageScale = d3.scale.ordinal()
     .domain(tickValues)
@@ -36,18 +52,11 @@ export default function chartStartingAndEndingAges(data, holderID) {
     .domain([0, 1])
     .rangeRoundBands([0, ageScale.rangeBand()]);
 
-  let yMax = d3.max(ages, (a) => Math.max(a[0], a[1]));
-  yMax = roundUp(yMax*100, 3)/100
-  const formatPercent = d3.format('.0%');
-
   const yScale = d3.scale.linear()
     .domain([0, yMax])
     .range([base.main.height, 0]);
 
-  /*
-   * CREATES AXES
-   */
-
+  // AXES
   const groupedXAxis = d3.svg.axis()
     .scale(ageScale)
     .orient('bottom')
@@ -68,17 +77,23 @@ export default function chartStartingAndEndingAges(data, holderID) {
     .tickFormat('')
     .outerTickSize(0);
 
-  /*
-   * DRAW AXES
-   */
   drawAxis(base.bottom, groupedXAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
   drawAxis(base.main, yGrid, 'left');
 
-  /*
-   * DRAW CHART
-   */
-  // create a group for every age
+  addTitle(base.top, 'Starting and Ending Ages of SNL Cast Members');
+  addLabel(base.bottom, 'Age (Rounded Down)', 'bottom');
+  verticalLegend(base.right, [
+    {color: colors[0], text: 'Start'},
+    {color: colors[1], text: 'End'}
+  ], {
+    offset: {
+      left: 10,
+      top: 100
+    }
+  });
+
+  // CHART
   const ageGroups = base.main.element.selectAll('g.age')
       .data(ages)
     .enter().append('g')
@@ -93,69 +108,4 @@ export default function chartStartingAndEndingAges(data, holderID) {
       .attr('y', d => yScale(d))
       .attr('height', d => base.main.height - yScale(d))
       .style('fill', (d,i) => colors[i]);
-
-  /*
-   * DRAW ADDONS
-   */
-  addTitle(base.top, 'Starting and Ending Ages of SNL Cast Members');
-  verticalLegend(base.right, [
-    {
-      color: colors[0],
-      text: 'Start'
-    },
-    {
-      color: colors[1],
-      text: 'End'
-    }
-  ], {
-    offset: {
-      left: 10,
-      top: 100
-    }
-  });
-
-  base.bottom.element.append('text')
-    .text('Age (Rounded Down)')
-    .classed('centered', true)
-    .attr('transform', `translate(${base.bottom.width/2}, ${base.bottom.height-5})`)
-}
-
-/*
- * merge the male and female ages so that they can be displaed side by side in a bar chart
- */
-function mergeAges(start, end) {
-  const sa = start.ages;
-  const ea = end.ages;
-
-  const totalStart = sa.ages.reduce((acc, curr) => {
-    return acc + curr;
-  }, 0);
-
-  const totalEnd = ea.ages.reduce((acc, curr) => {
-    return acc + curr;
-  }, 0);
-
-  const startPercents = sa.ages.map(count => count / totalStart);
-  const endPercents = ea.ages.map(count => count / totalEnd);
-
-  const youngestStart = sa.offset;
-  const oldestStart = sa.offset + sa.ages.length;
-
-  const youngestEnd = ea.offset;
-  const oldestEnd = ea.offset + ea.ages.length;
-
-  const youngest = Math.min(youngestStart, youngestEnd);
-  const oldest = Math.max(oldestStart, oldestEnd)
-
-  const paddedStarts = zeroPadArray(startPercents, youngestStart - youngest, oldest - oldestStart);
-  const paddedEnds = zeroPadArray(endPercents, youngestEnd - youngest, oldest - oldestEnd);
-
-  return {
-    ages: paddedStarts.map((u, index) => [paddedStarts[index], paddedEnds[index]]),
-    offset: youngest
-  };
-}
-
-function zeroPadArray(arr, front, back) {
-  return [...Array.from(new Array(front)).fill(0), ...arr, ...Array.from(new Array(back).fill(0))];
 }

@@ -1,15 +1,16 @@
 import { chartBase } from '../../charts/base';
 import { drawAxis } from '../../charts/axis';
-import { addTitle } from '../../charts/addons';
-import { roundUp } from '../../round';
-import { green } from '../../colors';
+import { addTitle, addLabel } from '../../charts/addons';
+import { roundUp } from '../../helpers/round';
+import { green } from '../../helpers/colors';
 
 export default function chartStartingAges(data, holderID) {
-  // normalize the genders to cover the same time frame
   const { all } = data;
   const { ages, offset } = all.start.ages;
   const tickValues = Array.from(new Array(ages.length)).map((u, i) => i+offset);
+  const yMax = roundUp(d3.max(ages), 5);
   
+  // BASE
   const base = chartBase({
     main: {width: 650, height: 300},
     left: {width: 50},
@@ -18,16 +19,16 @@ export default function chartStartingAges(data, holderID) {
     right: { width: 100}
   }, holderID);
 
+  // SCALES
   const ageScale = d3.scale.ordinal()
     .domain(tickValues)
     .rangeRoundBands([0, base.bottom.width], 0.5);
-
-  const yMax = roundUp(d3.max(ages), 5);
 
   const yScale = d3.scale.linear()
     .domain([0, yMax])
     .range([base.main.height, 0]);
 
+  // AXES
   const xAxis = d3.svg.axis()
     .scale(ageScale)
     .orient('bottom')
@@ -50,10 +51,11 @@ export default function chartStartingAges(data, holderID) {
   drawAxis(base.bottom, xAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
   drawAxis(base.main, yGrid, 'left');
+  addTitle(base.top, 'Starting Age of SNL Cast Members');
+  addLabel(base.bottom, 'Age (Rounded Down)', 'bottom');
 
+  // CHART
   const halfWidth = ageScale.rangeBand();
-
-  // create a group for every age
   base.main.element.selectAll('rect')
       .data(ages)
     .enter().append('rect')
@@ -62,11 +64,4 @@ export default function chartStartingAges(data, holderID) {
       .attr('y', d => yScale(d))
       .attr('height', d => base.main.height - yScale(d))
       .style('fill', green);
-
-  addTitle(base.top, 'Starting Age of SNL Cast Members');
-
-  base.bottom.element.append('text')
-    .text('Age (Rounded Down)')
-    .classed('centered', true)
-    .attr('transform', `translate(${base.bottom.width/2}, ${base.bottom.height-5})`)
 }

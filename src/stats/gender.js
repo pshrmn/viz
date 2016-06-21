@@ -1,6 +1,6 @@
 import { male, female } from './filters';
-import { medianProperty, meanProperty, standardDeviation } from '../average';
-import { daysToYears } from '../date';
+import { medianProperty, meanProperty, standardDeviation } from '../helpers/average';
+import { daysToYears } from '../helpers/date';
 
 export default function genderStats(castMembers) {
   const maleCastMembers = male(castMembers);

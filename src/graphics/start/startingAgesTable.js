@@ -1,7 +1,6 @@
-import { roundFloat } from '../../round';
-import { daysToYears } from '../../date';
+import { roundFloat } from '../../helpers/round';
+import { daysToYears } from '../../helpers/date';
 import table from '../../charts/table';
-
 
 export default function startingAgesTable(data, holderID) {
   const headers = ['', 'Median', 'Mean', 'Youngest', 'Oldest'];

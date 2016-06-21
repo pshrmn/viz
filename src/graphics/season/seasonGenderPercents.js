@@ -1,18 +1,20 @@
 import { chartBase } from '../../charts/base';
 import { drawAxis } from '../../charts/axis';
-import { addTitle, verticalLegend } from '../../charts/addons';
-import { genderColors } from '../../colors';
-import { meanProperty, standardDeviation } from '../../average';
-import { roundFloat } from '../../round';
+import { addTitle, addLabel, verticalLegend } from '../../charts/addons';
+import { genderColors } from '../../helpers/colors';
+import { meanProperty, standardDeviation } from '../../helpers/average';
+import { roundFloat } from '../../helpers/round';
 
 export default function chartGenderPercents(seasons, holderID) {
-  // normalize the genders to cover the same time frame
   const tickValues = seasons.map(s => s.season);
+  const formatPercent = d3.format('.0%');
 
+  // save here instead of calculating this multiple times
   seasons.forEach(s => {
     s.male_percent = s.male / s.total_cast;
   });
 
+  // BASE
   const base = chartBase({
     main: {width: 850, height: 300},
     left: {width: 50},
@@ -21,15 +23,16 @@ export default function chartGenderPercents(seasons, holderID) {
     right: { width: 100}
   }, holderID);
 
+  // SCALES
   const seasonScale = d3.scale.ordinal()
     .domain(tickValues)
     .rangeRoundBands([0, base.bottom.width], 0.1);
 
-  const formatPercent = d3.format('.0%');
   const yScale = d3.scale.linear()
     .domain([0, 1])
     .range([base.main.height, 0]);
 
+  // AXES
   const xAxis = d3.svg.axis()
     .scale(seasonScale)
     .orient('bottom')
@@ -38,16 +41,27 @@ export default function chartGenderPercents(seasons, holderID) {
 
   const yAxis = d3.svg.axis()
     .scale(yScale)
-    .ticks(10)
+    .tickValues([0, 0.25, 0.5, 0.75, 1.0])
     .orient('left')
     .tickFormat(formatPercent);
 
   drawAxis(base.bottom, xAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
 
-  const bandWidth = seasonScale.rangeBand();
+  addTitle(base.top, 'Cast Member Genders');
+  addLabel(base.bottom, 'Season', 'bottom');
+  verticalLegend(base.right, [
+    {color: genderColors[1], text: 'Female'},
+    {color: genderColors[0], text: 'Male'}
+  ], {
+    offset: {
+      left: 10,
+      top: 50
+    }
+  });
 
-  // create a group for every age
+  // CHART
+  const bandWidth = seasonScale.rangeBand();
   base.main.element.append('g')
     .classed('male-percent', true)
     .selectAll('rect')
@@ -84,41 +98,4 @@ export default function chartGenderPercents(seasons, holderID) {
       .style('text-anchor', 'middle')
       .style('font-size', '14px');
 
-  addTitle(base.top, 'Cast Member Genders');
-
-  verticalLegend(base.right, [
-    {
-      color: genderColors[0],
-      text: 'Male'
-    },
-    {
-      color: genderColors[1],
-      text: 'Female'
-    }
-  ], {
-    offset: {
-      left: 10,
-      top: 50
-    }
-  });
-
-  base.bottom.element.append('text')
-    .text('Season')
-    .classed('centered', true)
-    .attr('transform', `translate(${base.bottom.width/2}, ${base.bottom.height-5})`)
-
-  /*
-  // draw a line representing what 50% gender ratio would be
-  const halfGroup = base.main.element.append('g');
-  halfGroup.append('line')
-    .attr('x1', 0)
-    .attr('y1', yScale(0.5))
-    .attr('x2', base.main.width)
-    .attr('y2', yScale(0.5))
-    .style('stroke', '#000')
-    .style('stroke-width', 1);
-
-  const meanCount = meanProperty(seasons, 'male_percent');
-  const standardDev = standardDeviation(seasons, 'male_percent', meanCount);
-  */
 }

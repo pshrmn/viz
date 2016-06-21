@@ -1,9 +1,39 @@
+
 export function addTitle(section, text) {
   const { element, width, height } = section;
   element.append('text')
-    .classed('title centered', true)
     .text(text)
+    .classed('title centered', true)
+    .style('text-anchor', 'middle')
     .attr('transform', `translate(${width/2}, ${height/2})`);
+}
+
+/*
+ * Add a text label that is centered in the provided section's element.
+ * Takes into account the size of the ticks (as provided by the user) when
+ * determining the positioning.
+ */
+export function addLabel(section, text, orient = 'bottom', tickSize = 25) {
+  const { element, width, height } = section;
+
+  let transformed = '';
+  switch ( orient ) {
+  case 'top':
+  case 'bottom':
+    var heightOffset = (height - tickSize) / 2 + tickSize
+    transformed = `translate(${width/2},${heightOffset})`
+    break;
+  case 'left':
+  case 'right':
+    var widthOffset = (width + tickSize) / 2 - tickSize;
+    transformed = `translate(${widthOffset},${height/2})rotate(-90)`
+    break;
+  }
+
+  element.append('text')
+      .text(text)
+      .style('text-anchor', 'middle')
+      .attr('transform', transformed);
 }
 
 /*
@@ -13,7 +43,7 @@ export function addTitle(section, text) {
  * @options can be provided to configure the layout of the legend. These include:
  *    offset - provide a top and left amount to translate the legend 'g' away
  *             from the default position in the top left corner (0,0)
- *    padding - the amount of padding around each key
+ *    padding - the amount of padding around each key (top and bottom)
  */
 export function verticalLegend(section, keys, options = {}) {
   const { element  } = section;
@@ -38,7 +68,8 @@ export function verticalLegend(section, keys, options = {}) {
 }
 
 /*
- * same as verticalLegend, but horizontal instead of vertical
+ * same as verticalLegend, but horizontal instead of vertical.
+ * padding will be left and right
  */
 export function horizontalLegend(section, keys, options = {}) {
   const { element  } = section;

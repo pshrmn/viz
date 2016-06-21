@@ -1,5 +1,5 @@
 import d3 from 'd3';
-import { parseDate } from './date';
+import { parseDate } from './helpers/date';
 import { newCastPerSeason, lastSeasonForCastMembers } from './stats/cast';
 import { roleCounts, seasonsByRole } from './stats/roles';
 import genderStats from './stats/gender';

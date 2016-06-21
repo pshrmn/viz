@@ -1,14 +1,14 @@
 import { chartBase } from '../../charts/base';
 import { drawAxis } from '../../charts/axis';
-import { addTitle, verticalLegend } from '../../charts/addons';
-import { roundUp } from '../../round';
-import { genderColors } from '../../colors';
+import { addTitle, addLabel, verticalLegend } from '../../charts/addons';
+import { roundUp } from '../../helpers/round';
+import { genderColors } from '../../helpers/colors';
 
 export default function chartGroupedSeasonGenders(seasons, holderID) {
-  // normalize the genders to cover the same time frame
-
   const tickValues = seasons.map(s => s.season);
+  const yMax = roundUp(d3.max(seasons, s => Math.max(s.male, s.female)), 5);
   
+  // BASE
   const base = chartBase({
     main: {width: 750, height: 300},
     left: {width: 50},
@@ -17,6 +17,7 @@ export default function chartGroupedSeasonGenders(seasons, holderID) {
     right: { width: 100}
   }, holderID);
 
+  // SCALES
   // the scale for each age group
   const seasonScale = d3.scale.ordinal()
     .domain(tickValues)
@@ -27,18 +28,16 @@ export default function chartGroupedSeasonGenders(seasons, holderID) {
     .domain([0, 1])
     .rangeRoundBands([0, seasonScale.rangeBand()]);
 
-  const yMax = roundUp(d3.max(seasons, s => Math.max(s.male, s.female)), 5);
-
   const yScale = d3.scale.linear()
     .domain([0, yMax])
     .range([base.main.height, 0]);
 
+  // AXES
   const groupedXAxis = d3.svg.axis()
     .scale(seasonScale)
     .orient('bottom')
     .tickValues(tickValues)
     .outerTickSize(0);
-
 
   const yAxis = d3.svg.axis()
     .scale(yScale)
@@ -56,8 +55,19 @@ export default function chartGroupedSeasonGenders(seasons, holderID) {
   drawAxis(base.bottom, groupedXAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
   drawAxis(base.main, yGrid, 'left');
+  addTitle(base.top, 'Cast Members Per Season (by Gender)');
+  addLabel(base.bottom, 'Season', 'bottom');
+  verticalLegend(base.right, [
+    {color: genderColors[0], text: 'Male'},
+    {color: genderColors[1], text: 'Female'}
+  ], {
+    offset: {
+      left: 10,
+      top: 50
+    }
+  });
 
-  // create a group for every age
+  // CHART
   const seasonGroups = base.main.element.selectAll('g.age')
       .data(seasons)
     .enter().append('g')
@@ -73,26 +83,4 @@ export default function chartGroupedSeasonGenders(seasons, holderID) {
       .attr('height', d => base.main.height - yScale(d))
       .style('fill', (d,i) => genderColors[i]);
 
-  addTitle(base.top, 'Cast Members Per Season (by Gender)');
-
-  verticalLegend(base.right, [
-    {
-      color: genderColors[0],
-      text: 'Male'
-    },
-    {
-      color: genderColors[1],
-      text: 'Female'
-    }
-  ], {
-    offset: {
-      left: 10,
-      top: 50
-    }
-  });
-
-  base.bottom.element.append('text')
-    .text('Season')
-    .classed('centered', true)
-    .attr('transform', `translate(${base.bottom.width/2}, ${base.bottom.height-5})`)
 }

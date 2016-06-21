@@ -62,3 +62,12 @@ rect {
 .mean text {
   font-size: 14px;
 }
+
+.scale-bars rect:nth-child(odd) {
+  fill: none;
+}
+
+.scale-bars rect:nth-child(even) {
+  fill: #efefef;
+  opacity: 0.5;
+}
