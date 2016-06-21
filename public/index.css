@@ -53,7 +53,7 @@ rect {
 }
 
 .mean line {
-  stroke-dasharray: 5, 2;
+  stroke-dasharray: 2, 5;
   stroke: #222;
   stroke-width: 1;
   fill: none;

@@ -1,3 +1,5 @@
+import d3 from 'd3';
+
 import { chartBase } from '../charts/base';
 import { drawAxis } from '../charts/axis';
 import { addTitle, addLabel } from '../charts/text';

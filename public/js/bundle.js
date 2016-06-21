@@ -60,19 +60,23 @@
 
 	var _gender2 = _interopRequireDefault(_gender);
 
-	var _seasonCastMemberGraphics = __webpack_require__(8);
+	var _basicsGraphics = __webpack_require__(8);
+
+	var _basicsGraphics2 = _interopRequireDefault(_basicsGraphics);
+
+	var _seasonCastMemberGraphics = __webpack_require__(14);
 
 	var _seasonCastMemberGraphics2 = _interopRequireDefault(_seasonCastMemberGraphics);
 
-	var _startingAgeGraphics = __webpack_require__(19);
+	var _startingAgeGraphics = __webpack_require__(23);
 
 	var _startingAgeGraphics2 = _interopRequireDefault(_startingAgeGraphics);
 
-	var _endingAgeGraphics = __webpack_require__(28);
+	var _endingAgeGraphics = __webpack_require__(32);
 
 	var _endingAgeGraphics2 = _interopRequireDefault(_endingAgeGraphics);
 
-	var _startingAndEndingAges = __webpack_require__(33);
+	var _startingAndEndingAges = __webpack_require__(37);
 
 	var _startingAndEndingAges2 = _interopRequireDefault(_startingAndEndingAges);
 
@@ -129,6 +133,7 @@
 	  console.log(seasonsByRole(castMembers));
 	  */
 
+	  (0, _basicsGraphics2.default)(castMembers);
 	  (0, _seasonCastMemberGraphics2.default)(seasons);
 	  (0, _startingAgeGraphics2.default)(genders, castMembers);
 	  (0, _endingAgeGraphics2.default)(genders);
@@ -514,29 +519,19 @@
 	});
 	exports.default = render;
 
-	var _seasonCastMembers = __webpack_require__(9);
+	var _genders = __webpack_require__(9);
 
-	var _seasonCastMembers2 = _interopRequireDefault(_seasonCastMembers);
+	var _genders2 = _interopRequireDefault(_genders);
 
-	var _groupedSeasonGenders = __webpack_require__(15);
+	var _roles = __webpack_require__(13);
 
-	var _groupedSeasonGenders2 = _interopRequireDefault(_groupedSeasonGenders);
-
-	var _seasonGenderPercents = __webpack_require__(17);
-
-	var _seasonGenderPercents2 = _interopRequireDefault(_seasonGenderPercents);
-
-	var _seasonRolePercents = __webpack_require__(18);
-
-	var _seasonRolePercents2 = _interopRequireDefault(_seasonRolePercents);
+	var _roles2 = _interopRequireDefault(_roles);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function render(seasons) {
-	  (0, _seasonCastMembers2.default)(seasons, '#season-casts');
-	  (0, _groupedSeasonGenders2.default)(seasons, '#season-genders');
-	  (0, _seasonGenderPercents2.default)(seasons, '#season-percents');
-	  (0, _seasonRolePercents2.default)(seasons, '#season-roles');
+	function render(castMembers) {
+	  (0, _genders2.default)(castMembers, '#basic-genders');
+	  (0, _roles2.default)(castMembers, '#basic-roles');
 	}
 
 /***/ },
@@ -548,70 +543,76 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = chartCasts;
+	exports.default = genderChart;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _colors = __webpack_require__(11);
 
 	var _text = __webpack_require__(12);
 
-	var _round = __webpack_require__(13);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var _average = __webpack_require__(7);
-
-	var _colors = __webpack_require__(14);
-
-	function chartCasts(seasons, holderID) {
-	  var tickValues = seasons.map(function (s) {
-	    return s.season;
-	  });
-	  var yMax = (0, _round.roundUp)(d3.max(seasons, function (s) {
-	    return s.total_cast;
-	  }), 5);
-
+	function genderChart(castMembers, holderID) {
+	  var formatPercent = _d2.default.format('.0%');
+	  var genders = castMembers.reduce(function (acc, cm) {
+	    if (cm.gender === 'male') {
+	      acc[0]++;
+	    } else {
+	      acc[1]++;
+	    }
+	    return acc;
+	  }, [0, 0]);
+	  var data = [{
+	    gender: 'Male',
+	    count: genders[0],
+	    offset: 0,
+	    fill: _colors.genderColors[0],
+	    align: 'start'
+	  }, {
+	    gender: 'Female',
+	    count: genders[1],
+	    offset: genders[0],
+	    fill: _colors.genderColors[1],
+	    align: 'end'
+	  }];
 	  // BASE
 	  var base = (0, _base.chartBase)({
-	    main: { width: 750, height: 300 },
-	    left: { width: 50 },
-	    bottom: { height: 50 },
-	    top: { height: 30 },
-	    right: { width: 100 }
+	    main: { width: 650, height: 25 },
+	    top: { height: 30 }
 	  }, holderID);
 
 	  // SCALES
-	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var genderScale = _d2.default.scale.linear().domain([0, castMembers.length]).range([0, base.main.width]);
 
-	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
-
-	  // AXES
-	  var xAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
-
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
-
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
-
-	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
-	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _text.addTitle)(base.top, 'Cast Members Per Season');
-	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _text.addTitle)(base.top, 'Genders');
 
 	  // CHART
-	  var bandWidth = seasonScale.rangeBand();
-	  base.main.element.selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
-	    return seasonScale(d.season);
-	  }).attr('y', function (d) {
-	    return yScale(d.total_cast);
-	  }).attr('height', function (d) {
-	    return base.main.height - yScale(d.total_cast);
-	  }).style('fill', _colors.green);
+	  var genderGs = base.main.element.selectAll('g').data(data).enter().append('g').attr('transform', function (d) {
+	    return 'translate(' + genderScale(d.offset) + ',0)';
+	  });
 
-	  var meanCount = (0, _average.meanProperty)(seasons, 'total_cast');
-	  var meanLine = base.main.element.append('g').attr('transform', 'translate(0, ' + yScale(meanCount) + ')').classed('mean', true);
+	  genderGs.append('rect').attr('x', 0).attr('y', 0).attr('width', function (d) {
+	    return genderScale(d.count);
+	  }).attr('height', base.main.height).style('fill', function (d) {
+	    return d.fill;
+	  });
 
-	  meanLine.append('line').attr('x1', 0).attr('x2', base.main.width).attr('y1', 0).attr('y2', 0);
-	  meanLine.append('text').text('Mean = ' + (0, _round.roundFloat)(meanCount, 1)).attr('x', 3).attr('y', -3);
+	  genderGs.append('text').text(function (d) {
+	    return d.gender + ' - ' + d.count + ' (' + formatPercent(d.count / castMembers.length) + ')';
+	  }).style('text-anchor', function (d) {
+	    return d.align;
+	  }).attr('dx', function (d, i) {
+	    return i === 0 ? 5 : -5;
+	  }).attr('dy', '0.3em').attr('transform', function (d, i) {
+	    var x = i === 0 ? 0 : genderScale(d.count);
+	    var y = base.main.height / 2;
+	    return 'translate(' + x + ',' + y + ')';
+	  });
 	}
 
 /***/ },
@@ -715,56 +716,27 @@
 
 /***/ },
 /* 11 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.drawAxis = drawAxis;
+	var brightBlue = exports.brightBlue = '#459DBA';
+	var yellowGreen = exports.yellowGreen = '#C2D400';
+	var green = exports.green = '#83b95d';
 
-	var _d = __webpack_require__(1);
+	var lightBlue = exports.lightBlue = '#80cbc4';
+	var brightPink = exports.brightPink = '#ec407a';
+	var purple = exports.purple = '#b6869f';
 
-	var _d2 = _interopRequireDefault(_d);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var genderColors = exports.genderColors = [brightBlue, yellowGreen];
 
 	/*
-	 * add an axis to a chart. This should be placed into one of the
-	 * side sections (top, right, bottom, left);
-	 *
-	 * @section - the section object with the element to append the axis to
-	 * @axis - the d3 axis to be drawn
-	 * @side - which part of the section the axis should be pushed up against.
-	 *   This will typically be the opposite of the axis's orient
-	 *   (e.g., left oriented ticks should be on the right side of their section)
-	 *    'top' - horizontal axis with ticks above the line
-	 *    'bottom' - horizontal axis with ticks below the line
-	 *    'left' - vertical axis with ticks to the left of the line
-	 *    'right' - vertical axis with ticks to the right of the line
-	 *
-	 * returns the 'g' element that holds the axis
+	 * Don't Mix:
+	 *   brightBlue + brightPink (similar saturation, bad for achromatopsia)
 	 */
-	function drawAxis(section, axis, side) {
-	  var element = section.element;
-	  var width = section.width;
-	  var height = section.height;
-
-
-	  var classes = ['axis', side === 'top' || side === 'bottom' ? 'x' : 'y'];
-
-	  var left = 0;
-	  var top = 0;
-	  if (side === 'bottom') {
-	    top = height;
-	  } else if (side === 'right') {
-	    left = width;
-	  }
-	  var transform = 'translate(' + left + ',' + top + ')';
-
-	  return element.append('g').classed(classes.join(' '), true).attr('transform', transform).call(axis);
-	}
 
 /***/ },
 /* 12 */
@@ -817,6 +789,279 @@
 
 /***/ },
 /* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = roleChart;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(10);
+
+	var _text = __webpack_require__(12);
+
+	var _colors = __webpack_require__(11);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function roleChart(castMembers, holderID) {
+	  var formatPercent = _d2.default.format('.0%');
+	  var roles = castMembers.reduce(function (acc, cm) {
+	    if (cm.featured.length && cm.repertory.length) {
+	      acc[1]++;
+	    } else if (cm.repertory.length) {
+	      acc[0]++;
+	    } else {
+	      acc[2]++;
+	    }
+	    return acc;
+	  }, [0, 0, 0]);
+	  var data = [{
+	    role: 'Repertory',
+	    align: 'start',
+	    count: roles[0],
+	    offset: 0,
+	    fill: _colors.lightBlue,
+	    dx: 5
+	  }, {
+	    role: 'Both',
+	    align: 'middle',
+	    count: roles[1],
+	    offset: roles[0],
+	    fill: _colors.purple,
+	    dx: 0
+	  }, {
+	    role: 'Featured',
+	    align: 'end',
+	    count: roles[2],
+	    offset: roles[0] + roles[1],
+	    fill: _colors.brightPink,
+	    dx: -5
+	  }];
+
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 650, height: 25 },
+	    top: { height: 30 }
+	  }, holderID);
+
+	  // SCALES
+	  var roleScale = _d2.default.scale.linear().domain([0, castMembers.length]).range([0, base.main.width]);
+
+	  (0, _text.addTitle)(base.top, 'Roles');
+
+	  // CHART
+	  var roleGs = base.main.element.selectAll('g').data(data).enter().append('g').attr('transform', function (d) {
+	    return 'translate(' + roleScale(d.offset) + ',0)';
+	  });
+
+	  roleGs.append('rect').attr('x', 0).attr('y', 0).attr('width', function (d) {
+	    return roleScale(d.count);
+	  }).attr('height', base.main.height).style('fill', function (d) {
+	    return d.fill;
+	  });
+
+	  roleGs.append('text').text(function (d) {
+	    return d.role + ' - ' + d.count + ' (' + formatPercent(d.count / castMembers.length) + ')';
+	  }).style('text-anchor', function (d) {
+	    return d.align;
+	  }).attr('dx', function (d) {
+	    return d.dx;
+	  }).attr('dy', '0.3em').attr('transform', function (d, i) {
+	    var x = 0;
+	    if (i === 1) {
+	      x = roleScale(d.count) / 2;
+	    } else if (i === 2) {
+	      x = roleScale(d.count);
+	    }
+	    var y = base.main.height / 2;
+	    return 'translate(' + x + ',' + y + ')';
+	  });
+	}
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = render;
+
+	var _seasonCastMembers = __webpack_require__(15);
+
+	var _seasonCastMembers2 = _interopRequireDefault(_seasonCastMembers);
+
+	var _groupedSeasonGenders = __webpack_require__(18);
+
+	var _groupedSeasonGenders2 = _interopRequireDefault(_groupedSeasonGenders);
+
+	var _groupedSeasonRoles = __webpack_require__(20);
+
+	var _groupedSeasonRoles2 = _interopRequireDefault(_groupedSeasonRoles);
+
+	var _seasonGenderPercents = __webpack_require__(21);
+
+	var _seasonGenderPercents2 = _interopRequireDefault(_seasonGenderPercents);
+
+	var _seasonRolePercents = __webpack_require__(22);
+
+	var _seasonRolePercents2 = _interopRequireDefault(_seasonRolePercents);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function render(seasons) {
+	  (0, _seasonCastMembers2.default)(seasons, '#season-casts');
+	  (0, _groupedSeasonGenders2.default)(seasons, '#season-genders');
+	  (0, _groupedSeasonRoles2.default)(seasons, '#season-roles');
+	  (0, _seasonGenderPercents2.default)(seasons, '#season-gender-percents');
+	  (0, _seasonRolePercents2.default)(seasons, '#season-role-percents');
+	}
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = chartCasts;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(10);
+
+	var _axis = __webpack_require__(16);
+
+	var _text = __webpack_require__(12);
+
+	var _round = __webpack_require__(17);
+
+	var _average = __webpack_require__(7);
+
+	var _colors = __webpack_require__(11);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function chartCasts(seasons, holderID) {
+	  var tickValues = seasons.map(function (s) {
+	    return s.season;
+	  });
+	  var yMax = (0, _round.roundUp)(_d2.default.max(seasons, function (s) {
+	    return s.total_cast;
+	  }), 5);
+
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 750, height: 300 },
+	    left: { width: 50 },
+	    bottom: { height: 50 },
+	    top: { height: 30 },
+	    right: { width: 100 }
+	  }, holderID);
+
+	  // SCALES
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+
+	  // AXES
+	  var xAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+
+	  var yAxis = _d2.default.svg.axis().scale(yScale).ticks(10).orient('left');
+
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+
+	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
+	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
+	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  (0, _text.addTitle)(base.top, 'Cast Members Per Season');
+	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+
+	  // CHART
+	  var bandWidth = seasonScale.rangeBand();
+	  base.main.element.selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
+	    return seasonScale(d.season);
+	  }).attr('y', function (d) {
+	    return yScale(d.total_cast);
+	  }).attr('height', function (d) {
+	    return base.main.height - yScale(d.total_cast);
+	  }).style('fill', _colors.green);
+
+	  var meanCount = (0, _average.meanProperty)(seasons, 'total_cast');
+	  var meanLine = base.main.element.append('g').attr('transform', 'translate(0, ' + yScale(meanCount) + ')').classed('mean', true);
+
+	  meanLine.append('line').attr('x1', 0).attr('x2', base.main.width).attr('y1', 0).attr('y2', 0);
+	  meanLine.append('text').text('Mean = ' + (0, _round.roundFloat)(meanCount, 1)).attr('x', 3).attr('y', -3);
+	}
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.drawAxis = drawAxis;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/*
+	 * add an axis to a chart. This should be placed into one of the
+	 * side sections (top, right, bottom, left);
+	 *
+	 * @section - the section object with the element to append the axis to
+	 * @axis - the d3 axis to be drawn
+	 * @side - which part of the section the axis should be pushed up against.
+	 *   This will typically be the opposite of the axis's orient
+	 *   (e.g., left oriented ticks should be on the right side of their section)
+	 *    'top' - horizontal axis with ticks above the line
+	 *    'bottom' - horizontal axis with ticks below the line
+	 *    'left' - vertical axis with ticks to the left of the line
+	 *    'right' - vertical axis with ticks to the right of the line
+	 *
+	 * returns the 'g' element that holds the axis
+	 */
+	function drawAxis(section, axis, side) {
+	  var element = section.element;
+	  var width = section.width;
+	  var height = section.height;
+
+
+	  var classes = ['axis', side === 'top' || side === 'bottom' ? 'x' : 'y'];
+
+	  var left = 0;
+	  var top = 0;
+	  if (side === 'bottom') {
+	    top = height;
+	  } else if (side === 'right') {
+	    left = width;
+	  }
+	  var transform = 'translate(' + left + ',' + top + ')';
+
+	  return element.append('g').classed(classes.join(' '), true).attr('transform', transform).call(axis);
+	}
+
+/***/ },
+/* 17 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -845,31 +1090,7 @@
 	}
 
 /***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var brightBlue = exports.brightBlue = '#459DBA';
-	var yellowGreen = exports.yellowGreen = '#C2D400';
-	var green = exports.green = '#83b95d';
-
-	var lightBlue = exports.lightBlue = '#80cbc4';
-	var brightPink = exports.brightPink = '#ec407a';
-	var purple = exports.purple = '#b6869f';
-
-	var genderColors = exports.genderColors = [brightBlue, yellowGreen];
-
-	/*
-	 * Don't Mix:
-	 *   brightBlue + brightPink (similar saturation, bad for achromatopsia)
-	 */
-
-/***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -879,23 +1100,29 @@
 	});
 	exports.default = chartGroupedSeasonGenders;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(16);
+	var _legend = __webpack_require__(19);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartGroupedSeasonGenders(seasons, holderID) {
 	  var tickValues = seasons.map(function (s) {
 	    return s.season;
 	  });
-	  var yMax = (0, _round.roundUp)(d3.max(seasons, function (s) {
+	  var yMax = (0, _round.roundUp)(_d2.default.max(seasons, function (s) {
 	    return Math.max(s.male, s.female);
 	  }), 5);
 
@@ -910,19 +1137,19 @@
 
 	  // SCALES
 	  // the scale for each age group
-	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
-	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, seasonScale.rangeBand()]);
+	  var groupScale = _d2.default.scale.ordinal().domain([0, 1]).rangeRoundBands([0, seasonScale.rangeBand()]);
 
-	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
 	  // AXES
-	  var groupedXAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var groupedXAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
+	  var yAxis = _d2.default.svg.axis().scale(yScale).ticks(10).orient('left');
 
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -955,7 +1182,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1040,7 +1267,105 @@
 	}
 
 /***/ },
-/* 17 */
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = chartGroupedSeasonGenders;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(10);
+
+	var _axis = __webpack_require__(16);
+
+	var _text = __webpack_require__(12);
+
+	var _legend = __webpack_require__(19);
+
+	var _round = __webpack_require__(17);
+
+	var _colors = __webpack_require__(11);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var roleColors = [_colors.lightBlue, _colors.brightPink];
+
+	function chartGroupedSeasonGenders(seasons, holderID) {
+	  var tickValues = seasons.map(function (s) {
+	    return s.season;
+	  });
+	  seasons.forEach(function (s) {
+	    s.rep_count = s.repertory.male + s.repertory.female;
+	    s.feat_count = s.featured.male + s.featured.female;
+	  });
+	  var yMax = (0, _round.roundUp)(_d2.default.max(seasons, function (s) {
+	    return Math.max(s.rep_count, s.feat_count);
+	  }), 5);
+
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 750, height: 300 },
+	    left: { width: 50 },
+	    bottom: { height: 50 },
+	    top: { height: 30 },
+	    right: { width: 100 }
+	  }, holderID);
+
+	  // SCALES
+	  // the scale for each age group
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+
+	  // the scale for each bar within an age group
+	  var groupScale = _d2.default.scale.ordinal().domain([0, 1]).rangeRoundBands([0, seasonScale.rangeBand()]);
+
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+
+	  // AXES
+	  var groupedXAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+
+	  var yAxis = _d2.default.svg.axis().scale(yScale).ticks(10).orient('left');
+
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+
+	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
+	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
+	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  (0, _text.addTitle)(base.top, 'Cast Members Per Season (by Role)');
+	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _legend.verticalLegend)(base.right, [{ color: roleColors[0], text: 'Repertory' }, { color: roleColors[1], text: 'Featured' }], {
+	    offset: {
+	      left: 10,
+	      top: 50
+	    }
+	  });
+
+	  // CHART
+	  var seasonGroups = base.main.element.selectAll('g.age').data(seasons).enter().append('g').classed('age', true).attr('transform', function (d, i) {
+	    return 'translate(' + seasonScale(d.season) + ', 0)';
+	  });
+
+	  seasonGroups.selectAll('rect').data(function (d) {
+	    return [d.rep_count, d.feat_count];
+	  }).enter().append('rect').attr('width', groupScale.rangeBand()).attr('x', function (d, i) {
+	    return groupScale(i);
+	  }).attr('y', function (d) {
+	    return yScale(d);
+	  }).attr('height', function (d) {
+	    return base.main.height - yScale(d);
+	  }).style('fill', function (d, i) {
+	    return roleColors[i];
+	  });
+	}
+
+/***/ },
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1050,31 +1375,38 @@
 	});
 	exports.default = chartGenderPercents;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(16);
+	var _legend = __webpack_require__(19);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
 
 	var _average = __webpack_require__(7);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartGenderPercents(seasons, holderID) {
-	  var tickValues = seasons.map(function (s) {
-	    return s.season;
-	  });
-	  var formatPercent = d3.format('.0%');
-
 	  // save here instead of calculating this multiple times
 	  seasons.forEach(function (s) {
 	    s.male_percent = s.male / s.total_cast;
 	  });
 
+	  var tickValues = seasons.map(function (s) {
+	    return s.season;
+	  });
+	  var formatPercent = _d2.default.format('.0%');
+	  var meanPercent = (0, _average.meanProperty)(seasons, 'male_percent');
+	  var roundMean = Math.round(meanPercent * 100) / 100;
 	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 850, height: 300 },
@@ -1085,14 +1417,15 @@
 	  }, holderID);
 
 	  // SCALES
-	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1, 0);
 
-	  var yScale = d3.scale.linear().domain([0, 1]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, 1]).range([base.main.height, 0]);
 
 	  // AXES
-	  var xAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var xAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).tickValues([0, 0.25, 0.5, 0.75, 1.0]).orient('left').tickFormat(formatPercent);
+	  var perTicks = [0, 0.25, 0.5, 0.75, 1.0].concat(roundMean).sort();
+	  var yAxis = _d2.default.svg.axis().scale(yScale).tickValues(perTicks).orient('left').tickFormat(formatPercent);
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -1108,32 +1441,35 @@
 
 	  // CHART
 	  var bandWidth = seasonScale.rangeBand();
-	  base.main.element.append('g').classed('male-percent', true).selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
-	    return seasonScale(d.season);
-	  }).attr('y', function (d) {
+	  var bars = base.main.element.append('g').classed('bars', true).selectAll('g.bar').data(seasons).enter().append('g').classed('bar', true).attr('transform', function (d) {
+	    return 'translate(' + seasonScale(d.season) + ',0)';
+	  });
+
+	  bars.append('rect').classed('male-percent', true).attr('width', bandWidth).attr('x', 0).attr('y', function (d) {
 	    return yScale(d.male_percent);
 	  }).attr('height', function (d) {
 	    return base.main.height - yScale(d.male_percent);
 	  }).style('fill', _colors.genderColors[0]);
 
-	  base.main.element.append('g').classed('female-percent', true).selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
-	    return seasonScale(d.season);
-	  }).attr('y', 0).attr('height', function (d) {
+	  bars.append('rect').classed('female-percent', true).attr('width', bandWidth).attr('x', 0).attr('y', 0).attr('height', function (d) {
 	    return yScale(d.male_percent);
 	  }).style('fill', _colors.genderColors[1]);
 
-	  var halfWidth = seasonScale.rangeBand() / 2;
-	  base.main.element.selectAll('text.percent').data(seasons).enter().append('text').classed('percent', true).attr('transform', function (d) {
-	    var x = seasonScale(d.season) + halfWidth;
+	  var halfWidth = bandWidth / 2;
+	  bars.append('text').classed('percent', true).attr('transform', function (d) {
+	    var x = halfWidth;
 	    var y = yScale(d.male_percent) + 15;
 	    return 'translate(' + x + ',' + y + ')';
 	  }).text(function (d) {
 	    return Math.floor(d.male / d.total_cast * 100);
 	  }).style('text-anchor', 'middle').style('font-size', '14px');
+
+	  // draw a line depicting the mean percentage
+	  base.main.element.append('line').attr('x1', 0).attr('x2', base.main.width).attr('y1', yScale(meanPercent)).attr('y2', yScale(meanPercent)).style('stroke-dasharray', '2, 5');
 	}
 
 /***/ },
-/* 18 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1143,33 +1479,39 @@
 	});
 	exports.default = chartRolePercents;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(16);
+	var _legend = __webpack_require__(19);
 
 	var _average = __webpack_require__(7);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
 
-	var colors = [_colors.brightPink, _colors.lightBlue];
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var roleColors = [_colors.brightPink, _colors.lightBlue];
 
 	function chartRolePercents(seasons, holderID) {
-	  var tickValues = seasons.map(function (s) {
-	    return s.season;
-	  });
-	  var formatPercent = d3.format('.0%');
-
 	  seasons.forEach(function (s) {
 	    var rep_count = s.repertory.male + s.repertory.female;
 	    s.repertory_percent = rep_count / s.total_cast;
 	  });
-
+	  var tickValues = seasons.map(function (s) {
+	    return s.season;
+	  });
+	  var formatPercent = _d2.default.format('.0%');
+	  var meanPercent = (0, _average.meanProperty)(seasons, 'repertory_percent');
+	  var roundMean = Math.round(meanPercent * 100) / 100;
 	  // BASE
 	  var base = (0, _base.chartBase)({
 	    main: { width: 850, height: 300 },
@@ -1180,21 +1522,22 @@
 	  }, holderID);
 
 	  // SCALES
-	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
-	  var yScale = d3.scale.linear().domain([0, 1]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, 1]).range([base.main.height, 0]);
 
 	  // AXES
-	  var xAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var xAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).tickValues([0, 0.25, 0.5, 0.75, 1.0]).orient('left').tickFormat(formatPercent);
+	  var perTicks = [0, 0.25, 0.5, 0.75, 1.0].concat(roundMean).sort();
+	  var yAxis = _d2.default.svg.axis().scale(yScale).tickValues(perTicks).orient('left').tickFormat(formatPercent);
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 
 	  (0, _text.addTitle)(base.top, 'Cast Member Roles');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _legend.verticalLegend)(base.right, [{ color: colors[0], text: 'Repertory' }, { color: colors[1], text: 'Featured' }], {
+	  (0, _legend.verticalLegend)(base.right, [{ color: roleColors[0], text: 'Repertory' }, { color: roleColors[1], text: 'Featured' }], {
 	    offset: {
 	      left: 10,
 	      top: 50
@@ -1203,22 +1546,31 @@
 
 	  // CHART
 	  var bandWidth = seasonScale.rangeBand();
-	  base.main.element.append('g').classed('repertory-percent', true).selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
-	    return seasonScale(d.season);
-	  }).attr('y', function (d) {
+	  var bars = base.main.element.append('g').classed('bars', true).selectAll('g.bar').data(seasons).enter().append('g').classed('bar', true).attr('transform', function (d) {
+	    return 'translate(' + seasonScale(d.season) + ',0)';
+	  });
+
+	  bars.append('rect').classed('rep-percent', true).attr('width', bandWidth).attr('x', 0).attr('y', function (d) {
 	    return yScale(d.repertory_percent);
 	  }).attr('height', function (d) {
 	    return base.main.height - yScale(d.repertory_percent);
-	  }).style('fill', colors[0]);
+	  }).style('fill', roleColors[0]);
 
-	  base.main.element.append('g').classed('featured-percent', true).selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
-	    return seasonScale(d.season);
-	  }).attr('y', 0).attr('height', function (d) {
+	  bars.append('rect').classed('feat-percent', true).attr('width', bandWidth).attr('x', 0).attr('y', 0).attr('height', function (d) {
 	    return yScale(d.repertory_percent);
-	  }).style('fill', colors[1]);
+	  }).style('fill', roleColors[1]);
 
-	  var halfWidth = seasonScale.rangeBand() / 2;
-	  base.main.element.selectAll('text.percent').data(seasons).enter().append('text').classed('percent', true).attr('transform', function (d) {
+	  /*
+	   * unline in seasonGenderPercents, here the percent text is separate from
+	   * the bars. This is done solely because the text here is a differnt color
+	   * than the mean line, and I want the mean line behind the text (but on top
+	   * of the bars).
+	   */
+	  // draw a line depicting the mean percentage
+	  base.main.element.append('line').attr('x1', 0).attr('x2', base.main.width).attr('y1', yScale(meanPercent)).attr('y2', yScale(meanPercent)).style('stroke-dasharray', '2, 5');
+
+	  var halfWidth = bandWidth / 2;
+	  base.main.element.append('g').classed('perc-tect', true).selectAll('text.percent').data(seasons).enter().append('text').classed('percent', true).attr('transform', function (d) {
 	    var x = seasonScale(d.season) + halfWidth;
 	    var y = yScale(d.repertory_percent) + 15;
 	    return 'translate(' + x + ',' + y + ')';
@@ -1228,7 +1580,7 @@
 	}
 
 /***/ },
-/* 19 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1238,27 +1590,27 @@
 	});
 	exports.default = render;
 
-	var _startingAges = __webpack_require__(20);
+	var _startingAges = __webpack_require__(24);
 
 	var _startingAges2 = _interopRequireDefault(_startingAges);
 
-	var _groupedStartingAges = __webpack_require__(21);
+	var _groupedStartingAges = __webpack_require__(25);
 
 	var _groupedStartingAges2 = _interopRequireDefault(_groupedStartingAges);
 
-	var _normalizedStartingAges = __webpack_require__(23);
+	var _normalizedStartingAges = __webpack_require__(27);
 
 	var _normalizedStartingAges2 = _interopRequireDefault(_normalizedStartingAges);
 
-	var _startingAgesTable = __webpack_require__(24);
+	var _startingAgesTable = __webpack_require__(28);
 
 	var _startingAgesTable2 = _interopRequireDefault(_startingAgesTable);
 
-	var _startingAgeBySeasonAndGender = __webpack_require__(26);
+	var _startingAgeBySeasonAndGender = __webpack_require__(30);
 
 	var _startingAgeBySeasonAndGender2 = _interopRequireDefault(_startingAgeBySeasonAndGender);
 
-	var _startingAgeBySeasonAndRole = __webpack_require__(27);
+	var _startingAgeBySeasonAndRole = __webpack_require__(31);
 
 	var _startingAgeBySeasonAndRole2 = _interopRequireDefault(_startingAgeBySeasonAndRole);
 
@@ -1274,7 +1626,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1284,15 +1636,21 @@
 	});
 	exports.default = chartStartingAges;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartStartingAges(data, holderID) {
 	  var all = data.all;
@@ -1303,7 +1661,7 @@
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
-	  var yMax = (0, _round.roundUp)(d3.max(ages), 5);
+	  var yMax = (0, _round.roundUp)(_d2.default.max(ages), 5);
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
@@ -1315,16 +1673,16 @@
 	  }, holderID);
 
 	  // SCALES
-	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.5);
+	  var ageScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.5);
 
-	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
 	  // AXES
-	  var xAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var xAxis = _d2.default.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
+	  var yAxis = _d2.default.svg.axis().scale(yScale).ticks(10).orient('left');
 
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -1344,7 +1702,7 @@
 	}
 
 /***/ },
-/* 21 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1354,19 +1712,23 @@
 	});
 	exports.default = chartGroupedStartingAges;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(16);
+	var _legend = __webpack_require__(19);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
 
-	var _merge = __webpack_require__(22);
+	var _merge = __webpack_require__(26);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -1384,7 +1746,7 @@
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
-	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
+	  var yMax = (0, _round.roundUp)(_d2.default.max(ages, function (a) {
 	    return Math.max(a[0], a[1]);
 	  }), 5);
 
@@ -1399,19 +1761,19 @@
 
 	  // SCALES
 	  // the scale for each age group
-	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var ageScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
-	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
+	  var groupScale = _d2.default.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
 
-	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
 	  // AXES
-	  var groupedXAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var groupedXAxis = _d2.default.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
+	  var yAxis = _d2.default.svg.axis().scale(yScale).ticks(10).orient('left');
 
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -1444,7 +1806,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 26 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1512,7 +1874,7 @@
 	}
 
 /***/ },
-/* 23 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1522,19 +1884,23 @@
 	});
 	exports.default = chartNormalizedStartingAges;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(16);
+	var _legend = __webpack_require__(19);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
 
-	var _merge = __webpack_require__(22);
+	var _merge = __webpack_require__(26);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -1570,10 +1936,10 @@
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
-	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
+	  var yMax = (0, _round.roundUp)(_d2.default.max(ages, function (a) {
 	    return Math.max(a[0], a[1]);
 	  }) * 100, 5) / 100;
-	  var formatPercent = d3.format('.0%');
+	  var formatPercent = _d2.default.format('.0%');
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
@@ -1586,15 +1952,15 @@
 
 	  // SCALES
 	  // the scale for each age group
-	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var ageScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
-	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
+	  var groupScale = _d2.default.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
 
-	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
 	  // AXES
-	  var groupedXAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var groupedXAxis = _d2.default.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var threePercTicks = [];
 	  var perc = 0;
@@ -1603,9 +1969,9 @@
 	    perc += 0.03;
 	  }
 
-	  var yAxis = d3.svg.axis().scale(yScale).tickValues(threePercTicks).orient('left').tickFormat(formatPercent);
+	  var yAxis = _d2.default.svg.axis().scale(yScale).tickValues(threePercTicks).orient('left').tickFormat(formatPercent);
 
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).tickValues(threePercTicks).tickFormat('').outerTickSize(0);
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).tickValues(threePercTicks).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -1638,7 +2004,7 @@
 	}
 
 /***/ },
-/* 24 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1648,11 +2014,11 @@
 	});
 	exports.default = startingAgesTable;
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
 	var _date = __webpack_require__(2);
 
-	var _table = __webpack_require__(25);
+	var _table = __webpack_require__(29);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -1675,7 +2041,7 @@
 	}
 
 /***/ },
-/* 25 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1718,7 +2084,7 @@
 	}
 
 /***/ },
-/* 26 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1731,19 +2097,25 @@
 
 	exports.default = chartStartingAges;
 
+	var _d2 = __webpack_require__(1);
+
+	var _d3 = _interopRequireDefault(_d2);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(16);
+	var _legend = __webpack_require__(19);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
 	var _date = __webpack_require__(2);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var _genderColors = _slicedToArray(_colors.genderColors, 2);
 
@@ -1767,7 +2139,7 @@
 	  var tickValues = Array.from(new Array(maxSeason - minSeason + 1)).map(function (u, i) {
 	    return i + minSeason;
 	  });
-	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(d3.max(filteredCastMembers, function (cm) {
+	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(_d3.default.max(filteredCastMembers, function (cm) {
 	    return cm.start_age;
 	  })), 5);
 
@@ -1781,15 +2153,15 @@
 	  }, holderID);
 
 	  // SCALES
-	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var seasonScale = _d3.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // find out the oldest starting age, convert to years
-	  var yScale = d3.scale.linear().domain([0, 50]).range([base.main.height, 0]);
+	  var yScale = _d3.default.scale.linear().domain([0, 50]).range([base.main.height, 0]);
 
 	  // AXES
-	  var xAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var xAxis = _d3.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
+	  var yAxis = _d3.default.svg.axis().scale(yScale).ticks(10).orient('left');
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -1820,7 +2192,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1830,19 +2202,25 @@
 	});
 	exports.default = chartStartingAges;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(16);
+	var _legend = __webpack_require__(19);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
 	var _date = __webpack_require__(2);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartStartingAges(castMembers, holderID) {
 	  var filteredCastMembers = castMembers.filter(function (cm) {
@@ -1863,7 +2241,7 @@
 	    return i + minSeason;
 	  });
 	  // find out the oldest starting age, convert to years
-	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(d3.max(filteredCastMembers, function (cm) {
+	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(_d2.default.max(filteredCastMembers, function (cm) {
 	    return cm.start_age;
 	  })), 5);
 
@@ -1877,16 +2255,16 @@
 	  }, holderID);
 
 	  // SCALES
-	  var seasonScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
-	  var yScale = d3.scale.linear().domain([0, 50]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, 50]).range([base.main.height, 0]);
 
 	  // AXES
-	  var xAxis = d3.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var xAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
+	  var yAxis = _d2.default.svg.axis().scale(yScale).ticks(10).orient('left');
 
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -1917,7 +2295,7 @@
 	}
 
 /***/ },
-/* 28 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1927,19 +2305,19 @@
 	});
 	exports.default = render;
 
-	var _endingAges = __webpack_require__(29);
+	var _endingAges = __webpack_require__(33);
 
 	var _endingAges2 = _interopRequireDefault(_endingAges);
 
-	var _groupedEndingAges = __webpack_require__(30);
+	var _groupedEndingAges = __webpack_require__(34);
 
 	var _groupedEndingAges2 = _interopRequireDefault(_groupedEndingAges);
 
-	var _normalizedEndingAges = __webpack_require__(31);
+	var _normalizedEndingAges = __webpack_require__(35);
 
 	var _normalizedEndingAges2 = _interopRequireDefault(_normalizedEndingAges);
 
-	var _endingAgesTable = __webpack_require__(32);
+	var _endingAgesTable = __webpack_require__(36);
 
 	var _endingAgesTable2 = _interopRequireDefault(_endingAgesTable);
 
@@ -1953,7 +2331,7 @@
 	}
 
 /***/ },
-/* 29 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1963,15 +2341,21 @@
 	});
 	exports.default = chartEndingAges;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartEndingAges(data, holderID) {
 	  var all = data.all;
@@ -1983,7 +2367,7 @@
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
-	  var yMax = (0, _round.roundUp)(d3.max(ages), 5);
+	  var yMax = (0, _round.roundUp)(_d2.default.max(ages), 5);
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
@@ -1995,16 +2379,16 @@
 	  }, holderID);
 
 	  // SCALES
-	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.5);
+	  var ageScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.5);
 
-	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
 	  // AXES
-	  var xAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var xAxis = _d2.default.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
+	  var yAxis = _d2.default.svg.axis().scale(yScale).ticks(10).orient('left');
 
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -2025,7 +2409,7 @@
 	}
 
 /***/ },
-/* 30 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2035,19 +2419,23 @@
 	});
 	exports.default = chartGroupedEndingAges;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(16);
+	var _legend = __webpack_require__(19);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
 
-	var _merge = __webpack_require__(22);
+	var _merge = __webpack_require__(26);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2065,7 +2453,7 @@
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
-	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
+	  var yMax = (0, _round.roundUp)(_d2.default.max(ages, function (a) {
 	    return Math.max(a[0], a[1]);
 	  }), 5);
 
@@ -2080,19 +2468,19 @@
 
 	  // SCALES
 	  // the scale for each age group
-	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var ageScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
-	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
+	  var groupScale = _d2.default.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
 
-	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
 	  // AXES
-	  var groupedXAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var groupedXAxis = _d2.default.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left');
+	  var yAxis = _d2.default.svg.axis().scale(yScale).ticks(10).orient('left');
 
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -2126,7 +2514,7 @@
 	}
 
 /***/ },
-/* 31 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2136,19 +2524,23 @@
 	});
 	exports.default = chartNormalizedEndingAges;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(16);
+	var _legend = __webpack_require__(19);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
 
-	var _merge = __webpack_require__(22);
+	var _merge = __webpack_require__(26);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2185,10 +2577,10 @@
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
-	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
+	  var yMax = (0, _round.roundUp)(_d2.default.max(ages, function (a) {
 	    return Math.max(a[0], a[1]);
 	  }) * 100, 3) / 100;
-	  var formatPercent = d3.format('.0%');
+	  var formatPercent = _d2.default.format('.0%');
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
@@ -2201,15 +2593,15 @@
 
 	  // SCALES
 	  // the scale for each age group
-	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var ageScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
-	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
+	  var groupScale = _d2.default.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
 
-	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
 	  // AXES
-	  var groupedXAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var groupedXAxis = _d2.default.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  // create a tick every 3%
 	  var threePercTicks = [];
@@ -2219,9 +2611,9 @@
 	    perc += 0.03;
 	  }
 
-	  var yAxis = d3.svg.axis().scale(yScale).tickValues(threePercTicks).orient('left').tickFormat(formatPercent);
+	  var yAxis = _d2.default.svg.axis().scale(yScale).tickValues(threePercTicks).orient('left').tickFormat(formatPercent);
 
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).tickValues(threePercTicks).tickFormat('').outerTickSize(0);
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).tickValues(threePercTicks).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -2255,7 +2647,7 @@
 	}
 
 /***/ },
-/* 32 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2265,11 +2657,11 @@
 	});
 	exports.default = endingAgesTable;
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
 	var _date = __webpack_require__(2);
 
-	var _table = __webpack_require__(25);
+	var _table = __webpack_require__(29);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -2292,7 +2684,7 @@
 	}
 
 /***/ },
-/* 33 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2302,19 +2694,23 @@
 	});
 	exports.default = chartStartingAndEndingAges;
 
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(11);
+	var _axis = __webpack_require__(16);
 
 	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(16);
+	var _legend = __webpack_require__(19);
 
-	var _round = __webpack_require__(13);
+	var _round = __webpack_require__(17);
 
-	var _colors = __webpack_require__(14);
+	var _colors = __webpack_require__(11);
 
-	var _merge = __webpack_require__(22);
+	var _merge = __webpack_require__(26);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2354,10 +2750,10 @@
 	  var tickValues = Array.from(new Array(ages.length)).map(function (u, i) {
 	    return i + offset;
 	  });
-	  var yMax = (0, _round.roundUp)(d3.max(ages, function (a) {
+	  var yMax = (0, _round.roundUp)(_d2.default.max(ages, function (a) {
 	    return Math.max(a[0], a[1]);
 	  }) * 100, 3) / 100;
-	  var formatPercent = d3.format('.0%');
+	  var formatPercent = _d2.default.format('.0%');
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
@@ -2370,19 +2766,19 @@
 
 	  // SCALES
 	  // the scale for each age group
-	  var ageScale = d3.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var ageScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
 
 	  // the scale for each bar within an age group
-	  var groupScale = d3.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
+	  var groupScale = _d2.default.scale.ordinal().domain([0, 1]).rangeRoundBands([0, ageScale.rangeBand()]);
 
-	  var yScale = d3.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
 	  // AXES
-	  var groupedXAxis = d3.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+	  var groupedXAxis = _d2.default.svg.axis().scale(ageScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = d3.svg.axis().scale(yScale).ticks(10).orient('left').tickFormat(formatPercent);
+	  var yAxis = _d2.default.svg.axis().scale(yScale).ticks(10).orient('left').tickFormat(formatPercent);
 
-	  var yGrid = d3.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');

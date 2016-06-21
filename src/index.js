@@ -4,6 +4,7 @@ import { newCastPerSeason, lastSeasonForCastMembers } from './stats/cast';
 import { roleCounts, seasonsByRole } from './stats/roles';
 import genderStats from './stats/gender';
 
+import drawBasicGraphics from './graphics/basicsGraphics';
 import drawSeasonCastMemberGraphics from './graphics/seasonCastMemberGraphics';
 import drawStartingAgeGraphics from './graphics/startingAgeGraphics';
 import drawEndingAgeGraphics from './graphics/endingAgeGraphics';
@@ -60,7 +61,7 @@ d3.json('/stats.json', (error, data) => {
   console.log(seasonsByRole(castMembers));
   */
 
-
+  drawBasicGraphics(castMembers);
   drawSeasonCastMemberGraphics(seasons);  
   drawStartingAgeGraphics(genders, castMembers);
   drawEndingAgeGraphics(genders);
