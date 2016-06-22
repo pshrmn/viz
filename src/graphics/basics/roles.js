@@ -45,8 +45,8 @@ export default function roleChart(castMembers, holderID) {
 
   // BASE
   const base = chartBase({
-    main: {width: 650, height: 25},
-    top: {height: 30},
+    main: {width: 750, height: 25},
+    top: {height: 25}
   }, holderID);
 
   // SCALES
@@ -54,8 +54,7 @@ export default function roleChart(castMembers, holderID) {
     .domain([0, castMembers.length])
     .range([0, base.main.width])
 
-
-  addTitle(base.top, 'Roles');
+  addTitle(base.top, 'By Role', 'left');
 
   // CHART
   const roleGs = base.main.element.selectAll('g')

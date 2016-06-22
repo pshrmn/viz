@@ -4,7 +4,7 @@ export const green = '#83b95d';
 
 export const lightBlue = '#80cbc4';
 export const brightPink = '#ec407a';
-export const purple = '#b6869f';
+export const purple = '#906e9e';
 
 export const genderColors = [brightBlue, yellowGreen];
 

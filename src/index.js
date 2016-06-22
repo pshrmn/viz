@@ -62,7 +62,7 @@ d3.json('/stats.json', (error, data) => {
   */
 
   drawBasicGraphics(castMembers);
-  drawSeasonCastMemberGraphics(seasons);  
+  drawSeasonCastMemberGraphics(seasons, castMembers);  
   drawStartingAgeGraphics(genders, castMembers);
   drawEndingAgeGraphics(genders);
 

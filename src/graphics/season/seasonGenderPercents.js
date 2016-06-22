@@ -20,7 +20,7 @@ export default function chartGenderPercents(seasons, holderID) {
   const roundMean = Math.round(meanPercent*100) / 100;
   // BASE
   const base = chartBase({
-    main: {width: 850, height: 300},
+    main: {width: 900, height: 300},
     left: {width: 50},
     bottom: {height: 50},
     top: {height: 30},

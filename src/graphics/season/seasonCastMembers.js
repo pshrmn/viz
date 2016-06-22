@@ -57,12 +57,13 @@ export default function chartCasts(seasons, holderID) {
   addLabel(base.bottom, 'Season', 'bottom');
 
   // CHART
-  const bandWidth = seasonScale.rangeBand();
+  const halfBand = seasonScale.rangeBand() / 2;
+  const quarterBand = halfBand / 2;
   base.main.element.selectAll('rect')
       .data(seasons)
     .enter().append('rect')
-      .attr('width', bandWidth)
-      .attr('x', d => seasonScale(d.season))
+      .attr('width', halfBand)
+      .attr('x', d => seasonScale(d.season) + quarterBand)
       .attr('y', d => yScale(d.total_cast))
       .attr('height', d => base.main.height - yScale(d.total_cast))
       .style('fill', green);

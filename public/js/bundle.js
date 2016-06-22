@@ -64,19 +64,19 @@
 
 	var _basicsGraphics2 = _interopRequireDefault(_basicsGraphics);
 
-	var _seasonCastMemberGraphics = __webpack_require__(14);
+	var _seasonCastMemberGraphics = __webpack_require__(16);
 
 	var _seasonCastMemberGraphics2 = _interopRequireDefault(_seasonCastMemberGraphics);
 
-	var _startingAgeGraphics = __webpack_require__(23);
+	var _startingAgeGraphics = __webpack_require__(26);
 
 	var _startingAgeGraphics2 = _interopRequireDefault(_startingAgeGraphics);
 
-	var _endingAgeGraphics = __webpack_require__(32);
+	var _endingAgeGraphics = __webpack_require__(35);
 
 	var _endingAgeGraphics2 = _interopRequireDefault(_endingAgeGraphics);
 
-	var _startingAndEndingAges = __webpack_require__(37);
+	var _startingAndEndingAges = __webpack_require__(40);
 
 	var _startingAndEndingAges2 = _interopRequireDefault(_startingAndEndingAges);
 
@@ -134,7 +134,7 @@
 	  */
 
 	  (0, _basicsGraphics2.default)(castMembers);
-	  (0, _seasonCastMemberGraphics2.default)(seasons);
+	  (0, _seasonCastMemberGraphics2.default)(seasons, castMembers);
 	  (0, _startingAgeGraphics2.default)(genders, castMembers);
 	  (0, _endingAgeGraphics2.default)(genders);
 
@@ -452,9 +452,21 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.mean = mean;
 	exports.meanProperty = meanProperty;
 	exports.medianProperty = medianProperty;
 	exports.standardDeviation = standardDeviation;
+	/*
+	 * return the mean value of the data in the array. The data array must be
+	 * an array of numbers.
+	 */
+	function mean(data) {
+	  var total = data.reduce(function (acc, d) {
+	    return acc + d;
+	  }, 0);
+	  return total / data.length;
+	}
+
 	/* 
 	 * return the mean value of a property across the data. Ignores
 	 * datum that do not have the property.
@@ -519,19 +531,29 @@
 	});
 	exports.default = render;
 
-	var _genders = __webpack_require__(9);
+	var _total = __webpack_require__(9);
+
+	var _total2 = _interopRequireDefault(_total);
+
+	var _genders = __webpack_require__(13);
 
 	var _genders2 = _interopRequireDefault(_genders);
 
-	var _roles = __webpack_require__(13);
+	var _roles = __webpack_require__(14);
 
 	var _roles2 = _interopRequireDefault(_roles);
+
+	var _genderRoles = __webpack_require__(15);
+
+	var _genderRoles2 = _interopRequireDefault(_genderRoles);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function render(castMembers) {
+	  (0, _total2.default)(castMembers, '#basic-total');
 	  (0, _genders2.default)(castMembers, '#basic-genders');
 	  (0, _roles2.default)(castMembers, '#basic-roles');
+	  (0, _genderRoles2.default)(castMembers, '#basic-gender-roles');
 	}
 
 /***/ },
@@ -551,9 +573,9 @@
 
 	var _base = __webpack_require__(10);
 
-	var _colors = __webpack_require__(11);
+	var _text = __webpack_require__(11);
 
-	var _text = __webpack_require__(12);
+	var _colors = __webpack_require__(12);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -568,42 +590,32 @@
 	    return acc;
 	  }, [0, 0]);
 	  var data = [{
-	    gender: 'Male',
-	    count: genders[0],
-	    offset: 0,
-	    fill: _colors.genderColors[0],
+	    count: castMembers.length,
+	    fill: _colors.green,
 	    align: 'start'
-	  }, {
-	    gender: 'Female',
-	    count: genders[1],
-	    offset: genders[0],
-	    fill: _colors.genderColors[1],
-	    align: 'end'
 	  }];
 	  // BASE
 	  var base = (0, _base.chartBase)({
-	    main: { width: 650, height: 25 },
-	    top: { height: 30 }
+	    main: { width: 750, height: 25 },
+	    top: { height: 25 }
 	  }, holderID);
 
 	  // SCALES
 	  var genderScale = _d2.default.scale.linear().domain([0, castMembers.length]).range([0, base.main.width]);
 
-	  (0, _text.addTitle)(base.top, 'Genders');
+	  (0, _text.addTitle)(base.top, 'Cast Members', 'left');
 
 	  // CHART
-	  var genderGs = base.main.element.selectAll('g').data(data).enter().append('g').attr('transform', function (d) {
-	    return 'translate(' + genderScale(d.offset) + ',0)';
-	  });
+	  var allGs = base.main.element.selectAll('g').data(data).enter().append('g');
 
-	  genderGs.append('rect').attr('x', 0).attr('y', 0).attr('width', function (d) {
+	  allGs.append('rect').attr('x', 0).attr('y', 0).attr('width', function (d) {
 	    return genderScale(d.count);
 	  }).attr('height', base.main.height).style('fill', function (d) {
 	    return d.fill;
 	  });
 
-	  genderGs.append('text').text(function (d) {
-	    return d.gender + ' - ' + d.count + ' (' + formatPercent(d.count / castMembers.length) + ')';
+	  allGs.append('text').text(function (d) {
+	    return 'Total Cast Members - ' + d.count;
 	  }).style('text-anchor', function (d) {
 	    return d.align;
 	  }).attr('dx', function (d, i) {
@@ -723,38 +735,28 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var brightBlue = exports.brightBlue = '#459DBA';
-	var yellowGreen = exports.yellowGreen = '#C2D400';
-	var green = exports.green = '#83b95d';
-
-	var lightBlue = exports.lightBlue = '#80cbc4';
-	var brightPink = exports.brightPink = '#ec407a';
-	var purple = exports.purple = '#b6869f';
-
-	var genderColors = exports.genderColors = [brightBlue, yellowGreen];
-
-	/*
-	 * Don't Mix:
-	 *   brightBlue + brightPink (similar saturation, bad for achromatopsia)
-	 */
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
 	exports.addTitle = addTitle;
 	exports.addLabel = addLabel;
 	function addTitle(section, text) {
+	  var align = arguments.length <= 2 || arguments[2] === undefined ? 'center' : arguments[2];
 	  var element = section.element;
 	  var width = section.width;
 	  var height = section.height;
 
-	  element.append('text').text(text).classed('title centered', true).style('text-anchor', 'middle').attr('transform', 'translate(' + width / 2 + ', ' + height / 2 + ')');
+	  var x = undefined;
+	  var anchor = undefined;
+
+	  if (align === 'left') {
+	    x = 0;
+	    anchor = 'start';
+	  } else if (align === 'center') {
+	    x = width / 2;
+	    anchor = 'middle';
+	  } else {
+	    x = width;
+	    anchor = 'end';
+	  }
+	  element.append('text').text(text).classed('title centered', true).style('text-anchor', anchor).attr('transform', 'translate(' + x + ', ' + height / 2 + ')').attr('dy', '0.5em');
 	}
 
 	/*
@@ -788,7 +790,112 @@
 	}
 
 /***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var brightBlue = exports.brightBlue = '#459DBA';
+	var yellowGreen = exports.yellowGreen = '#C2D400';
+	var green = exports.green = '#83b95d';
+
+	var lightBlue = exports.lightBlue = '#80cbc4';
+	var brightPink = exports.brightPink = '#ec407a';
+	var purple = exports.purple = '#906e9e';
+
+	var genderColors = exports.genderColors = [brightBlue, yellowGreen];
+
+	/*
+	 * Don't Mix:
+	 *   brightBlue + brightPink (similar saturation, bad for achromatopsia)
+	 */
+
+/***/ },
 /* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = genderChart;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(10);
+
+	var _text = __webpack_require__(11);
+
+	var _colors = __webpack_require__(12);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function genderChart(castMembers, holderID) {
+	  var formatPercent = _d2.default.format('.0%');
+	  var genders = castMembers.reduce(function (acc, cm) {
+	    if (cm.gender === 'male') {
+	      acc[0]++;
+	    } else {
+	      acc[1]++;
+	    }
+	    return acc;
+	  }, [0, 0]);
+	  var data = [{
+	    gender: 'Male',
+	    count: genders[0],
+	    offset: 0,
+	    fill: _colors.genderColors[0],
+	    align: 'start'
+	  }, {
+	    gender: 'Female',
+	    count: genders[1],
+	    offset: genders[0],
+	    fill: _colors.genderColors[1],
+	    align: 'end'
+	  }];
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 750, height: 25 },
+	    top: { height: 25 }
+	  }, holderID);
+
+	  // SCALES
+	  var genderScale = _d2.default.scale.linear().domain([0, castMembers.length]).range([0, base.main.width]);
+
+	  (0, _text.addTitle)(base.top, 'By Gender', 'left');
+
+	  // CHART
+	  var genderGs = base.main.element.selectAll('g').data(data).enter().append('g').attr('transform', function (d) {
+	    return 'translate(' + genderScale(d.offset) + ',0)';
+	  });
+
+	  genderGs.append('rect').attr('x', 0).attr('y', 0).attr('width', function (d) {
+	    return genderScale(d.count);
+	  }).attr('height', base.main.height).style('fill', function (d) {
+	    return d.fill;
+	  });
+
+	  genderGs.append('text').text(function (d) {
+	    return d.gender + ' - ' + d.count + ' (' + formatPercent(d.count / castMembers.length) + ')';
+	  }).style('text-anchor', function (d) {
+	    return d.align;
+	  }).attr('dx', function (d, i) {
+	    return i === 0 ? 5 : -5;
+	  }).attr('dy', '0.3em').attr('transform', function (d, i) {
+	    var x = i === 0 ? 0 : genderScale(d.count);
+	    var y = base.main.height / 2;
+	    return 'translate(' + x + ',' + y + ')';
+	  });
+	}
+
+/***/ },
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -804,9 +911,9 @@
 
 	var _base = __webpack_require__(10);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -847,14 +954,14 @@
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
-	    main: { width: 650, height: 25 },
-	    top: { height: 30 }
+	    main: { width: 750, height: 25 },
+	    top: { height: 25 }
 	  }, holderID);
 
 	  // SCALES
 	  var roleScale = _d2.default.scale.linear().domain([0, castMembers.length]).range([0, base.main.width]);
 
-	  (0, _text.addTitle)(base.top, 'Roles');
+	  (0, _text.addTitle)(base.top, 'By Role', 'left');
 
 	  // CHART
 	  var roleGs = base.main.element.selectAll('g').data(data).enter().append('g').attr('transform', function (d) {
@@ -886,7 +993,118 @@
 	}
 
 /***/ },
-/* 14 */
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = roleChart;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(10);
+
+	var _text = __webpack_require__(11);
+
+	var _colors = __webpack_require__(12);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function roleChart(castMembers, holderID) {
+	  var formatPercent = _d2.default.format('.0%');
+	  var roleKeys = ['Repertory', 'Both', 'Featured'];
+	  var roleColors = [_colors.lightBlue, _colors.purple, _colors.brightPink];
+
+	  var genderCounts = castMembers.reduce(function (acc, cm) {
+	    var offset = -1;
+	    if (cm.featured.length && cm.repertory.length) {
+	      offset = 1;
+	    } else if (cm.repertory.length) {
+	      offset = 0;
+	    } else {
+	      offset = 2;
+	    }
+	    acc[cm.gender][offset]++;
+	    return acc;
+	  }, { male: [0, 0, 0], female: [0, 0, 0] });
+
+	  var genderData = [{
+	    gender: 'male',
+	    data: genderCounts.male,
+	    fill: _colors.brightBlue
+	  }, {
+	    gender: 'female',
+	    data: genderCounts.female,
+	    fill: _colors.yellowGreen
+	  }];
+
+	  genderData.forEach(function (g, i) {
+	    g.offsets = g.data.reduce(function (acc, curr) {
+	      var last = acc[acc.length - 1];
+	      return acc.concat([last + curr]);
+	    }, [0]);
+	    g.total = g.data.reduce(function (acc, d) {
+	      return acc + d;
+	    }, 0);
+	    g.gOffset = i === 0 ? 0 : genderData[i - 1].total;
+	    g.roleData = g.data.map(function (d, i) {
+	      return {
+	        count: d,
+	        fill: roleColors[i],
+	        offset: g.offsets[i],
+	        percent: d / g.total
+	      };
+	    });
+	  });
+
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 750, height: 30 },
+	    top: { height: 25 }
+	  }, holderID);
+
+	  // SCALES
+	  var roleScale = _d2.default.scale.linear().domain([0, castMembers.length]).range([0, base.main.width]);
+
+	  (0, _text.addTitle)(base.top, 'By Role & Gender', 'left');
+
+	  // CHART
+	  var genderGs = base.main.element.selectAll('g.gender').data(genderData).enter().append('g').classed('gender', true).attr('transform', function (d) {
+	    return 'translate(' + roleScale(d.gOffset) + ',0)';
+	  });
+
+	  var roleGs = genderGs.selectAll('g.role').data(function (d) {
+	    return d.roleData;
+	  }).enter().append('g').classed('role', true).attr('transform', function (d) {
+	    return 'translate(' + roleScale(d.offset) + ',5)';
+	  });
+
+	  roleGs.append('rect').attr('x', 0).attr('y', 0).attr('width', function (d) {
+	    return roleScale(d.count);
+	  }).attr('height', 25).style('fill', function (d, i) {
+	    return roleColors[i];
+	  });
+
+	  roleGs.append('text').text(function (d) {
+	    return d.count + ' (' + formatPercent(d.percent) + ')';
+	  }).style('text-anchor', 'middle').attr('dx', 0).attr('dy', '0.3em').attr('transform', function (d, i) {
+	    return 'translate(' + roleScale(d.count) / 2 + ',' + 25 / 2 + ')';
+	  });
+
+	  genderGs.append('rect').classed('gender-bar', true).attr('x', 0).attr('y', 0).attr('height', 3).attr('width', function (d) {
+	    return roleScale(d.total);
+	  }).style('fill', function (d) {
+	    return d.fill;
+	  });
+	}
+
+/***/ },
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -896,38 +1114,43 @@
 	});
 	exports.default = render;
 
-	var _seasonCastMembers = __webpack_require__(15);
+	var _seasonCastMembers = __webpack_require__(17);
 
 	var _seasonCastMembers2 = _interopRequireDefault(_seasonCastMembers);
 
-	var _groupedSeasonGenders = __webpack_require__(18);
+	var _groupedSeasonGenders = __webpack_require__(20);
 
 	var _groupedSeasonGenders2 = _interopRequireDefault(_groupedSeasonGenders);
 
-	var _groupedSeasonRoles = __webpack_require__(20);
+	var _groupedSeasonRoles = __webpack_require__(22);
 
 	var _groupedSeasonRoles2 = _interopRequireDefault(_groupedSeasonRoles);
 
-	var _seasonGenderPercents = __webpack_require__(21);
+	var _seasonGenderPercents = __webpack_require__(23);
 
 	var _seasonGenderPercents2 = _interopRequireDefault(_seasonGenderPercents);
 
-	var _seasonRolePercents = __webpack_require__(22);
+	var _seasonRolePercents = __webpack_require__(24);
 
 	var _seasonRolePercents2 = _interopRequireDefault(_seasonRolePercents);
 
+	var _seasonExperience = __webpack_require__(25);
+
+	var _seasonExperience2 = _interopRequireDefault(_seasonExperience);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function render(seasons) {
+	function render(seasons, castMembers) {
 	  (0, _seasonCastMembers2.default)(seasons, '#season-casts');
 	  (0, _groupedSeasonGenders2.default)(seasons, '#season-genders');
 	  (0, _groupedSeasonRoles2.default)(seasons, '#season-roles');
 	  (0, _seasonGenderPercents2.default)(seasons, '#season-gender-percents');
 	  (0, _seasonRolePercents2.default)(seasons, '#season-role-percents');
+	  (0, _seasonExperience2.default)(castMembers, '#season-experience');
 	}
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -943,15 +1166,15 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
 	var _average = __webpack_require__(7);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -991,9 +1214,10 @@
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
 
 	  // CHART
-	  var bandWidth = seasonScale.rangeBand();
-	  base.main.element.selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
-	    return seasonScale(d.season);
+	  var halfBand = seasonScale.rangeBand() / 2;
+	  var quarterBand = halfBand / 2;
+	  base.main.element.selectAll('rect').data(seasons).enter().append('rect').attr('width', halfBand).attr('x', function (d) {
+	    return seasonScale(d.season) + quarterBand;
 	  }).attr('y', function (d) {
 	    return yScale(d.total_cast);
 	  }).attr('height', function (d) {
@@ -1008,7 +1232,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1061,7 +1285,7 @@
 	}
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1090,7 +1314,7 @@
 	}
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1106,15 +1330,15 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1182,7 +1406,7 @@
 	}
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1267,7 +1491,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1283,15 +1507,15 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1365,7 +1589,7 @@
 	}
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1381,17 +1605,17 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
 	var _average = __webpack_require__(7);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1409,7 +1633,7 @@
 	  var roundMean = Math.round(meanPercent * 100) / 100;
 	  // BASE
 	  var base = (0, _base.chartBase)({
-	    main: { width: 850, height: 300 },
+	    main: { width: 900, height: 300 },
 	    left: { width: 50 },
 	    bottom: { height: 50 },
 	    top: { height: 30 },
@@ -1469,7 +1693,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1485,17 +1709,17 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
 	var _average = __webpack_require__(7);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1514,7 +1738,7 @@
 	  var roundMean = Math.round(meanPercent * 100) / 100;
 	  // BASE
 	  var base = (0, _base.chartBase)({
-	    main: { width: 850, height: 300 },
+	    main: { width: 900, height: 300 },
 	    left: { width: 50 },
 	    bottom: { height: 50 },
 	    top: { height: 30 },
@@ -1580,7 +1804,138 @@
 	}
 
 /***/ },
-/* 23 */
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = chartSeasonExperience;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(10);
+
+	var _axis = __webpack_require__(18);
+
+	var _text = __webpack_require__(11);
+
+	var _legend = __webpack_require__(21);
+
+	var _average = __webpack_require__(7);
+
+	var _colors = __webpack_require__(12);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function chartSeasonExperience(castMembers, holderID) {
+	  var seasonExperiences = calculateExperience(castMembers);
+	  var meanPercent = (0, _average.mean)(seasonExperiences);
+	  var tickValues = seasonExperiences.map(function (s, i) {
+	    return i + 1;
+	  });
+	  var yMax = Math.ceil(_d2.default.max(seasonExperiences));
+
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 900, height: 300 },
+	    left: { width: 50 },
+	    bottom: { height: 50 },
+	    top: { height: 30 },
+	    right: { width: 100 }
+	  }, holderID);
+
+	  // SCALES
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+
+	  // AXES
+	  var xAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
+
+	  var baseTicks = Array.from(new Array(yMax + 1)).map(function (u, i) {
+	    return i;
+	  });
+	  var meanTicks = baseTicks.concat([meanPercent]).sort();
+	  var yAxis = _d2.default.svg.axis().scale(yScale).tickValues(meanTicks).orient('left');
+
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).tickValues(baseTicks).tickFormat('').outerTickSize(0);
+
+	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
+	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
+	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  (0, _text.addTitle)(base.top, 'Cast Member Experience');
+	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Mean Years Experience', 'left');
+
+	  // CHART
+
+	  var barWidth = seasonScale.rangeBand();
+	  base.main.element.append('g').classed('bars', true).selectAll('rect.bar').data(seasonExperiences).enter().append('rect').classed('bar', true).attr('x', function (d, i) {
+	    return seasonScale(i + 1);
+	  }).attr('y', function (d) {
+	    return yScale(d);
+	  }).attr('width', barWidth).attr('height', function (d) {
+	    return base.main.height - yScale(d);
+	  }).style('fill', _colors.purple);
+
+	  var halfWidth = barWidth / 2;
+	  var texts = base.main.element.append('g').classed('text', true).selectAll('text').data(seasonExperiences).enter().append('text').text(function (d) {
+	    return Math.round(d * 10) / 10;
+	  }).attr('transform', function (d, i) {
+	    var x = seasonScale(i + 1) + halfWidth;
+	    var y = yScale(d) - 17;
+	    return 'translate(' + x + ',' + y + ')';
+	  }).attr('dy', '1em').style('text-anchor', 'middle').style('font-size', 14);
+
+	  base.main.element.append('line').attr('x1', 0).attr('x2', base.main.width).attr('y1', yScale(meanPercent)).attr('y2', yScale(meanPercent)).style('stroke-dasharray', '2, 5');
+	}
+
+	function calculateExperience(castMembers) {
+	  var seasons = {};
+	  castMembers.forEach(function (cm) {
+	    var experience = 0;
+	    cm.featured.forEach(function (s) {
+	      if (seasons[s] === undefined) {
+	        seasons[s] = {
+	          total: 0,
+	          count: 0
+	        };
+	      }
+	      seasons[s].total += experience;
+	      seasons[s].count++;
+	      experience++;
+	    });
+	    cm.repertory.forEach(function (s) {
+	      if (seasons[s] === undefined) {
+	        seasons[s] = {
+	          total: 0,
+	          count: 0
+	        };
+	      }
+	      seasons[s].total += experience;
+	      seasons[s].count++;
+	      experience++;
+	    });
+	  });
+	  var seasonKeys = Object.keys(seasons);
+	  var seasonExperiences = Array.from(new Array(seasonKeys.length)).fill(0);
+	  seasonKeys.forEach(function (key) {
+	    var _seasons$key = seasons[key];
+	    var total = _seasons$key.total;
+	    var count = _seasons$key.count;
+
+	    seasonExperiences[key - 1] = total / count;
+	  });
+	  return seasonExperiences;
+	}
+
+/***/ },
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1590,27 +1945,27 @@
 	});
 	exports.default = render;
 
-	var _startingAges = __webpack_require__(24);
+	var _startingAges = __webpack_require__(27);
 
 	var _startingAges2 = _interopRequireDefault(_startingAges);
 
-	var _groupedStartingAges = __webpack_require__(25);
+	var _groupedStartingAges = __webpack_require__(28);
 
 	var _groupedStartingAges2 = _interopRequireDefault(_groupedStartingAges);
 
-	var _normalizedStartingAges = __webpack_require__(27);
+	var _normalizedStartingAges = __webpack_require__(30);
 
 	var _normalizedStartingAges2 = _interopRequireDefault(_normalizedStartingAges);
 
-	var _startingAgesTable = __webpack_require__(28);
+	var _startingAgesTable = __webpack_require__(31);
 
 	var _startingAgesTable2 = _interopRequireDefault(_startingAgesTable);
 
-	var _startingAgeBySeasonAndGender = __webpack_require__(30);
+	var _startingAgeBySeasonAndGender = __webpack_require__(33);
 
 	var _startingAgeBySeasonAndGender2 = _interopRequireDefault(_startingAgeBySeasonAndGender);
 
-	var _startingAgeBySeasonAndRole = __webpack_require__(31);
+	var _startingAgeBySeasonAndRole = __webpack_require__(34);
 
 	var _startingAgeBySeasonAndRole2 = _interopRequireDefault(_startingAgeBySeasonAndRole);
 
@@ -1626,7 +1981,7 @@
 	}
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1642,13 +1997,13 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1702,7 +2057,7 @@
 	}
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1718,17 +2073,17 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
-	var _merge = __webpack_require__(26);
+	var _merge = __webpack_require__(29);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -1806,7 +2161,7 @@
 	}
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1874,7 +2229,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1890,17 +2245,17 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
-	var _merge = __webpack_require__(26);
+	var _merge = __webpack_require__(29);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2004,7 +2359,7 @@
 	}
 
 /***/ },
-/* 28 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2014,11 +2369,11 @@
 	});
 	exports.default = startingAgesTable;
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
 	var _date = __webpack_require__(2);
 
-	var _table = __webpack_require__(29);
+	var _table = __webpack_require__(32);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -2041,7 +2396,7 @@
 	}
 
 /***/ },
-/* 29 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2084,7 +2439,7 @@
 	}
 
 /***/ },
-/* 30 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2103,17 +2458,17 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
 	var _date = __webpack_require__(2);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2192,7 +2547,7 @@
 	}
 
 /***/ },
-/* 31 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2208,17 +2563,17 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
 	var _date = __webpack_require__(2);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2295,7 +2650,7 @@
 	}
 
 /***/ },
-/* 32 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2305,19 +2660,19 @@
 	});
 	exports.default = render;
 
-	var _endingAges = __webpack_require__(33);
+	var _endingAges = __webpack_require__(36);
 
 	var _endingAges2 = _interopRequireDefault(_endingAges);
 
-	var _groupedEndingAges = __webpack_require__(34);
+	var _groupedEndingAges = __webpack_require__(37);
 
 	var _groupedEndingAges2 = _interopRequireDefault(_groupedEndingAges);
 
-	var _normalizedEndingAges = __webpack_require__(35);
+	var _normalizedEndingAges = __webpack_require__(38);
 
 	var _normalizedEndingAges2 = _interopRequireDefault(_normalizedEndingAges);
 
-	var _endingAgesTable = __webpack_require__(36);
+	var _endingAgesTable = __webpack_require__(39);
 
 	var _endingAgesTable2 = _interopRequireDefault(_endingAgesTable);
 
@@ -2331,7 +2686,7 @@
 	}
 
 /***/ },
-/* 33 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2347,13 +2702,13 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2409,7 +2764,7 @@
 	}
 
 /***/ },
-/* 34 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2425,17 +2780,17 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
-	var _merge = __webpack_require__(26);
+	var _merge = __webpack_require__(29);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2514,7 +2869,7 @@
 	}
 
 /***/ },
-/* 35 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2530,17 +2885,17 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
-	var _merge = __webpack_require__(26);
+	var _merge = __webpack_require__(29);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2647,7 +3002,7 @@
 	}
 
 /***/ },
-/* 36 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2657,11 +3012,11 @@
 	});
 	exports.default = endingAgesTable;
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
 	var _date = __webpack_require__(2);
 
-	var _table = __webpack_require__(29);
+	var _table = __webpack_require__(32);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -2684,7 +3039,7 @@
 	}
 
 /***/ },
-/* 37 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2700,17 +3055,17 @@
 
 	var _base = __webpack_require__(10);
 
-	var _axis = __webpack_require__(16);
+	var _axis = __webpack_require__(18);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(11);
 
-	var _legend = __webpack_require__(19);
+	var _legend = __webpack_require__(21);
 
-	var _round = __webpack_require__(17);
+	var _round = __webpack_require__(19);
 
-	var _colors = __webpack_require__(11);
+	var _colors = __webpack_require__(12);
 
-	var _merge = __webpack_require__(26);
+	var _merge = __webpack_require__(29);
 
 	var _merge2 = _interopRequireDefault(_merge);
 

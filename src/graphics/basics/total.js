@@ -2,7 +2,7 @@ import d3 from 'd3';
 
 import { chartBase } from '../../charts/base';
 import { addTitle } from '../../charts/text';
-import { genderColors } from '../../helpers/colors';
+import { green } from '../../helpers/colors';
 
 export default function genderChart(castMembers, holderID) {
   const formatPercent = d3.format('.0%');
@@ -16,18 +16,9 @@ export default function genderChart(castMembers, holderID) {
   }, [0,0]);
   const data = [
     {
-      gender: 'Male',
-      count: genders[0],
-      offset: 0,
-      fill: genderColors[0],
+      count: castMembers.length,
+      fill: green,
       align: 'start'
-    },
-    {
-      gender: 'Female',
-      count: genders[1],
-      offset: genders[0],
-      fill: genderColors[1],
-      align: 'end'
     }
   ]
   // BASE
@@ -41,24 +32,23 @@ export default function genderChart(castMembers, holderID) {
     .domain([0, castMembers.length])
     .range([0, base.main.width])
 
-  addTitle(base.top, 'By Gender', 'left');
+  addTitle(base.top, 'Cast Members', 'left');
 
   // CHART
-  const genderGs = base.main.element.selectAll('g')
+  const allGs = base.main.element.selectAll('g')
       .data(data)
-    .enter().append('g')
-      .attr('transform', d => `translate(${genderScale(d.offset)},0)`)
+    .enter().append('g');
 
-  genderGs.append('rect')
+  allGs.append('rect')
     .attr('x', 0)
     .attr('y', 0)
     .attr('width', d => genderScale(d.count))
     .attr('height', base.main.height)
     .style('fill', d => d.fill);
 
-  genderGs.append('text')
+  allGs.append('text')
     .text(d => {
-      return `${d.gender} - ${d.count} (${formatPercent(d.count/castMembers.length)})`
+      return `Total Cast Members - ${d.count}`
     })
     .style('text-anchor', d => d.align)
     .attr('dx', (d,i) => i === 0 ? 5 : -5)

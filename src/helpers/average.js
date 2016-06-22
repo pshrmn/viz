@@ -1,3 +1,14 @@
+/*
+ * return the mean value of the data in the array. The data array must be
+ * an array of numbers.
+ */
+export function mean(data) {
+  const total = data.reduce((acc, d) => {
+    return acc + d;
+  }, 0);
+  return total / data.length;
+}
+
 /* 
  * return the mean value of a property across the data. Ignores
  * datum that do not have the property.

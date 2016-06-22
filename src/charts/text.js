@@ -1,10 +1,24 @@
-export function addTitle(section, text) {
+export function addTitle(section, text, align = 'center') {
   const { element, width, height } = section;
+  let x = undefined;
+  let anchor = undefined;
+
+  if ( align === 'left' ) {
+    x = 0;
+    anchor = 'start';
+  } else if ( align === 'center' ) {
+    x = width / 2;
+    anchor = 'middle';
+  } else {
+    x = width;
+    anchor = 'end';
+  }
   element.append('text')
     .text(text)
     .classed('title centered', true)
-    .style('text-anchor', 'middle')
-    .attr('transform', `translate(${width/2}, ${height/2})`);
+    .style('text-anchor', anchor)
+    .attr('transform', `translate(${x}, ${height/2})`)
+    .attr('dy', '0.5em');
 }
 
 /*
