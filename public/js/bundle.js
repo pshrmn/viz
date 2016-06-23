@@ -50,33 +50,35 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _date = __webpack_require__(2);
+	__webpack_require__(2);
 
-	var _cast = __webpack_require__(3);
+	var _date = __webpack_require__(3);
 
-	var _roles = __webpack_require__(4);
+	var _cast = __webpack_require__(4);
 
-	var _gender = __webpack_require__(5);
+	var _roles = __webpack_require__(5);
+
+	var _gender = __webpack_require__(6);
 
 	var _gender2 = _interopRequireDefault(_gender);
 
-	var _basicsGraphics = __webpack_require__(8);
+	var _basicsGraphics = __webpack_require__(9);
 
 	var _basicsGraphics2 = _interopRequireDefault(_basicsGraphics);
 
-	var _seasonCastMemberGraphics = __webpack_require__(16);
+	var _seasonCastMemberGraphics = __webpack_require__(17);
 
 	var _seasonCastMemberGraphics2 = _interopRequireDefault(_seasonCastMemberGraphics);
 
-	var _startingAgeGraphics = __webpack_require__(26);
+	var _startingAgeGraphics = __webpack_require__(27);
 
 	var _startingAgeGraphics2 = _interopRequireDefault(_startingAgeGraphics);
 
-	var _endingAgeGraphics = __webpack_require__(35);
+	var _endingAgeGraphics = __webpack_require__(36);
 
 	var _endingAgeGraphics2 = _interopRequireDefault(_endingAgeGraphics);
 
-	var _startingAndEndingAges = __webpack_require__(40);
+	var _startingAndEndingAges = __webpack_require__(41);
 
 	var _startingAndEndingAges2 = _interopRequireDefault(_startingAndEndingAges);
 
@@ -153,6 +155,133 @@
 
 	'use strict';
 
+	// Production steps of ECMA-262, Edition 6, 22.1.2.1
+	// Reference: https://people.mozilla.org/~jorendorff/es6-draft.html#sec-array.from
+	if (!Array.from) {
+	  Array.from = function () {
+	    var toStr = Object.prototype.toString;
+	    var isCallable = function isCallable(fn) {
+	      return typeof fn === 'function' || toStr.call(fn) === '[object Function]';
+	    };
+	    var toInteger = function toInteger(value) {
+	      var number = Number(value);
+	      if (isNaN(number)) {
+	        return 0;
+	      }
+	      if (number === 0 || !isFinite(number)) {
+	        return number;
+	      }
+	      return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
+	    };
+	    var maxSafeInteger = Math.pow(2, 53) - 1;
+	    var toLength = function toLength(value) {
+	      var len = toInteger(value);
+	      return Math.min(Math.max(len, 0), maxSafeInteger);
+	    };
+
+	    // The length property of the from method is 1.
+	    return function from(arrayLike /*, mapFn, thisArg */) {
+	      // 1. Let C be the this value.
+	      var C = this;
+
+	      // 2. Let items be ToObject(arrayLike).
+	      var items = Object(arrayLike);
+
+	      // 3. ReturnIfAbrupt(items).
+	      if (arrayLike == null) {
+	        throw new TypeError("Array.from requires an array-like object - not null or undefined");
+	      }
+
+	      // 4. If mapfn is undefined, then let mapping be false.
+	      var mapFn = arguments.length > 1 ? arguments[1] : void undefined;
+	      var T;
+	      if (typeof mapFn !== 'undefined') {
+	        // 5. else
+	        // 5. a If IsCallable(mapfn) is false, throw a TypeError exception.
+	        if (!isCallable(mapFn)) {
+	          throw new TypeError('Array.from: when provided, the second argument must be a function');
+	        }
+
+	        // 5. b. If thisArg was supplied, let T be thisArg; else let T be undefined.
+	        if (arguments.length > 2) {
+	          T = arguments[2];
+	        }
+	      }
+
+	      // 10. Let lenValue be Get(items, "length").
+	      // 11. Let len be ToLength(lenValue).
+	      var len = toLength(items.length);
+
+	      // 13. If IsConstructor(C) is true, then
+	      // 13. a. Let A be the result of calling the [[Construct]] internal method of C with an argument list containing the single item len.
+	      // 14. a. Else, Let A be ArrayCreate(len).
+	      var A = isCallable(C) ? Object(new C(len)) : new Array(len);
+
+	      // 16. Let k be 0.
+	      var k = 0;
+	      // 17. Repeat, while k < len… (also steps a - h)
+	      var kValue;
+	      while (k < len) {
+	        kValue = items[k];
+	        if (mapFn) {
+	          A[k] = typeof T === 'undefined' ? mapFn(kValue, k) : mapFn.call(T, kValue, k);
+	        } else {
+	          A[k] = kValue;
+	        }
+	        k += 1;
+	      }
+	      // 18. Let putStatus be Put(A, "length", len, true).
+	      A.length = len;
+	      // 20. Return A.
+	      return A;
+	    };
+	  }();
+	}
+
+	if (!Array.prototype.fill) {
+	  Array.prototype.fill = function (value) {
+
+	    // Steps 1-2.
+	    if (this == null) {
+	      throw new TypeError('this is null or not defined');
+	    }
+
+	    var O = Object(this);
+
+	    // Steps 3-5.
+	    var len = O.length >>> 0;
+
+	    // Steps 6-7.
+	    var start = arguments[1];
+	    var relativeStart = start >> 0;
+
+	    // Step 8.
+	    var k = relativeStart < 0 ? Math.max(len + relativeStart, 0) : Math.min(relativeStart, len);
+
+	    // Steps 9-10.
+	    var end = arguments[2];
+	    var relativeEnd = end === undefined ? len : end >> 0;
+
+	    // Step 11.
+	    var final = relativeEnd < 0 ? Math.max(len + relativeEnd, 0) : Math.min(relativeEnd, len);
+
+	    // Step 12.
+	    while (k < final) {
+	      O[k] = value;
+	      k++;
+	    }
+
+	    // Step 13.
+	    return O;
+	  };
+	}
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	'use strict';
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -187,7 +316,7 @@
 	}
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -247,7 +376,7 @@
 	}
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -287,7 +416,7 @@
 	}
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -297,11 +426,11 @@
 	});
 	exports.default = genderStats;
 
-	var _filters = __webpack_require__(6);
+	var _filters = __webpack_require__(7);
 
-	var _average = __webpack_require__(7);
+	var _average = __webpack_require__(8);
 
-	var _date = __webpack_require__(2);
+	var _date = __webpack_require__(3);
 
 	function genderStats(castMembers) {
 	  var maleCastMembers = (0, _filters.male)(castMembers);
@@ -400,7 +529,7 @@
 	}
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -444,7 +573,7 @@
 	}
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -521,7 +650,7 @@
 	}
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -531,19 +660,19 @@
 	});
 	exports.default = render;
 
-	var _total = __webpack_require__(9);
+	var _total = __webpack_require__(10);
 
 	var _total2 = _interopRequireDefault(_total);
 
-	var _genders = __webpack_require__(13);
+	var _genders = __webpack_require__(14);
 
 	var _genders2 = _interopRequireDefault(_genders);
 
-	var _roles = __webpack_require__(14);
+	var _roles = __webpack_require__(15);
 
 	var _roles2 = _interopRequireDefault(_roles);
 
-	var _genderRoles = __webpack_require__(15);
+	var _genderRoles = __webpack_require__(16);
 
 	var _genderRoles2 = _interopRequireDefault(_genderRoles);
 
@@ -557,7 +686,7 @@
 	}
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -571,11 +700,11 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -628,7 +757,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -727,7 +856,7 @@
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -790,7 +919,7 @@
 	}
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -814,7 +943,7 @@
 	 */
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -828,11 +957,11 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -895,7 +1024,7 @@
 	}
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -909,11 +1038,11 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -993,7 +1122,7 @@
 	}
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1007,11 +1136,11 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1104,7 +1233,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1114,27 +1243,27 @@
 	});
 	exports.default = render;
 
-	var _seasonCastMembers = __webpack_require__(17);
+	var _seasonCastMembers = __webpack_require__(18);
 
 	var _seasonCastMembers2 = _interopRequireDefault(_seasonCastMembers);
 
-	var _groupedSeasonGenders = __webpack_require__(20);
+	var _groupedSeasonGenders = __webpack_require__(21);
 
 	var _groupedSeasonGenders2 = _interopRequireDefault(_groupedSeasonGenders);
 
-	var _groupedSeasonRoles = __webpack_require__(22);
+	var _groupedSeasonRoles = __webpack_require__(23);
 
 	var _groupedSeasonRoles2 = _interopRequireDefault(_groupedSeasonRoles);
 
-	var _seasonGenderPercents = __webpack_require__(23);
+	var _seasonGenderPercents = __webpack_require__(24);
 
 	var _seasonGenderPercents2 = _interopRequireDefault(_seasonGenderPercents);
 
-	var _seasonRolePercents = __webpack_require__(24);
+	var _seasonRolePercents = __webpack_require__(25);
 
 	var _seasonRolePercents2 = _interopRequireDefault(_seasonRolePercents);
 
-	var _seasonExperience = __webpack_require__(25);
+	var _seasonExperience = __webpack_require__(26);
 
 	var _seasonExperience2 = _interopRequireDefault(_seasonExperience);
 
@@ -1150,7 +1279,7 @@
 	}
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1164,17 +1293,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _average = __webpack_require__(7);
+	var _average = __webpack_require__(8);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1188,7 +1317,7 @@
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
-	    main: { width: 750, height: 300 },
+	    main: { width: 900, height: 300 },
 	    left: { width: 50 },
 	    bottom: { height: 50 },
 	    top: { height: 30 },
@@ -1196,7 +1325,7 @@
 	  }, holderID);
 
 	  // SCALES
-	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1, 0);
 
 	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
@@ -1214,10 +1343,9 @@
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
 
 	  // CHART
-	  var halfBand = seasonScale.rangeBand() / 2;
-	  var quarterBand = halfBand / 2;
-	  base.main.element.selectAll('rect').data(seasons).enter().append('rect').attr('width', halfBand).attr('x', function (d) {
-	    return seasonScale(d.season) + quarterBand;
+	  var bandWidth = seasonScale.rangeBand();
+	  base.main.element.selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
+	    return seasonScale(d.season);
 	  }).attr('y', function (d) {
 	    return yScale(d.total_cast);
 	  }).attr('height', function (d) {
@@ -1232,7 +1360,7 @@
 	}
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1285,7 +1413,7 @@
 	}
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1314,7 +1442,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1328,17 +1456,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1352,7 +1480,7 @@
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
-	    main: { width: 750, height: 300 },
+	    main: { width: 850, height: 300 },
 	    left: { width: 50 },
 	    bottom: { height: 50 },
 	    top: { height: 30 },
@@ -1406,7 +1534,7 @@
 	}
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1491,7 +1619,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1505,17 +1633,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1535,7 +1663,7 @@
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
-	    main: { width: 750, height: 300 },
+	    main: { width: 850, height: 300 },
 	    left: { width: 50 },
 	    bottom: { height: 50 },
 	    top: { height: 30 },
@@ -1589,7 +1717,7 @@
 	}
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1603,19 +1731,19 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
-	var _average = __webpack_require__(7);
+	var _average = __webpack_require__(8);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1693,7 +1821,7 @@
 	}
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1707,19 +1835,19 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _average = __webpack_require__(7);
+	var _average = __webpack_require__(8);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1746,7 +1874,7 @@
 	  }, holderID);
 
 	  // SCALES
-	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1, 0);
 
 	  var yScale = _d2.default.scale.linear().domain([0, 1]).range([base.main.height, 0]);
 
@@ -1804,7 +1932,7 @@
 	}
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1818,17 +1946,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _average = __webpack_require__(7);
+	var _average = __webpack_require__(8);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1850,7 +1978,7 @@
 	  }, holderID);
 
 	  // SCALES
-	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1, 0);
 
 	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
 
@@ -1935,7 +2063,7 @@
 	}
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1945,27 +2073,27 @@
 	});
 	exports.default = render;
 
-	var _startingAges = __webpack_require__(27);
+	var _startingAges = __webpack_require__(28);
 
 	var _startingAges2 = _interopRequireDefault(_startingAges);
 
-	var _groupedStartingAges = __webpack_require__(28);
+	var _groupedStartingAges = __webpack_require__(29);
 
 	var _groupedStartingAges2 = _interopRequireDefault(_groupedStartingAges);
 
-	var _normalizedStartingAges = __webpack_require__(30);
+	var _normalizedStartingAges = __webpack_require__(31);
 
 	var _normalizedStartingAges2 = _interopRequireDefault(_normalizedStartingAges);
 
-	var _startingAgesTable = __webpack_require__(31);
+	var _startingAgesTable = __webpack_require__(32);
 
 	var _startingAgesTable2 = _interopRequireDefault(_startingAgesTable);
 
-	var _startingAgeBySeasonAndGender = __webpack_require__(33);
+	var _startingAgeBySeasonAndGender = __webpack_require__(34);
 
 	var _startingAgeBySeasonAndGender2 = _interopRequireDefault(_startingAgeBySeasonAndGender);
 
-	var _startingAgeBySeasonAndRole = __webpack_require__(34);
+	var _startingAgeBySeasonAndRole = __webpack_require__(35);
 
 	var _startingAgeBySeasonAndRole2 = _interopRequireDefault(_startingAgeBySeasonAndRole);
 
@@ -1981,7 +2109,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1995,15 +2123,15 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2057,7 +2185,7 @@
 	}
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2071,19 +2199,19 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
-	var _merge = __webpack_require__(29);
+	var _merge = __webpack_require__(30);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2161,7 +2289,7 @@
 	}
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2229,7 +2357,7 @@
 	}
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2243,19 +2371,19 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
-	var _merge = __webpack_require__(29);
+	var _merge = __webpack_require__(30);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2359,7 +2487,7 @@
 	}
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2369,11 +2497,11 @@
 	});
 	exports.default = startingAgesTable;
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _date = __webpack_require__(2);
+	var _date = __webpack_require__(3);
 
-	var _table = __webpack_require__(32);
+	var _table = __webpack_require__(33);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -2396,7 +2524,7 @@
 	}
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2439,7 +2567,7 @@
 	}
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2456,19 +2584,21 @@
 
 	var _d3 = _interopRequireDefault(_d2);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _date = __webpack_require__(2);
+	var _date = __webpack_require__(3);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
+
+	var _average = __webpack_require__(8);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2479,6 +2609,8 @@
 	function chartStartingAges(castMembers, holderID) {
 	  var filteredCastMembers = castMembers.filter(function (cm) {
 	    return cm.start_age !== undefined;
+	  }).sort(function (a, b) {
+	    return a.start_age - b.start_age;
 	  });
 	  var minSeason = Infinity;
 	  var maxSeason = -Infinity;
@@ -2497,10 +2629,15 @@
 	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(_d3.default.max(filteredCastMembers, function (cm) {
 	    return cm.start_age;
 	  })), 5);
+	  var minYears = (0, _round.roundDown)((0, _date.daysToYears)(_d3.default.min(filteredCastMembers, function (cm) {
+	    return cm.start_age;
+	  })), 5);
+	  var meanStartAge = (0, _average.meanProperty)(filteredCastMembers, 'start_age');
+	  var startAgeStdDev = (0, _average.standardDeviation)(filteredCastMembers, 'start_age', meanStartAge);
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
-	    main: { width: 750, height: 300 },
+	    main: { width: 900, height: 300 },
 	    left: { width: 50 },
 	    bottom: { height: 50 },
 	    top: { height: 30 },
@@ -2508,10 +2645,9 @@
 	  }, holderID);
 
 	  // SCALES
-	  var seasonScale = _d3.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var seasonScale = _d3.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1, 0);
 
-	  // find out the oldest starting age, convert to years
-	  var yScale = _d3.default.scale.linear().domain([0, 50]).range([base.main.height, 0]);
+	  var yScale = _d3.default.scale.linear().domain([minYears, maxYears]).range([base.main.height, 0]);
 
 	  // AXES
 	  var xAxis = _d3.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
@@ -2534,20 +2670,38 @@
 	    return seasonScale(d);
 	  }).attr('y', 0).attr('width', seasonScale.rangeBand()).attr('height', base.main.height);
 
+	  var lowAge = (0, _date.daysToYears)(meanStartAge - startAgeStdDev);
+	  var highAge = (0, _date.daysToYears)(meanStartAge + startAgeStdDev);
+	  var meanAge = (0, _date.daysToYears)(meanStartAge);
+
+	  var line = _d3.default.svg.line().x(function (d) {
+	    return d[0];
+	  }).y(function (d) {
+	    return yScale(d[1]);
+	  }).interpolate('linear-closed');
+
+	  base.main.element.append('path').datum([[0, lowAge], [0, highAge], [base.main.width, highAge], [base.main.width, lowAge]]).attr('d', line).style('fill', '#000').style('opacity', 0.1).style('stroke-width', 0);
+
+	  base.main.element.append('line').attr('x1', 0).attr('x2', base.main.width).attr('y1', yScale(meanAge)).attr('y2', yScale(meanAge));
+
 	  // CHART
 	  var halfWidth = seasonScale.rangeBand() / 2;
 	  // create a group for every age
-	  base.main.element.selectAll('circle').data(filteredCastMembers).enter().append('circle').attr('r', 2).attr('cx', function (d) {
+	  var circles = base.main.element.selectAll('circle').data(filteredCastMembers).enter().append('circle').attr('r', 4).attr('cx', function (d) {
 	    return seasonScale(d.firstSeason) + halfWidth;
 	  }).attr('cy', function (d) {
 	    return yScale((0, _date.daysToYears)(d.start_age));
 	  }).style('fill', function (d) {
 	    return d.gender === 'male' ? maleColor : femaleColor;
+	  }).style('stroke', '#222').style('stroke-width', 1);
+	  circles.append('title').text(function (d) {
+	    var years = (0, _date.daysToYears)(d.start_age).toFixed(2);
+	    return d.name + ' - ' + years;
 	  });
 	}
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2561,25 +2715,29 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _date = __webpack_require__(2);
+	var _date = __webpack_require__(3);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
+
+	var _average = __webpack_require__(8);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartStartingAges(castMembers, holderID) {
 	  var filteredCastMembers = castMembers.filter(function (cm) {
 	    return cm.start_age !== undefined;
+	  }).sort(function (a, b) {
+	    return b.start_age - a.start_age;
 	  });
 	  var minSeason = Infinity;
 	  var maxSeason = -Infinity;
@@ -2599,10 +2757,15 @@
 	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(_d2.default.max(filteredCastMembers, function (cm) {
 	    return cm.start_age;
 	  })), 5);
+	  var minYears = (0, _round.roundDown)((0, _date.daysToYears)(_d2.default.min(filteredCastMembers, function (cm) {
+	    return cm.start_age;
+	  })), 5);
+	  var meanStartAge = (0, _average.meanProperty)(filteredCastMembers, 'start_age');
+	  var startAgeStdDev = (0, _average.standardDeviation)(filteredCastMembers, 'start_age', meanStartAge);
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
-	    main: { width: 750, height: 300 },
+	    main: { width: 900, height: 300 },
 	    left: { width: 50 },
 	    bottom: { height: 50 },
 	    top: { height: 30 },
@@ -2610,9 +2773,9 @@
 	  }, holderID);
 
 	  // SCALES
-	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1);
+	  var seasonScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.bottom.width], 0.1, 0);
 
-	  var yScale = _d2.default.scale.linear().domain([0, 50]).range([base.main.height, 0]);
+	  var yScale = _d2.default.scale.linear().domain([minYears, maxYears]).range([base.main.height, 0]);
 
 	  // AXES
 	  var xAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
@@ -2623,7 +2786,7 @@
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _text.addTitle)(base.top, 'Starting Age of SNL Cast Members');
+	  (0, _text.addTitle)(base.top, 'Starting Age By Season and Role');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
 	  (0, _text.addLabel)(base.left, 'Starting Age', 'left');
 	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.lightBlue, text: 'Repertory' }, { color: _colors.brightPink, text: 'Featured' }], {
@@ -2637,20 +2800,37 @@
 	    return seasonScale(d);
 	  }).attr('y', 0).attr('width', seasonScale.rangeBand()).attr('height', base.main.height);
 
+	  var lowAge = (0, _date.daysToYears)(meanStartAge - startAgeStdDev);
+	  var highAge = (0, _date.daysToYears)(meanStartAge + startAgeStdDev);
+	  var meanAge = (0, _date.daysToYears)(meanStartAge);
+
+	  var line = _d2.default.svg.line().x(function (d) {
+	    return d[0];
+	  }).y(function (d) {
+	    return yScale(d[1]);
+	  }).interpolate('linear-closed');
+
+	  base.main.element.append('path').datum([[0, lowAge], [0, highAge], [base.main.width, highAge], [base.main.width, lowAge]]).attr('d', line).style('fill', '#000').style('opacity', 0.1).style('stroke-width', 0);
+
+	  base.main.element.append('line').attr('x1', 0).attr('x2', base.main.width).attr('y1', yScale(meanAge)).attr('y2', yScale(meanAge));
+
 	  // CHART
 	  var halfWidth = seasonScale.rangeBand() / 2;
 	  // create a group for every age
-	  base.main.element.selectAll('circle').data(filteredCastMembers).enter().append('circle').attr('r', 2).attr('cx', function (d) {
-	    return seasonScale(d.firstSeason) + halfWidth;
+	  base.main.element.selectAll('circle').data(filteredCastMembers).enter().append('circle').attr('r', 4).attr('cx', function (d) {
+	    return seasonScale(d.firstSeason) + halfWidth + (d.featured.length ? -5 : 5);
 	  }).attr('cy', function (d) {
 	    return yScale((0, _date.daysToYears)(d.start_age));
 	  }).style('fill', function (d) {
 	    return d.featured.length === 0 ? _colors.lightBlue : _colors.brightPink;
+	  }).style('stroke', '#222').style('stroke-width', 1).append('title').text(function (d) {
+	    var years = (0, _date.daysToYears)(d.start_age).toFixed(2);
+	    return d.name + ' - ' + years;
 	  });
 	}
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2660,19 +2840,19 @@
 	});
 	exports.default = render;
 
-	var _endingAges = __webpack_require__(36);
+	var _endingAges = __webpack_require__(37);
 
 	var _endingAges2 = _interopRequireDefault(_endingAges);
 
-	var _groupedEndingAges = __webpack_require__(37);
+	var _groupedEndingAges = __webpack_require__(38);
 
 	var _groupedEndingAges2 = _interopRequireDefault(_groupedEndingAges);
 
-	var _normalizedEndingAges = __webpack_require__(38);
+	var _normalizedEndingAges = __webpack_require__(39);
 
 	var _normalizedEndingAges2 = _interopRequireDefault(_normalizedEndingAges);
 
-	var _endingAgesTable = __webpack_require__(39);
+	var _endingAgesTable = __webpack_require__(40);
 
 	var _endingAgesTable2 = _interopRequireDefault(_endingAgesTable);
 
@@ -2686,7 +2866,7 @@
 	}
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2700,15 +2880,15 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2764,7 +2944,7 @@
 	}
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2778,19 +2958,19 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
-	var _merge = __webpack_require__(29);
+	var _merge = __webpack_require__(30);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -2869,7 +3049,7 @@
 	}
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2883,19 +3063,19 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
-	var _merge = __webpack_require__(29);
+	var _merge = __webpack_require__(30);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
@@ -3002,7 +3182,7 @@
 	}
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3012,11 +3192,11 @@
 	});
 	exports.default = endingAgesTable;
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _date = __webpack_require__(2);
+	var _date = __webpack_require__(3);
 
-	var _table = __webpack_require__(32);
+	var _table = __webpack_require__(33);
 
 	var _table2 = _interopRequireDefault(_table);
 
@@ -3039,7 +3219,7 @@
 	}
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3053,19 +3233,19 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(10);
+	var _base = __webpack_require__(11);
 
-	var _axis = __webpack_require__(18);
+	var _axis = __webpack_require__(19);
 
-	var _text = __webpack_require__(11);
+	var _text = __webpack_require__(12);
 
-	var _legend = __webpack_require__(21);
+	var _legend = __webpack_require__(22);
 
-	var _round = __webpack_require__(19);
+	var _round = __webpack_require__(20);
 
-	var _colors = __webpack_require__(12);
+	var _colors = __webpack_require__(13);
 
-	var _merge = __webpack_require__(29);
+	var _merge = __webpack_require__(30);
 
 	var _merge2 = _interopRequireDefault(_merge);
 

@@ -1,4 +1,5 @@
 import d3 from 'd3';
+import './helpers/polyfills';
 import { parseDate } from './helpers/date';
 import { newCastPerSeason, lastSeasonForCastMembers } from './stats/cast';
 import { roleCounts, seasonsByRole } from './stats/roles';
@@ -10,6 +11,8 @@ import drawStartingAgeGraphics from './graphics/startingAgeGraphics';
 import drawEndingAgeGraphics from './graphics/endingAgeGraphics';
 
 import chartStartAndEnd from './graphics/startingAndEndingAges';
+
+
 
 d3.json('/stats.json', (error, data) => {
   if ( error ) {

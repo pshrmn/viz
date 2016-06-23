@@ -13,7 +13,7 @@ export default function chartGroupedSeasonGenders(seasons, holderID) {
   
   // BASE
   const base = chartBase({
-    main: {width: 750, height: 300},
+    main: {width: 850, height: 300},
     left: {width: 50},
     bottom: {height: 50},
     top: {height: 30},

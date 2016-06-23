@@ -25,7 +25,7 @@ export default function chartSeasonExperience(castMembers, holderID) {
   // SCALES
   const seasonScale = d3.scale.ordinal()
     .domain(tickValues)
-    .rangeRoundBands([0, base.bottom.width], 0.1);
+    .rangeRoundBands([0, base.bottom.width], 0.1, 0);
 
   const yScale = d3.scale.linear()
     .domain([0, yMax])

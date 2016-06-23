@@ -13,7 +13,7 @@ export default function chartCasts(seasons, holderID) {
 
   // BASE
   const base = chartBase({
-    main: {width: 750, height: 300},
+    main: {width: 900, height: 300},
     left: {width: 50},
     bottom: {height: 50},
     top: {height: 30},
@@ -23,7 +23,7 @@ export default function chartCasts(seasons, holderID) {
   // SCALES
   const seasonScale = d3.scale.ordinal()
     .domain(tickValues)
-    .rangeRoundBands([0, base.bottom.width], 0.1);
+    .rangeRoundBands([0, base.bottom.width], 0.1, 0);
 
   const yScale = d3.scale.linear()
     .domain([0, yMax])
@@ -57,13 +57,12 @@ export default function chartCasts(seasons, holderID) {
   addLabel(base.bottom, 'Season', 'bottom');
 
   // CHART
-  const halfBand = seasonScale.rangeBand() / 2;
-  const quarterBand = halfBand / 2;
+  const bandWidth = seasonScale.rangeBand();
   base.main.element.selectAll('rect')
       .data(seasons)
     .enter().append('rect')
-      .attr('width', halfBand)
-      .attr('x', d => seasonScale(d.season) + quarterBand)
+      .attr('width', bandWidth)
+      .attr('x', d => seasonScale(d.season))
       .attr('y', d => yScale(d.total_cast))
       .attr('height', d => base.main.height - yScale(d.total_cast))
       .style('fill', green);

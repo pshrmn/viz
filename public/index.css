@@ -9,6 +9,11 @@ path, line {
   shape-rendering: crispEdges;
 }
 
+section {
+  width: 900px;
+  margin: 0 auto;
+}
+
 .main-section .tick line {
   stroke: #bbb;
 }
