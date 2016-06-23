@@ -56,8 +56,8 @@ export default function chartGenderPercents(seasons, holderID) {
   addTitle(base.top, 'Cast Member Genders');
   addLabel(base.bottom, 'Season', 'bottom');
   verticalLegend(base.right, [
-    {color: genderColors[1], text: 'Female'},
-    {color: genderColors[0], text: 'Male'}
+    {color: genderColors[0], text: 'Male'},
+    {color: genderColors[1], text: 'Female'}
   ], {
     offset: {
       left: 10,

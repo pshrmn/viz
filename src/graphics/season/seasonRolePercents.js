@@ -8,7 +8,7 @@ import { meanProperty } from '../../helpers/average';
 import { roundFloat } from '../../helpers/round';
 import { lightBlue, brightPink } from '../../helpers/colors';
 
-const roleColors = [brightPink, lightBlue];
+const roleColors = [lightBlue, brightPink];
 
 export default function chartRolePercents(seasons, holderID) {
   seasons.forEach(s => {
@@ -120,8 +120,7 @@ export default function chartRolePercents(seasons, holderID) {
         })
         .text(d => Math.floor((d.repertory_percent)*100))
         .style('text-anchor', 'middle')
-        .style('font-size', '14px')
-        .style('fill', '#fff');
+        .style('font-size', '14px');
 
 
 }

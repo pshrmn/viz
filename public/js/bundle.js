@@ -70,11 +70,15 @@
 
 	var _startingAgeGraphics2 = _interopRequireDefault(_startingAgeGraphics);
 
-	var _endingAgeGraphics = __webpack_require__(36);
+	var _creditsGraphics = __webpack_require__(36);
+
+	var _creditsGraphics2 = _interopRequireDefault(_creditsGraphics);
+
+	var _endingAgeGraphics = __webpack_require__(39);
 
 	var _endingAgeGraphics2 = _interopRequireDefault(_endingAgeGraphics);
 
-	var _startingAndEndingAges = __webpack_require__(41);
+	var _startingAndEndingAges = __webpack_require__(44);
 
 	var _startingAndEndingAges2 = _interopRequireDefault(_startingAndEndingAges);
 
@@ -127,6 +131,7 @@
 	  (0, _basicsGraphics2.default)(castMembers);
 	  (0, _seasonCastMemberGraphics2.default)(seasons, castMembers);
 	  (0, _startingAgeGraphics2.default)(genders, castMembers);
+	  (0, _creditsGraphics2.default)(castMembers);
 	  (0, _endingAgeGraphics2.default)(genders);
 
 	  (0, _startingAndEndingAges2.default)(genders, '#start-and-end');
@@ -823,6 +828,9 @@
 	var lightBlue = exports.lightBlue = '#80cbc4';
 	var brightPink = exports.brightPink = '#ec407a';
 	var purple = exports.purple = '#906e9e';
+
+	var lightGreen = exports.lightGreen = '#81c784';
+	var darkGreen = exports.darkGreen = '#2E7D32';
 
 	var genderColors = exports.genderColors = [brightBlue, yellowGreen];
 
@@ -1686,7 +1694,7 @@
 
 	  (0, _text.addTitle)(base.top, 'Cast Member Genders');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[1], text: 'Female' }, { color: _colors.genderColors[0], text: 'Male' }], {
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
 	      left: 10,
 	      top: 50
@@ -1753,7 +1761,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var roleColors = [_colors.brightPink, _colors.lightBlue];
+	var roleColors = [_colors.lightBlue, _colors.brightPink];
 
 	function chartRolePercents(seasons, holderID) {
 	  seasons.forEach(function (s) {
@@ -1830,7 +1838,7 @@
 	    return 'translate(' + x + ',' + y + ')';
 	  }).text(function (d) {
 	    return Math.floor(d.repertory_percent * 100);
-	  }).style('text-anchor', 'middle').style('font-size', '14px').style('fill', '#fff');
+	  }).style('text-anchor', 'middle').style('font-size', '14px');
 	}
 
 /***/ },
@@ -2855,19 +2863,198 @@
 	});
 	exports.default = render;
 
-	var _endingAges = __webpack_require__(37);
+	var _totalCredits = __webpack_require__(37);
+
+	var _totalCredits2 = _interopRequireDefault(_totalCredits);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function render(castMembers) {
+	  (0, _totalCredits2.default)(castMembers, '#total-credits');
+	}
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = chartTotalCredits;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(9);
+
+	var _axis = __webpack_require__(17);
+
+	var _text = __webpack_require__(10);
+
+	var _legend = __webpack_require__(20);
+
+	var _round = __webpack_require__(18);
+
+	var _average = __webpack_require__(6);
+
+	var _colors = __webpack_require__(11);
+
+	var _groupBy = __webpack_require__(38);
+
+	var _groupBy2 = _interopRequireDefault(_groupBy);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function chartTotalCredits(castMembers, holderID) {
+	  // round each cast members credits to the nearest 10
+	  var tens = (0, _groupBy2.default)(castMembers, 'credits', function (n) {
+	    return Math.floor(n / 5);
+	  });
+	  var highTen = _d2.default.max(Object.keys(tens), function (d) {
+	    return parseInt(d, 10);
+	  });
+	  // don't just convert to an array because we want to fill in missing 10s
+	  var creditGroups = Array.from(new Array(highTen + 1)).map(function (u, i) {
+	    return {
+	      key: i * 5,
+	      count: tens[i] !== undefined ? tens[i].length : 0
+	    };
+	  });
+	  var xKeys = creditGroups.map(function (cg) {
+	    return cg.key;
+	  });
+	  var yMax = (0, _round.roundUp)(_d2.default.max(creditGroups, function (cg) {
+	    return cg.count;
+	  }), 5);
+
+	  // determine the "tipping point" where the chart represents 50% of the cast
+	  var tippingPoint = castMembers.length / 2;
+	  var triggerCount = null;
+	  creditGroups.reduce(function (acc, curr) {
+	    if (triggerCount !== null) {
+	      return acc;
+	    }
+	    acc += curr.count;
+	    if (acc > tippingPoint) {
+	      triggerCount = curr.key;
+	    }
+	    return acc;
+	  }, 0);
+
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 850, height: 300 },
+	    left: { width: 50 },
+	    bottom: { height: 50 },
+	    top: { height: 30 },
+	    right: { width: 110 }
+	  }, holderID);
+
+	  // SCALES
+	  var tensScale = _d2.default.scale.ordinal().domain(xKeys).rangeRoundBands([0, base.bottom.width], 0.1, 0);
+
+	  var yScale = _d2.default.scale.linear().domain([0, yMax]).range([base.main.height, 0]);
+
+	  // AXES
+	  var xAxis = _d2.default.svg.axis().scale(tensScale).orient('bottom').tickValues(xKeys.filter(function (n) {
+	    return n % 10 === 0;
+	  })).outerTickSize(0);
+
+	  var yAxis = _d2.default.svg.axis().scale(yScale).orient('left').ticks(10);
+
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+
+	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
+	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
+	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  (0, _text.addTitle)(base.top, 'Total Credits');
+	  (0, _text.addLabel)(base.bottom, 'Credits (Rounded Down)', 'bottom');
+	  (0, _text.addLabel)(base.left, '# of Cast Members', 'left');
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.lightGreen, text: 'Bottom 50%' }, { color: _colors.darkGreen, text: 'Top 50%' }], {
+	    offset: {
+	      left: 10,
+	      top: 50
+	    }
+	  });
+	  // CHART
+	  var bandWidth = tensScale.rangeBand();
+	  base.main.element.selectAll('rect').data(creditGroups).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
+	    return tensScale(d.key) + bandWidth / 2;
+	  }).attr('y', function (d) {
+	    return yScale(d.count);
+	  }).attr('height', function (d) {
+	    return base.main.height - yScale(d.count);
+	  }).style('fill', function (d) {
+	    return d.key < triggerCount ? _colors.lightGreen : _colors.darkGreen;
+	  });
+	}
+
+/***/ },
+/* 38 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = groupBy;
+	/*
+	 * returns an object with keys determined by @property and @bucketFn
+	 *
+	 * given an array, @data, of objects, iterate over every object and place it
+	 * the return object using the key deterined by the bucketFn. Any objects in
+	 * @data that do not have the @property are filtered out.
+	 */
+	function groupBy(data, property) {
+	  var bucketFn = arguments.length <= 2 || arguments[2] === undefined ? function (x) {
+	    return x;
+	  } : arguments[2];
+
+	  var groups = {};
+	  data.forEach(function (d) {
+	    var value = d[property];
+	    // if a value exists, it won't be undefined
+	    if (value === undefined) {
+	      return;
+	    }
+	    var groupValue = bucketFn(value);
+	    if (groups[groupValue] === undefined) {
+	      groups[groupValue] = [d];
+	    } else {
+	      groups[groupValue].push(d);
+	    }
+	  });
+	  return groups;
+	}
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = render;
+
+	var _endingAges = __webpack_require__(40);
 
 	var _endingAges2 = _interopRequireDefault(_endingAges);
 
-	var _groupedEndingAges = __webpack_require__(38);
+	var _groupedEndingAges = __webpack_require__(41);
 
 	var _groupedEndingAges2 = _interopRequireDefault(_groupedEndingAges);
 
-	var _normalizedEndingAges = __webpack_require__(39);
+	var _normalizedEndingAges = __webpack_require__(42);
 
 	var _normalizedEndingAges2 = _interopRequireDefault(_normalizedEndingAges);
 
-	var _endingAgesTable = __webpack_require__(40);
+	var _endingAgesTable = __webpack_require__(43);
 
 	var _endingAgesTable2 = _interopRequireDefault(_endingAgesTable);
 
@@ -2881,7 +3068,7 @@
 	}
 
 /***/ },
-/* 37 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2959,7 +3146,7 @@
 	}
 
 /***/ },
-/* 38 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3064,7 +3251,7 @@
 	}
 
 /***/ },
-/* 39 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3197,7 +3384,7 @@
 	}
 
 /***/ },
-/* 40 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3234,7 +3421,7 @@
 	}
 
 /***/ },
-/* 41 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

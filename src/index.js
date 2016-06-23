@@ -6,6 +6,7 @@ import genderStats from './stats/gender';
 import drawBasicGraphics from './graphics/basicsGraphics';
 import drawSeasonCastMemberGraphics from './graphics/seasonCastMemberGraphics';
 import drawStartingAgeGraphics from './graphics/startingAgeGraphics';
+import drawCreditGraphics from './graphics/creditsGraphics';
 import drawEndingAgeGraphics from './graphics/endingAgeGraphics';
 
 import chartStartAndEnd from './graphics/startingAndEndingAges';
@@ -57,6 +58,7 @@ d3.json('/stats.json', (error, data) => {
   drawBasicGraphics(castMembers);
   drawSeasonCastMemberGraphics(seasons, castMembers);  
   drawStartingAgeGraphics(genders, castMembers);
+  drawCreditGraphics(castMembers);
   drawEndingAgeGraphics(genders);
 
   chartStartAndEnd(genders, '#start-and-end');

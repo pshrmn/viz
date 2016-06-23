@@ -1,4 +1,4 @@
-import { male, female } from './filters';
+import { male, female } from '../helpers/filters';
 import { medianProperty, meanProperty, standardDeviation } from '../helpers/average';
 import { daysToYears } from '../helpers/date';
 
