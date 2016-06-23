@@ -87,10 +87,10 @@ export default function chartNormalizedEndingAges(data, holderID) {
     .outerTickSize(0);
 
   drawAxis(base.bottom, groupedXAxis, 'top');
-  drawAxis(base.left, yAxis, 'right');
-  drawAxis(base.main, yGrid, 'left');
+  /*drawAxis(base.left, yAxis, 'right');
+  drawAxis(base.main, yGrid, 'left');*/
 
-  addTitle(base.top, 'Ending Age of SNL Cast Members (by Gender)');
+  addTitle(base.top, 'Normalized Ending Age of SNL Cast Members (by Gender)');
   addLabel(base.bottom, 'Age (Rounded Down', 'bottom');
   verticalLegend(base.right, [
     {color: genderColors[0], text: 'Male'},

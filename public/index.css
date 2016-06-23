@@ -76,3 +76,9 @@ rect {
   fill: #efefef;
   opacity: 0.5;
 }
+
+.column-list {
+  display: flex;
+  height: 75px;
+  flex-flow: column wrap;
+}

@@ -1,17 +1,18 @@
 import d3 from 'd3';
 
+import { seasonsExperience } from '../../stats/experience';
 import { chartBase } from '../../charts/base';
 import { drawAxis } from '../../charts/axis';
 import { addTitle, addLabel } from '../../charts/text';
 import { verticalLegend } from '../../charts/legend';
-import { mean } from '../../helpers/average';
+import { meanProperty } from '../../helpers/average';
 import { purple } from '../../helpers/colors';
 
 export default function chartSeasonExperience(castMembers, holderID) {
-  const seasonExperiences = calculateExperience(castMembers);
-  const meanPercent = mean(seasonExperiences);
-  const tickValues = seasonExperiences.map((s,i) => i + 1);
-  const yMax = Math.ceil(d3.max(seasonExperiences));
+  const experiences = seasonsExperience(castMembers);
+  const meanPercent = meanProperty(experiences, 'mean');
+  const tickValues = experiences.map(s => s.season);
+  const yMax = Math.ceil(d3.max(experiences, d => d.mean));
 
   // BASE
   const base = chartBase({
@@ -58,33 +59,33 @@ export default function chartSeasonExperience(castMembers, holderID) {
   drawAxis(base.main, yGrid, 'left');
   addTitle(base.top, 'Cast Member Experience');
   addLabel(base.bottom, 'Season', 'bottom');
-  addLabel(base.left, 'Mean Years Experience', 'left');
+  addLabel(base.left, 'Mean Years of Experience', 'left');
 
   // CHART
-
   const barWidth = seasonScale.rangeBand();
   base.main.element.append('g')
     .classed('bars', true)
     .selectAll('rect.bar')
-        .data(seasonExperiences)
+        .data(experiences)
       .enter().append('rect')
         .classed('bar', true)
-        .attr('x', (d,i) => seasonScale(i+1))
-        .attr('y', d => yScale(d))
+        .attr('x', d => seasonScale(d.season))
+        .attr('y', d => yScale(d.mean))
         .attr('width', barWidth)
-        .attr('height', d => base.main.height - yScale(d))
+        .attr('height', d => base.main.height - yScale(d.mean))
         .style('fill', purple);
 
+  const d3round = d3.format('.1f');
   const halfWidth = barWidth/2;
   const texts = base.main.element.append('g')
     .classed('text', true)
     .selectAll('text')
-        .data(seasonExperiences)
+        .data(experiences)
       .enter().append('text')
-        .text(d => Math.round(d*10)/10)
+        .text(d => d3round(d.mean))
         .attr('transform', (d,i) => {
           const x = seasonScale(i+1) + halfWidth;
-          const y = yScale(d) - 17;
+          const y = yScale(d.mean) - 17;
           return `translate(${x},${y})`;
         })
         .attr('dy', '1em')
@@ -97,40 +98,4 @@ export default function chartSeasonExperience(castMembers, holderID) {
     .attr('y1', yScale(meanPercent))
     .attr('y2', yScale(meanPercent))
     .style('stroke-dasharray', '2, 5');
-}
-
-function calculateExperience(castMembers) {
-  const seasons = {}
-  castMembers.forEach(cm => {
-    let experience = 0;
-    cm.featured.forEach(s => {
-      if ( seasons[s] === undefined ) {
-        seasons[s] = {
-          total: 0,
-          count: 0
-        };
-      }
-      seasons[s].total += experience;
-      seasons[s].count++;
-      experience++;
-    });
-    cm.repertory.forEach(s => {
-      if ( seasons[s] === undefined ) {
-        seasons[s] = {
-          total: 0,
-          count: 0
-        };
-      }
-      seasons[s].total += experience;
-      seasons[s].count++;
-      experience++;
-    });
-  })
-  const seasonKeys = Object.keys(seasons);
-  const seasonExperiences = Array.from(new Array(seasonKeys.length)).fill(0);
-  seasonKeys.forEach(key => {
-    const { total, count } = seasons[key];
-    seasonExperiences[key-1] = total / count;
-  });
-  return seasonExperiences;
 }

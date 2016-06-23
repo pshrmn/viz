@@ -9,7 +9,12 @@ import { green } from '../../helpers/colors';
 
 export default function chartCasts(seasons, holderID) {
   const tickValues = seasons.map(s => s.season);
+  const meanCount = meanProperty(seasons, 'total_cast');
   const yMax = roundUp(d3.max(seasons, s => s.total_cast), 5);
+  const yTicks = Array.from(new Array(yMax+1))
+    .map((u, i) => i)
+    .filter(n => n % 5 === 0);
+  const meanyTicks = yTicks.concat([meanCount]).sort((a,b) => a-b);
 
   // BASE
   const base = chartBase({
@@ -36,16 +41,19 @@ export default function chartCasts(seasons, holderID) {
     .tickValues(tickValues)
     .outerTickSize(0);
 
+
+  const decFormat = d3.format('.1f')
   const yAxis = d3.svg.axis()
     .scale(yScale)
-    .ticks(10)
-    .orient('left');
+    .orient('left')
+    .tickValues(meanyTicks)
+    .tickFormat(decFormat);
 
   const yGrid = d3.svg.axis()
     .scale(yScale)
     .orient('right')
     .tickSize(base.main.width)
-    .ticks(10)
+    .tickValues(yTicks)
     .tickFormat('')
     .outerTickSize(0);
 
@@ -67,7 +75,6 @@ export default function chartCasts(seasons, holderID) {
       .attr('height', d => base.main.height - yScale(d.total_cast))
       .style('fill', green);
 
-  const meanCount = meanProperty(seasons, 'total_cast');
   const meanLine = base.main.element.append('g')
     .attr('transform', `translate(0, ${yScale(meanCount)})`)
     .classed('mean', true);
@@ -77,8 +84,4 @@ export default function chartCasts(seasons, holderID) {
     .attr('x2', base.main.width)
     .attr('y1', 0)
     .attr('y2', 0);
-  meanLine.append('text')
-    .text(`Mean = ${roundFloat(meanCount, 1)}`)
-    .attr('x', 3)
-    .attr('y', -3);
 }

@@ -54,19 +54,15 @@
 
 	var _date = __webpack_require__(3);
 
-	var _cast = __webpack_require__(4);
-
-	var _roles = __webpack_require__(5);
-
-	var _gender = __webpack_require__(6);
+	var _gender = __webpack_require__(4);
 
 	var _gender2 = _interopRequireDefault(_gender);
 
-	var _basicsGraphics = __webpack_require__(9);
+	var _basicsGraphics = __webpack_require__(7);
 
 	var _basicsGraphics2 = _interopRequireDefault(_basicsGraphics);
 
-	var _seasonCastMemberGraphics = __webpack_require__(17);
+	var _seasonCastMemberGraphics = __webpack_require__(15);
 
 	var _seasonCastMemberGraphics2 = _interopRequireDefault(_seasonCastMemberGraphics);
 
@@ -127,13 +123,6 @@
 	  });
 
 	  var genders = (0, _gender2.default)(castMembers);
-	  /*
-	  const roles = roleCounts(castMembers);
-	  console.log('Role Counts:', roles);
-	    console.log(newCastPerSeason(castMembers, seasons.length));
-	  console.log(lastSeasonForCastMembers(castMembers, seasons.length));
-	  console.log(seasonsByRole(castMembers));
-	  */
 
 	  (0, _basicsGraphics2.default)(castMembers);
 	  (0, _seasonCastMemberGraphics2.default)(seasons, castMembers);
@@ -317,106 +306,6 @@
 
 /***/ },
 /* 4 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.newCastPerSeason = newCastPerSeason;
-	exports.lastSeasonForCastMembers = lastSeasonForCastMembers;
-	exports.startingAges = startingAges;
-	exports.endingAges = endingAges;
-	function newCastPerSeason(castMembers, seasonCount) {
-	  var seasonCounts = Array.from(new Array(seasonCount)).fill(0);
-	  castMembers.forEach(function (cm) {
-	    var firstSeason = cm.firstSeason;
-
-	    if (firstSeason !== null) {
-	      seasonCounts[firstSeason - 1]++;
-	    }
-	  });
-	  return seasonCounts;
-	}
-
-	function lastSeasonForCastMembers(castMembers, seasonCount) {
-	  // don't include the most recent season
-	  var seasonCounts = Array.from(new Array(seasonCount - 1)).fill(0);
-	  castMembers.forEach(function (cm) {
-	    var lastSeason = cm.lastSeason;
-
-	    if (lastSeason !== null && lastSeason !== seasonCount) {
-	      seasonCounts[lastSeason - 1]++;
-	    }
-	  });
-	  return seasonCounts;
-	}
-
-	function startingAges(castMembers) {
-	  return castMembers.filter(function (cm) {
-	    return cm.start_age !== undefined;
-	  }).map(function (cm) {
-	    return {
-	      name: cm.name,
-	      age: cm.start_age
-	    };
-	  });
-	}
-
-	function endingAges(castMembers) {
-	  return castMembers.filter(function (cm) {
-	    return cm.end_age !== undefined;
-	  }).map(function (cm) {
-	    return {
-	      name: cm.name,
-	      age: cm.end_age
-	    };
-	  });
-	}
-
-/***/ },
-/* 5 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.roleCounts = roleCounts;
-	exports.seasonsByRole = seasonsByRole;
-	function roleCounts(castMembers) {
-	  return castMembers.reduce(function (acc, cm) {
-	    var repertory = cm.repertory;
-	    var featured = cm.featured;
-
-	    if (repertory.length && featured.length) {
-	      acc.both++;
-	    } else if (repertory.length) {
-	      acc.repertory++;
-	    } else if (featured.length) {
-	      acc.featured++;
-	    }
-	    return acc;
-	  }, { both: 0, repertory: 0, featured: 0 });
-	}
-
-	function seasonsByRole(castMembers) {
-	  return castMembers.map(function (cm) {
-	    return {
-	      name: cm.name,
-	      repertory: cm.repertory.length,
-	      featured: cm.featured.length,
-	      firstSeason: cm.featured.length ? cm.featured[0] : cm.repertory[0]
-	    };
-	  }).sort(function (a, b) {
-	    return a.firstSeason - b.firstSeason;
-	  });
-	}
-
-/***/ },
-/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -426,9 +315,9 @@
 	});
 	exports.default = genderStats;
 
-	var _filters = __webpack_require__(7);
+	var _filters = __webpack_require__(5);
 
-	var _average = __webpack_require__(8);
+	var _average = __webpack_require__(6);
 
 	var _date = __webpack_require__(3);
 
@@ -529,7 +418,7 @@
 	}
 
 /***/ },
-/* 7 */
+/* 5 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -573,7 +462,7 @@
 	}
 
 /***/ },
-/* 8 */
+/* 6 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -650,7 +539,7 @@
 	}
 
 /***/ },
-/* 9 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -660,19 +549,19 @@
 	});
 	exports.default = render;
 
-	var _total = __webpack_require__(10);
+	var _total = __webpack_require__(8);
 
 	var _total2 = _interopRequireDefault(_total);
 
-	var _genders = __webpack_require__(14);
+	var _genders = __webpack_require__(12);
 
 	var _genders2 = _interopRequireDefault(_genders);
 
-	var _roles = __webpack_require__(15);
+	var _roles = __webpack_require__(13);
 
 	var _roles2 = _interopRequireDefault(_roles);
 
-	var _genderRoles = __webpack_require__(16);
+	var _genderRoles = __webpack_require__(14);
 
 	var _genderRoles2 = _interopRequireDefault(_genderRoles);
 
@@ -686,7 +575,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -700,11 +589,11 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -757,7 +646,7 @@
 	}
 
 /***/ },
-/* 11 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -856,7 +745,7 @@
 	}
 
 /***/ },
-/* 12 */
+/* 10 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -919,7 +808,7 @@
 	}
 
 /***/ },
-/* 13 */
+/* 11 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -943,7 +832,7 @@
 	 */
 
 /***/ },
-/* 14 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -957,11 +846,11 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1024,7 +913,7 @@
 	}
 
 /***/ },
-/* 15 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1038,11 +927,11 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1122,7 +1011,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1136,11 +1025,11 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1233,7 +1122,7 @@
 	}
 
 /***/ },
-/* 17 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1243,29 +1132,33 @@
 	});
 	exports.default = render;
 
-	var _seasonCastMembers = __webpack_require__(18);
+	var _seasonCastMembers = __webpack_require__(16);
 
 	var _seasonCastMembers2 = _interopRequireDefault(_seasonCastMembers);
 
-	var _groupedSeasonGenders = __webpack_require__(21);
+	var _groupedSeasonGenders = __webpack_require__(19);
 
 	var _groupedSeasonGenders2 = _interopRequireDefault(_groupedSeasonGenders);
 
-	var _groupedSeasonRoles = __webpack_require__(23);
+	var _groupedSeasonRoles = __webpack_require__(21);
 
 	var _groupedSeasonRoles2 = _interopRequireDefault(_groupedSeasonRoles);
 
-	var _seasonGenderPercents = __webpack_require__(24);
+	var _seasonGenderPercents = __webpack_require__(22);
 
 	var _seasonGenderPercents2 = _interopRequireDefault(_seasonGenderPercents);
 
-	var _seasonRolePercents = __webpack_require__(25);
+	var _seasonRolePercents = __webpack_require__(23);
 
 	var _seasonRolePercents2 = _interopRequireDefault(_seasonRolePercents);
 
-	var _seasonExperience = __webpack_require__(26);
+	var _seasonExperience = __webpack_require__(24);
 
 	var _seasonExperience2 = _interopRequireDefault(_seasonExperience);
+
+	var _mostExperiencedCast = __webpack_require__(26);
+
+	var _mostExperiencedCast2 = _interopRequireDefault(_mostExperiencedCast);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1276,10 +1169,11 @@
 	  (0, _seasonGenderPercents2.default)(seasons, '#season-gender-percents');
 	  (0, _seasonRolePercents2.default)(seasons, '#season-role-percents');
 	  (0, _seasonExperience2.default)(castMembers, '#season-experience');
+	  (0, _mostExperiencedCast2.default)(castMembers, '#season-most-experienced');
 	}
 
 /***/ },
-/* 18 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1293,17 +1187,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _average = __webpack_require__(8);
+	var _average = __webpack_require__(6);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1311,9 +1205,18 @@
 	  var tickValues = seasons.map(function (s) {
 	    return s.season;
 	  });
+	  var meanCount = (0, _average.meanProperty)(seasons, 'total_cast');
 	  var yMax = (0, _round.roundUp)(_d2.default.max(seasons, function (s) {
 	    return s.total_cast;
 	  }), 5);
+	  var yTicks = Array.from(new Array(yMax + 1)).map(function (u, i) {
+	    return i;
+	  }).filter(function (n) {
+	    return n % 5 === 0;
+	  });
+	  var meanyTicks = yTicks.concat([meanCount]).sort(function (a, b) {
+	    return a - b;
+	  });
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
@@ -1332,9 +1235,10 @@
 	  // AXES
 	  var xAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
-	  var yAxis = _d2.default.svg.axis().scale(yScale).ticks(10).orient('left');
+	  var decFormat = _d2.default.format('.1f');
+	  var yAxis = _d2.default.svg.axis().scale(yScale).orient('left').tickValues(meanyTicks).tickFormat(decFormat);
 
-	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
+	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).tickValues(yTicks).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
@@ -1352,15 +1256,13 @@
 	    return base.main.height - yScale(d.total_cast);
 	  }).style('fill', _colors.green);
 
-	  var meanCount = (0, _average.meanProperty)(seasons, 'total_cast');
 	  var meanLine = base.main.element.append('g').attr('transform', 'translate(0, ' + yScale(meanCount) + ')').classed('mean', true);
 
 	  meanLine.append('line').attr('x1', 0).attr('x2', base.main.width).attr('y1', 0).attr('y2', 0);
-	  meanLine.append('text').text('Mean = ' + (0, _round.roundFloat)(meanCount, 1)).attr('x', 3).attr('y', -3);
 	}
 
 /***/ },
-/* 19 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1413,7 +1315,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 18 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1442,7 +1344,7 @@
 	}
 
 /***/ },
-/* 21 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1456,17 +1358,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1534,7 +1436,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 20 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1619,7 +1521,7 @@
 	}
 
 /***/ },
-/* 23 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1633,17 +1535,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1717,7 +1619,7 @@
 	}
 
 /***/ },
-/* 24 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1731,19 +1633,19 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
-	var _average = __webpack_require__(8);
+	var _average = __webpack_require__(6);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1821,7 +1723,7 @@
 	}
 
 /***/ },
-/* 25 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1835,19 +1737,19 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _average = __webpack_require__(8);
+	var _average = __webpack_require__(6);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1932,7 +1834,7 @@
 	}
 
 /***/ },
-/* 26 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1946,27 +1848,31 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _experience = __webpack_require__(25);
 
-	var _axis = __webpack_require__(19);
+	var _base = __webpack_require__(9);
 
-	var _text = __webpack_require__(12);
+	var _axis = __webpack_require__(17);
 
-	var _legend = __webpack_require__(22);
+	var _text = __webpack_require__(10);
 
-	var _average = __webpack_require__(8);
+	var _legend = __webpack_require__(20);
 
-	var _colors = __webpack_require__(13);
+	var _average = __webpack_require__(6);
+
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function chartSeasonExperience(castMembers, holderID) {
-	  var seasonExperiences = calculateExperience(castMembers);
-	  var meanPercent = (0, _average.mean)(seasonExperiences);
-	  var tickValues = seasonExperiences.map(function (s, i) {
-	    return i + 1;
+	  var experiences = (0, _experience.seasonsExperience)(castMembers);
+	  var meanPercent = (0, _average.meanProperty)(experiences, 'mean');
+	  var tickValues = experiences.map(function (s) {
+	    return s.season;
 	  });
-	  var yMax = Math.ceil(_d2.default.max(seasonExperiences));
+	  var yMax = Math.ceil(_d2.default.max(experiences, function (d) {
+	    return d.mean;
+	  }));
 
 	  // BASE
 	  var base = (0, _base.chartBase)({
@@ -1998,68 +1904,177 @@
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 	  (0, _text.addTitle)(base.top, 'Cast Member Experience');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _text.addLabel)(base.left, 'Mean Years Experience', 'left');
+	  (0, _text.addLabel)(base.left, 'Mean Years of Experience', 'left');
 
 	  // CHART
-
 	  var barWidth = seasonScale.rangeBand();
-	  base.main.element.append('g').classed('bars', true).selectAll('rect.bar').data(seasonExperiences).enter().append('rect').classed('bar', true).attr('x', function (d, i) {
-	    return seasonScale(i + 1);
+	  base.main.element.append('g').classed('bars', true).selectAll('rect.bar').data(experiences).enter().append('rect').classed('bar', true).attr('x', function (d) {
+	    return seasonScale(d.season);
 	  }).attr('y', function (d) {
-	    return yScale(d);
+	    return yScale(d.mean);
 	  }).attr('width', barWidth).attr('height', function (d) {
-	    return base.main.height - yScale(d);
+	    return base.main.height - yScale(d.mean);
 	  }).style('fill', _colors.purple);
 
+	  var d3round = _d2.default.format('.1f');
 	  var halfWidth = barWidth / 2;
-	  var texts = base.main.element.append('g').classed('text', true).selectAll('text').data(seasonExperiences).enter().append('text').text(function (d) {
-	    return Math.round(d * 10) / 10;
+	  var texts = base.main.element.append('g').classed('text', true).selectAll('text').data(experiences).enter().append('text').text(function (d) {
+	    return d3round(d.mean);
 	  }).attr('transform', function (d, i) {
 	    var x = seasonScale(i + 1) + halfWidth;
-	    var y = yScale(d) - 17;
+	    var y = yScale(d.mean) - 17;
 	    return 'translate(' + x + ',' + y + ')';
 	  }).attr('dy', '1em').style('text-anchor', 'middle').style('font-size', 14);
 
 	  base.main.element.append('line').attr('x1', 0).attr('x2', base.main.width).attr('y1', yScale(meanPercent)).attr('y2', yScale(meanPercent)).style('stroke-dasharray', '2, 5');
 	}
 
-	function calculateExperience(castMembers) {
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.seasonsExperience = seasonsExperience;
+	/*
+	 * return an object where the keys are the seasons and the values are an object
+	 * that includes the total experience for that season, the cast member count,
+	 * and a list of cast members with their experience prior to the season
+	 */
+	function seasonsExperience(castMembers) {
 	  var seasons = {};
 	  castMembers.forEach(function (cm) {
 	    var experience = 0;
 	    cm.featured.forEach(function (s) {
 	      if (seasons[s] === undefined) {
 	        seasons[s] = {
+	          season: s,
 	          total: 0,
-	          count: 0
+	          count: 0,
+	          cast: []
 	        };
 	      }
 	      seasons[s].total += experience;
 	      seasons[s].count++;
+	      seasons[s].cast.push({ name: cm.name, experience: experience });
 	      experience++;
 	    });
 	    cm.repertory.forEach(function (s) {
 	      if (seasons[s] === undefined) {
 	        seasons[s] = {
+	          season: s,
 	          total: 0,
-	          count: 0
+	          count: 0,
+	          cast: []
 	        };
 	      }
 	      seasons[s].total += experience;
 	      seasons[s].count++;
+	      seasons[s].cast.push({ name: cm.name, experience: experience });
 	      experience++;
 	    });
 	  });
-	  var seasonKeys = Object.keys(seasons);
-	  var seasonExperiences = Array.from(new Array(seasonKeys.length)).fill(0);
-	  seasonKeys.forEach(function (key) {
-	    var _seasons$key = seasons[key];
-	    var total = _seasons$key.total;
-	    var count = _seasons$key.count;
-
-	    seasonExperiences[key - 1] = total / count;
+	  Object.keys(seasons).forEach(function (s) {
+	    seasons[s].mean = seasons[s].total / seasons[s].count;
 	  });
-	  return seasonExperiences;
+	  // this would break if any season was missing
+	  return Object.keys(seasons).map(function (s) {
+	    return seasons[s];
+	  }).sort(function (a, b) {
+	    return a.season - b.season;
+	  });
+	}
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = chartMostExperiencedCast;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _experience = __webpack_require__(25);
+
+	var _base = __webpack_require__(9);
+
+	var _axis = __webpack_require__(17);
+
+	var _text = __webpack_require__(10);
+
+	var _colors = __webpack_require__(11);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function chartMostExperiencedCast(castMembers, holderID) {
+	  var mostExperience = (0, _experience.seasonsExperience)(castMembers).reduce(function (acc, curr) {
+	    if (acc === null) {
+	      return curr;
+	    } else {
+	      return curr.mean > acc.mean ? curr : acc;
+	    }
+	  }, null);
+
+	  var mean = mostExperience.mean;
+	  var cast = mostExperience.cast;
+	  var season = mostExperience.season;
+	  // sort by experience most to least
+
+	  var sortedCast = cast.sort(function (a, b) {
+	    return b.experience - a.experience;
+	  });
+	  var tickValues = sortedCast.map(function (cm) {
+	    return cm.name;
+	  });
+	  var maxExperience = _d2.default.max(sortedCast, function (d) {
+	    return d.experience;
+	  });
+
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 300, height: 300 },
+	    left: { width: 150 },
+	    bottom: { height: 50 },
+	    top: { height: 50 },
+	    right: { width: 20 }
+	  }, holderID);
+
+	  // SCALES
+	  var castMemberScale = _d2.default.scale.ordinal().domain(tickValues).rangeRoundBands([0, base.main.height], 0.1, 0);
+
+	  var experienceScale = _d2.default.scale.linear().domain([0, maxExperience]).range([0, base.main.width]);
+
+	  // AXES
+	  var castAxis = _d2.default.svg.axis().scale(castMemberScale).orient('left').tickValues(tickValues);
+
+	  var expAxis = _d2.default.svg.axis().scale(experienceScale).orient('bottom');
+
+	  (0, _axis.drawAxis)(base.left, castAxis, 'right');
+	  (0, _axis.drawAxis)(base.bottom, expAxis, 'bottom');
+	  (0, _text.addTitle)(base.top, 'Most Experienced Cast - Season ' + season);
+
+	  // CHART
+	  var bandHeight = castMemberScale.rangeBand();
+	  base.main.element.append('g').classed('bars', true).selectAll('rect').data(sortedCast).enter().append('rect').attr('x', 0).attr('y', function (d) {
+	    return castMemberScale(d.name);
+	  }).attr('width', function (d) {
+	    return experienceScale(d.experience);
+	  }).attr('height', bandHeight).style('fill', _colors.green);
+
+	  base.main.element.append('g').classed('years', true).selectAll('text').data(sortedCast).enter().append('text').attr('transform', function (d) {
+	    return 'translate(' + experienceScale(d.experience) + ',' + castMemberScale(d.name) + ')';
+	  }).text(function (d) {
+	    return d.experience;
+	  }).attr('dy', '1em').attr('dx', 5);
 	}
 
 /***/ },
@@ -2123,15 +2138,15 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2199,17 +2214,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	var _merge = __webpack_require__(30);
 
@@ -2371,17 +2386,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	var _merge = __webpack_require__(30);
 
@@ -2457,9 +2472,9 @@
 	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).tickValues(threePercTicks).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
-	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _text.addTitle)(base.top, 'Starting Age of SNL Cast Members (by Gender)');
+	  /*drawAxis(base.left, yAxis, 'right');
+	  drawAxis(base.main, yGrid, 'left');*/
+	  (0, _text.addTitle)(base.top, 'Normalized Starting Age of SNL Cast Members (by Gender)');
 	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
 	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
@@ -2497,7 +2512,7 @@
 	});
 	exports.default = startingAgesTable;
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
 	var _date = __webpack_require__(3);
 
@@ -2584,21 +2599,21 @@
 
 	var _d3 = _interopRequireDefault(_d2);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
 	var _date = __webpack_require__(3);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
-	var _average = __webpack_require__(8);
+	var _average = __webpack_require__(6);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2715,21 +2730,21 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
 	var _date = __webpack_require__(3);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
-	var _average = __webpack_require__(8);
+	var _average = __webpack_require__(6);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2880,15 +2895,15 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2958,17 +2973,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	var _merge = __webpack_require__(30);
 
@@ -3063,17 +3078,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	var _merge = __webpack_require__(30);
 
@@ -3151,10 +3166,10 @@
 	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).tickValues(threePercTicks).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
-	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  /*drawAxis(base.left, yAxis, 'right');
+	  drawAxis(base.main, yGrid, 'left');*/
 
-	  (0, _text.addTitle)(base.top, 'Ending Age of SNL Cast Members (by Gender)');
+	  (0, _text.addTitle)(base.top, 'Normalized Ending Age of SNL Cast Members (by Gender)');
 	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down', 'bottom');
 	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
@@ -3192,7 +3207,7 @@
 	});
 	exports.default = endingAgesTable;
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
 	var _date = __webpack_require__(3);
 
@@ -3233,17 +3248,17 @@
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _base = __webpack_require__(11);
+	var _base = __webpack_require__(9);
 
-	var _axis = __webpack_require__(19);
+	var _axis = __webpack_require__(17);
 
-	var _text = __webpack_require__(12);
+	var _text = __webpack_require__(10);
 
-	var _legend = __webpack_require__(22);
+	var _legend = __webpack_require__(20);
 
-	var _round = __webpack_require__(20);
+	var _round = __webpack_require__(18);
 
-	var _colors = __webpack_require__(13);
+	var _colors = __webpack_require__(11);
 
 	var _merge = __webpack_require__(30);
 

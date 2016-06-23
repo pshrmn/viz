@@ -1,8 +1,6 @@
 import d3 from 'd3';
 import './helpers/polyfills';
 import { parseDate } from './helpers/date';
-import { newCastPerSeason, lastSeasonForCastMembers } from './stats/cast';
-import { roleCounts, seasonsByRole } from './stats/roles';
 import genderStats from './stats/gender';
 
 import drawBasicGraphics from './graphics/basicsGraphics';
@@ -55,14 +53,6 @@ d3.json('/stats.json', (error, data) => {
   });
 
   const genders = genderStats(castMembers);
-  /*
-  const roles = roleCounts(castMembers);
-  console.log('Role Counts:', roles);
-
-  console.log(newCastPerSeason(castMembers, seasons.length));
-  console.log(lastSeasonForCastMembers(castMembers, seasons.length));
-  console.log(seasonsByRole(castMembers));
-  */
 
   drawBasicGraphics(castMembers);
   drawSeasonCastMemberGraphics(seasons, castMembers);  
