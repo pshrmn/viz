@@ -67,6 +67,7 @@ export default function chartGroupedEndingAges(data, holderID) {
 
   addTitle(base.top, 'Ending Age of SNL Cast Members (by Gender)');
   addLabel(base.bottom, 'Age (Rounded Down)', 'bottom');
+  addLabel(base.left, 'Count', 'left', 0);
   verticalLegend(base.right, [
     {color: genderColors[0], text: 'Male'},
     {color: genderColors[1], text: 'Female'}

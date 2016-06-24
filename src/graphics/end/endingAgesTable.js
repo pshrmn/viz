@@ -16,5 +16,5 @@ export default function endingAgesTable(data, holderID) {
     ];
   });
 
-  table(rows, holderID, headers, 'Cast Member Ending Ages (in Years)');
+  table(rows, holderID, headers, 'SNL Cast Member Ending Ages (in Years)');
 }

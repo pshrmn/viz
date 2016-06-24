@@ -79,8 +79,8 @@ export default function chartTotalCredits(castMembers, holderID) {
   drawAxis(base.bottom, xAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
   drawAxis(base.main, yGrid, 'left');
-  addTitle(base.top, 'Total Credits');
-  addLabel(base.bottom, 'Credits (Rounded Down to Nearest 5)', 'bottom');
+  addTitle(base.top, 'Total SNL Episode Credits');
+  addLabel(base.bottom, 'Episode Credits (Rounded Down to Nearest 5)', 'bottom');
   addLabel(base.left, '# of Cast Members', 'left');
   verticalLegend(base.right, [
     {color: lightGreen, text: 'Bottom 50%'},

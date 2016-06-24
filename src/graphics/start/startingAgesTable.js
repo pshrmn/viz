@@ -16,6 +16,6 @@ export default function startingAgesTable(data, holderID) {
     ];
   });
 
-  table(rows, holderID, headers, 'Cast Member Starting Ages (in Years)');
+  table(rows, holderID, headers, 'SNL Cast Member Starting Ages (in Years)');
 }
 

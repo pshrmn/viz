@@ -57,9 +57,9 @@ export default function chartSeasonExperience(castMembers, holderID) {
   drawAxis(base.bottom, xAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
   drawAxis(base.main, yGrid, 'left');
-  addTitle(base.top, 'Cast Member Experience');
+  addTitle(base.top, 'Average Cast Member Experience Per Season');
   addLabel(base.bottom, 'Season', 'bottom');
-  addLabel(base.left, 'Mean Years of Experience', 'left');
+  addLabel(base.left, 'Mean Seasons of Experience', 'left');
 
   // CHART
   const barWidth = seasonScale.rangeBand();

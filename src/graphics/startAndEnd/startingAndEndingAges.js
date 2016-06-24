@@ -1,12 +1,12 @@
 import d3 from 'd3';
 
-import { chartBase } from '../charts/base';
-import { drawAxis } from '../charts/axis';
-import { addTitle, addLabel } from '../charts/text';
-import { verticalLegend } from '../charts/legend';
-import { roundUp } from '../helpers/round';
-import { lightGreen, darkGreen } from '../helpers/colors';
-import mergeData from '../helpers/merge';
+import { chartBase } from '../../charts/base';
+import { drawAxis } from '../../charts/axis';
+import { addTitle, addLabel } from '../../charts/text';
+import { verticalLegend } from '../../charts/legend';
+import { roundUp } from '../../helpers/round';
+import { lightGreen, darkGreen } from '../../helpers/colors';
+import mergeData from '../../helpers/merge';
 
 const colors = [lightGreen, darkGreen];
 
@@ -86,13 +86,13 @@ export default function chartStartingAndEndingAges(data, holderID) {
 
   addTitle(base.top, 'Starting and Ending Ages of SNL Cast Members');
   addLabel(base.bottom, 'Age (Rounded Down)', 'bottom');
-  verticalLegend(base.right, [
-    {color: colors[0], text: 'Start'},
-    {color: colors[1], text: 'End'}
+  verticalLegend(base.main, [
+    {color: colors[0], text: 'Start Age'},
+    {color: colors[1], text: 'End Age'}
   ], {
     offset: {
       left: 10,
-      top: 100
+      top: 10
     }
   });
 

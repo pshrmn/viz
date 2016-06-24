@@ -57,6 +57,7 @@ export default function chartEndingAges(data, holderID) {
 
   addTitle(base.top, 'Ending Age of SNL Cast Members');
   addLabel(base.bottom, 'Age (Rounded Down', 'bottom');
+  addLabel(base.left, 'Count', 'left', 0);
 
   // CHART
   const halfWidth = ageScale.rangeBand();

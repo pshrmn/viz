@@ -64,8 +64,9 @@ export default function chartGroupedSeasonGenders(seasons, holderID) {
   drawAxis(base.bottom, groupedXAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
   drawAxis(base.main, yGrid, 'left');
-  addTitle(base.top, 'Cast Members Per Season (by Role)');
+  addTitle(base.top, 'SNL Cast Members Per Season (by Role)');
   addLabel(base.bottom, 'Season', 'bottom');
+  addLabel(base.left, 'Count', 'left', 0);
   verticalLegend(base.right, [
     {color: roleColors[0], text: 'Repertory'},
     {color: roleColors[1], text: 'Featured'}

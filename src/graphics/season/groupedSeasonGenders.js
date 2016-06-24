@@ -58,8 +58,9 @@ export default function chartGroupedSeasonGenders(seasons, holderID) {
   drawAxis(base.bottom, groupedXAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
   drawAxis(base.main, yGrid, 'left');
-  addTitle(base.top, 'Cast Members Per Season (by Gender)');
+  addTitle(base.top, 'SNL Cast Members Per Season (by Gender)');
   addLabel(base.bottom, 'Season', 'bottom');
+  addLabel(base.left, 'Count', 'left', 0);
   verticalLegend(base.right, [
     {color: genderColors[0], text: 'Male'},
     {color: genderColors[1], text: 'Female'}

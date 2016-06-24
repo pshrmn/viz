@@ -56,7 +56,7 @@ export default function chartTotalCredits(castMembers, holderID) {
 
   drawAxis(base.bottom, xAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
-  addTitle(base.top, 'Credits vs. Starting Age');
+  addTitle(base.top, 'SNL Episode Credits vs. Starting Age');
   addLabel(base.bottom, 'Credits', 'bottom');
   addLabel(base.left, 'Starting Age (Years)', 'left');
 

@@ -55,6 +55,7 @@ export default function chartStartingAges(data, holderID) {
   drawAxis(base.main, yGrid, 'left');
   addTitle(base.top, 'Starting Age of SNL Cast Members');
   addLabel(base.bottom, 'Age (Rounded Down)', 'bottom');
+  addLabel(base.left, 'Count', 'left', 0);
 
   // CHART
   const halfWidth = ageScale.rangeBand();

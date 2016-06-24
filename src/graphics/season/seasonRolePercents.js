@@ -54,14 +54,14 @@ export default function chartRolePercents(seasons, holderID) {
   drawAxis(base.bottom, xAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
  
-  addTitle(base.top, 'Cast Member Role Percents');
+  addTitle(base.top, 'SNL Cast Member Roles');
   addLabel(base.bottom, 'Season', 'bottom');
   verticalLegend(base.right, [
-    {color: roleColors[0], text: 'Repertory'},
-    {color: roleColors[1], text: 'Featured'}
+    {color: roleColors[0], text: 'Repertory %'},
+    {color: roleColors[1], text: 'Featured %'}
   ], {
     offset: {
-      left: 10,
+      left: 5,
       top: 50
     }
   });

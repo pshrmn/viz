@@ -13,7 +13,7 @@ export default function chartCasts(seasons, holderID) {
   const yMax = roundUp(d3.max(seasons, s => s.total_cast), 5);
   const yTicks = Array.from(new Array(yMax+1))
     .map((u, i) => i)
-    .filter(n => n % 4 === 0);
+    .filter(n => n % 2 === 0);
   const meanyTicks = yTicks.concat([meanCount]).sort((a,b) => a-b);
 
   // BASE
@@ -60,9 +60,9 @@ export default function chartCasts(seasons, holderID) {
   drawAxis(base.bottom, xAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
   drawAxis(base.main, yGrid, 'left');
-  addTitle(base.top, 'Cast Members Per Season');
+  addTitle(base.top, 'SNL Cast Members Per Season');
   addLabel(base.bottom, 'Season', 'bottom');
-
+  addLabel(base.left, 'Count', 'left');
   // CHART
   const bandWidth = seasonScale.rangeBand();
   base.main.element.selectAll('rect')

@@ -53,11 +53,11 @@ export default function chartGenderPercents(seasons, holderID) {
   drawAxis(base.bottom, xAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
 
-  addTitle(base.top, 'Cast Member Genders');
+  addTitle(base.top, 'SNL Cast Member Genders');
   addLabel(base.bottom, 'Season', 'bottom');
   verticalLegend(base.right, [
-    {color: genderColors[0], text: 'Male'},
-    {color: genderColors[1], text: 'Female'}
+    {color: genderColors[0], text: 'Male %'},
+    {color: genderColors[1], text: 'Female %'}
   ], {
     offset: {
       left: 10,

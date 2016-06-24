@@ -78,9 +78,9 @@
 
 	var _endingAgeGraphics2 = _interopRequireDefault(_endingAgeGraphics);
 
-	var _startingAndEndingAges = __webpack_require__(47);
+	var _startAndEndGraphics = __webpack_require__(47);
 
-	var _startingAndEndingAges2 = _interopRequireDefault(_startingAndEndingAges);
+	var _startAndEndGraphics2 = _interopRequireDefault(_startAndEndGraphics);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -132,8 +132,7 @@
 	  (0, _startingAgeGraphics2.default)(genders, castMembers);
 	  (0, _creditsGraphics2.default)(castMembers);
 	  (0, _endingAgeGraphics2.default)(genders);
-
-	  (0, _startingAndEndingAges2.default)(genders, '#start-and-end');
+	  (0, _startAndEndGraphics2.default)(castMembers, genders);
 	});
 
 /***/ },
@@ -630,7 +629,7 @@
 	  // SCALES
 	  var genderScale = _d2.default.scale.linear().domain([0, castMembers.length]).range([0, base.main.width]);
 
-	  (0, _text.addTitle)(base.top, 'Cast Members', 'left');
+	  (0, _text.addTitle)(base.top, 'SNL Cast Members', 'left');
 
 	  // CHART
 	  var allGs = base.main.element.selectAll('g').data(data).enter().append('g');
@@ -1224,7 +1223,7 @@
 	  var yTicks = Array.from(new Array(yMax + 1)).map(function (u, i) {
 	    return i;
 	  }).filter(function (n) {
-	    return n % 4 === 0;
+	    return n % 2 === 0;
 	  });
 	  var meanyTicks = yTicks.concat([meanCount]).sort(function (a, b) {
 	    return a - b;
@@ -1257,9 +1256,9 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _text.addTitle)(base.top, 'Cast Members Per Season');
+	  (0, _text.addTitle)(base.top, 'SNL Cast Members Per Season');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
-
+	  (0, _text.addLabel)(base.left, 'Count', 'left');
 	  // CHART
 	  var bandWidth = seasonScale.rangeBand();
 	  base.main.element.selectAll('rect').data(seasons).enter().append('rect').attr('width', bandWidth).attr('x', function (d) {
@@ -1422,8 +1421,9 @@
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _text.addTitle)(base.top, 'Cast Members Per Season (by Gender)');
+	  (0, _text.addTitle)(base.top, 'SNL Cast Members Per Season (by Gender)');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Count', 'left', 0);
 	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
 	      left: 10,
@@ -1605,8 +1605,9 @@
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _text.addTitle)(base.top, 'Cast Members Per Season (by Role)');
+	  (0, _text.addTitle)(base.top, 'SNL Cast Members Per Season (by Role)');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Count', 'left', 0);
 	  (0, _legend.verticalLegend)(base.right, [{ color: roleColors[0], text: 'Repertory' }, { color: roleColors[1], text: 'Featured' }], {
 	    offset: {
 	      left: 10,
@@ -1698,9 +1699,9 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 
-	  (0, _text.addTitle)(base.top, 'Cast Member Genders');
+	  (0, _text.addTitle)(base.top, 'SNL Cast Member Genders');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male %' }, { color: _colors.genderColors[1], text: 'Female %' }], {
 	    offset: {
 	      left: 10,
 	      top: 50
@@ -1803,11 +1804,11 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 
-	  (0, _text.addTitle)(base.top, 'Cast Member Role Percents');
+	  (0, _text.addTitle)(base.top, 'SNL Cast Member Roles');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _legend.verticalLegend)(base.right, [{ color: roleColors[0], text: 'Repertory' }, { color: roleColors[1], text: 'Featured' }], {
+	  (0, _legend.verticalLegend)(base.right, [{ color: roleColors[0], text: 'Repertory %' }, { color: roleColors[1], text: 'Featured %' }], {
 	    offset: {
-	      left: 10,
+	      left: 5,
 	      top: 50
 	    }
 	  });
@@ -1916,9 +1917,9 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _text.addTitle)(base.top, 'Cast Member Experience');
+	  (0, _text.addTitle)(base.top, 'Average Cast Member Experience Per Season');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
-	  (0, _text.addLabel)(base.left, 'Mean Years of Experience', 'left');
+	  (0, _text.addLabel)(base.left, 'Mean Seasons of Experience', 'left');
 
 	  // CHART
 	  var barWidth = seasonScale.rangeBand();
@@ -2201,6 +2202,7 @@
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 	  (0, _text.addTitle)(base.top, 'Starting Age of SNL Cast Members');
 	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Count', 'left', 0);
 
 	  // CHART
 	  var halfWidth = ageScale.rangeBand();
@@ -2292,6 +2294,8 @@
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 	  (0, _text.addTitle)(base.top, 'Starting Age of SNL Cast Members (by Gender)');
 	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Count', 'left', 0);
+
 	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
 	      left: 10,
@@ -2490,10 +2494,10 @@
 	  drawAxis(base.main, yGrid, 'left');*/
 	  (0, _text.addTitle)(base.top, 'Normalized Starting Age of SNL Cast Members (by Gender)');
 	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
-	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	  (0, _legend.verticalLegend)(base.main, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
 	      left: 10,
-	      top: 100
+	      top: 10
 	    }
 	  });
 
@@ -2549,7 +2553,7 @@
 	    return [key, (0, _round.roundFloat)(median), (0, _round.roundFloat)(mean) + ' ± ' + (0, _round.roundFloat)(standardDev), youngest.name + ' (' + (0, _round.roundFloat)((0, _date.daysToYears)(youngest.start_age)) + ')', oldest.name + ' (' + (0, _round.roundFloat)((0, _date.daysToYears)(oldest.start_age)) + ')'];
 	  });
 
-	  (0, _table2.default)(rows, holderID, headers, 'Cast Member Starting Ages (in Years)');
+	  (0, _table2.default)(rows, holderID, headers, 'SNL Cast Member Starting Ages (in Years)');
 	}
 
 /***/ },
@@ -2989,8 +2993,8 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
-	  (0, _text.addTitle)(base.top, 'Total Credits');
-	  (0, _text.addLabel)(base.bottom, 'Credits (Rounded Down to Nearest 5)', 'bottom');
+	  (0, _text.addTitle)(base.top, 'Total SNL Episode Credits');
+	  (0, _text.addLabel)(base.bottom, 'Episode Credits (Rounded Down to Nearest 5)', 'bottom');
 	  (0, _text.addLabel)(base.left, '# of Cast Members', 'left');
 	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.lightGreen, text: 'Bottom 50%' }, { color: _colors.darkGreen, text: 'Top 50%' }], {
 	    offset: {
@@ -3233,7 +3237,7 @@
 
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _text.addTitle)(base.top, 'Credits vs. Starting Age');
+	  (0, _text.addTitle)(base.top, 'SNL Episode Credits vs. Starting Age');
 	  (0, _text.addLabel)(base.bottom, 'Credits', 'bottom');
 	  (0, _text.addLabel)(base.left, 'Starting Age (Years)', 'left');
 
@@ -3446,6 +3450,7 @@
 
 	  (0, _text.addTitle)(base.top, 'Ending Age of SNL Cast Members');
 	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Count', 'left', 0);
 
 	  // CHART
 	  var halfWidth = ageScale.rangeBand();
@@ -3538,6 +3543,7 @@
 
 	  (0, _text.addTitle)(base.top, 'Ending Age of SNL Cast Members (by Gender)');
 	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Count', 'left', 0);
 	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
 	      left: 10,
@@ -3671,10 +3677,10 @@
 
 	  (0, _text.addTitle)(base.top, 'Normalized Ending Age of SNL Cast Members (by Gender)');
 	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down', 'bottom');
-	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
+	  (0, _legend.verticalLegend)(base.main, [{ color: _colors.genderColors[0], text: 'Male' }, { color: _colors.genderColors[1], text: 'Female' }], {
 	    offset: {
 	      left: 10,
-	      top: 100
+	      top: 10
 	    }
 	  });
 
@@ -3730,11 +3736,37 @@
 	    return [key, (0, _round.roundFloat)(median), (0, _round.roundFloat)(mean) + ' ± ' + (0, _round.roundFloat)(standardDev), youngest.name + ' (' + (0, _round.roundFloat)((0, _date.daysToYears)(youngest.end_age)) + ')', oldest.name + ' (' + (0, _round.roundFloat)((0, _date.daysToYears)(oldest.end_age)) + ')'];
 	  });
 
-	  (0, _table2.default)(rows, holderID, headers, 'Cast Member Ending Ages (in Years)');
+	  (0, _table2.default)(rows, holderID, headers, 'SNL Cast Member Ending Ages (in Years)');
 	}
 
 /***/ },
 /* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = render;
+
+	var _startingAndEndingAges = __webpack_require__(48);
+
+	var _startingAndEndingAges2 = _interopRequireDefault(_startingAndEndingAges);
+
+	var _startingVsEndingAges = __webpack_require__(49);
+
+	var _startingVsEndingAges2 = _interopRequireDefault(_startingVsEndingAges);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function render(castMembers, genders) {
+	  (0, _startingAndEndingAges2.default)(genders, '#start-and-end');
+	  (0, _startingVsEndingAges2.default)(castMembers, '#start-vs-end');
+	}
+
+/***/ },
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3836,10 +3868,10 @@
 
 	  (0, _text.addTitle)(base.top, 'Starting and Ending Ages of SNL Cast Members');
 	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');
-	  (0, _legend.verticalLegend)(base.right, [{ color: colors[0], text: 'Start' }, { color: colors[1], text: 'End' }], {
+	  (0, _legend.verticalLegend)(base.main, [{ color: colors[0], text: 'Start Age' }, { color: colors[1], text: 'End Age' }], {
 	    offset: {
 	      left: 10,
-	      top: 100
+	      top: 10
 	    }
 	  });
 
@@ -3858,6 +3890,126 @@
 	    return base.main.height - yScale(d);
 	  }).style('fill', function (d, i) {
 	    return colors[i];
+	  });
+	}
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = chartStartingVsEndingAges;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(9);
+
+	var _axis = __webpack_require__(17);
+
+	var _text = __webpack_require__(10);
+
+	var _legend = __webpack_require__(20);
+
+	var _round = __webpack_require__(18);
+
+	var _colors = __webpack_require__(11);
+
+	var _date = __webpack_require__(3);
+
+	var _merge = __webpack_require__(30);
+
+	var _merge2 = _interopRequireDefault(_merge);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function chartStartingVsEndingAges(castMembers, holderID) {
+	  var filteredCastMembers = castMembers.filter(function (cm) {
+	    return cm.start_age !== undefined && cm.end_age !== undefined;
+	  });
+	  // determine the minimum and maximum age (in days)
+	  var minAges = _d2.default.min(filteredCastMembers, function (cm) {
+	    return Math.min(cm.start_age, cm.end_age);
+	  });
+	  var maxAges = _d2.default.max(filteredCastMembers, function (cm) {
+	    return Math.max(cm.start_age, cm.end_age);
+	  });
+	  // convert these to years and round (up for max, down for min)
+	  var minYears = (0, _round.roundDown)((0, _date.daysToYears)(minAges), 5);
+	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(maxAges), 5);
+	  // convert back to days
+	  var minDays = (0, _date.yearsToDays)(minYears);
+	  var maxDays = (0, _date.yearsToDays)(maxYears);
+
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 500, height: 500 },
+	    left: { width: 50 },
+	    bottom: { height: 50 },
+	    top: { height: 30 },
+	    right: { width: 100 }
+	  }, holderID);
+
+	  // SCALES
+	  // the scale for each age group
+	  var startAgeScale = _d2.default.scale.linear().domain([minDays, maxDays]).range([0, base.main.width]);
+
+	  var endAgeScale = _d2.default.scale.linear().domain([minDays, maxDays]).range([base.main.height, 0]);
+
+	  var ageTicks = Array.from(new Array(maxYears - minYears + 1)).map(function (u, i) {
+	    return i + minYears;
+	  }).filter(function (years) {
+	    return years % 5 === 0;
+	  }).map(function (years) {
+	    return (0, _date.yearsToDays)(years);
+	  });
+
+	  // AXES
+	  var noDec = _d2.default.format('.0f');
+	  var formatYears = function formatYears(days) {
+	    return noDec((0, _date.daysToYears)(days));
+	  };
+	  var xAxis = _d2.default.svg.axis().scale(startAgeScale).orient('bottom').tickFormat(formatYears).tickValues(ageTicks);
+
+	  var yAxis = _d2.default.svg.axis().scale(endAgeScale).orient('left').tickFormat(formatYears).tickValues(ageTicks);
+
+	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
+	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
+
+	  (0, _text.addTitle)(base.top, 'Starting vs Ending Ages of SNL Cast Members');
+	  (0, _text.addLabel)(base.bottom, 'Starting Age', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Ending Age', 'left');
+
+	  var yearLineData = [];
+	  for (var i = 0; i < maxYears - minYears; i++) {
+	    var lowY = endAgeScale(minDays + (0, _date.yearsToDays)(i));
+	    var highX = startAgeScale(maxDays - (0, _date.yearsToDays)(i));
+	    yearLineData.push([[0, lowY], [highX, 0]]);
+	  }
+	  base.main.element.append('g').classed('year-lines', true).selectAll('line').data(yearLineData).enter().append('line').attr('x1', function (d) {
+	    return d[0][0];
+	  }).attr('y1', function (d) {
+	    return d[0][1];
+	  }).attr('x2', function (d) {
+	    return d[1][0];
+	  }).attr('y2', function (d) {
+	    return d[1][1];
+	  });
+
+	  // CHART
+	  var circles = base.main.element.selectAll('circle').data(filteredCastMembers).enter().append('circle').attr('r', 2).style('fill', _colors.darkGreen).style('stroke', '#000').style('stroke-width', 1).attr('cx', function (d) {
+	    return startAgeScale(d.start_age);
+	  }).attr('cy', function (d) {
+	    return endAgeScale(d.end_age);
+	  });
+
+	  circles.append('title').text(function (d) {
+	    return d.name;
 	  });
 	}
 

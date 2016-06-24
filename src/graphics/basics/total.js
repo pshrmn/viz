@@ -32,7 +32,7 @@ export default function genderChart(castMembers, holderID) {
     .domain([0, castMembers.length])
     .range([0, base.main.width])
 
-  addTitle(base.top, 'Cast Members', 'left');
+  addTitle(base.top, 'SNL Cast Members', 'left');
 
   // CHART
   const allGs = base.main.element.selectAll('g')

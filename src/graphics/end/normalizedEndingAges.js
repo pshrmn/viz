@@ -92,13 +92,13 @@ export default function chartNormalizedEndingAges(data, holderID) {
 
   addTitle(base.top, 'Normalized Ending Age of SNL Cast Members (by Gender)');
   addLabel(base.bottom, 'Age (Rounded Down', 'bottom');
-  verticalLegend(base.right, [
+  verticalLegend(base.main, [
     {color: genderColors[0], text: 'Male'},
     {color: genderColors[1], text: 'Female'}
   ], {
     offset: {
       left: 10,
-      top: 100
+      top: 10
     }
   });
 
