@@ -9,7 +9,7 @@ import { lightGreen, darkGreen } from '../../helpers/colors';
 import groupBy from '../../helpers/groupBy'
 
 export default function chartTotalCredits(castMembers, holderID) {
-  // round each cast members credits to the nearest 10
+  // round each cast members credits down to the nearest 5
   const tens = groupBy(castMembers, 'credits', n => Math.floor(n/5));
   const highTen = d3.max(Object.keys(tens), d => parseInt(d, 10));
   // don't just convert to an array because we want to fill in missing 10s

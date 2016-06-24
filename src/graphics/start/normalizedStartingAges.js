@@ -34,7 +34,7 @@ export default function chartNormalizedStartingAges(data, holderID) {
   
   // BASE
   const base = chartBase({
-    main: {width: 650, height: 300},
+    main: {width: 750, height: 300},
     left: {width: 50},
     bottom: {height: 50},
     top: {height: 30},
