@@ -5,10 +5,10 @@ import { drawAxis } from '../charts/axis';
 import { addTitle, addLabel } from '../charts/text';
 import { verticalLegend } from '../charts/legend';
 import { roundUp } from '../helpers/round';
-import { lightBlue, brightPink } from '../helpers/colors';
+import { lightGreen, darkGreen } from '../helpers/colors';
 import mergeData from '../helpers/merge';
 
-const colors = [lightBlue, brightPink];
+const colors = [lightGreen, darkGreen];
 
 export default function chartStartingAndEndingAges(data, holderID) {
   const { start, end } = data.all;
@@ -81,8 +81,8 @@ export default function chartStartingAndEndingAges(data, holderID) {
     .outerTickSize(0);
 
   drawAxis(base.bottom, groupedXAxis, 'top');
-  drawAxis(base.left, yAxis, 'right');
-  drawAxis(base.main, yGrid, 'left');
+  /*drawAxis(base.left, yAxis, 'right');
+  drawAxis(base.main, yGrid, 'left');*/
 
   addTitle(base.top, 'Starting and Ending Ages of SNL Cast Members');
   addLabel(base.bottom, 'Age (Rounded Down)', 'bottom');

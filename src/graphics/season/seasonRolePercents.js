@@ -54,7 +54,7 @@ export default function chartRolePercents(seasons, holderID) {
   drawAxis(base.bottom, xAxis, 'top');
   drawAxis(base.left, yAxis, 'right');
  
-  addTitle(base.top, 'Cast Member Roles');
+  addTitle(base.top, 'Cast Member Role Percents');
   addLabel(base.bottom, 'Season', 'bottom');
   verticalLegend(base.right, [
     {color: roleColors[0], text: 'Repertory'},

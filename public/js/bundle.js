@@ -74,11 +74,11 @@
 
 	var _creditsGraphics2 = _interopRequireDefault(_creditsGraphics);
 
-	var _endingAgeGraphics = __webpack_require__(39);
+	var _endingAgeGraphics = __webpack_require__(42);
 
 	var _endingAgeGraphics2 = _interopRequireDefault(_endingAgeGraphics);
 
-	var _startingAndEndingAges = __webpack_require__(44);
+	var _startingAndEndingAges = __webpack_require__(47);
 
 	var _startingAndEndingAges2 = _interopRequireDefault(_startingAndEndingAges);
 
@@ -125,7 +125,6 @@
 	    cm.firstSeason = cm.featured.length ? cm.featured[0] : cm.repertory[0];
 	    cm.lastSeason = cm.repertory.length ? cm.repertory[cm.repertory.length - 1] : cm.featured[cm.featured.length - 1];
 	  });
-
 	  var genders = (0, _gender2.default)(castMembers);
 
 	  (0, _basicsGraphics2.default)(castMembers);
@@ -284,6 +283,7 @@
 
 	exports.parseDate = parseDate;
 	exports.daysToYears = daysToYears;
+	exports.yearsToDays = yearsToDays;
 	/*
 	 * take a string of form YYYY-MM-DD and return a new Date object
 	 * months are 0 based, so subtract 1 from it to get the correct month
@@ -307,6 +307,10 @@
 	 */
 	function daysToYears(days) {
 	  return days / 365.2425;
+	}
+
+	function yearsToDays(years) {
+	  return Math.round(years * 365.2425);
 	}
 
 /***/ },
@@ -1220,7 +1224,7 @@
 	  var yTicks = Array.from(new Array(yMax + 1)).map(function (u, i) {
 	    return i;
 	  }).filter(function (n) {
-	    return n % 5 === 0;
+	    return n % 4 === 0;
 	  });
 	  var meanyTicks = yTicks.concat([meanCount]).sort(function (a, b) {
 	    return a - b;
@@ -1244,7 +1248,9 @@
 	  var xAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').tickValues(tickValues).outerTickSize(0);
 
 	  var decFormat = _d2.default.format('.1f');
-	  var yAxis = _d2.default.svg.axis().scale(yScale).orient('left').tickValues(meanyTicks).tickFormat(decFormat);
+	  var yAxis = _d2.default.svg.axis().scale(yScale).orient('left').tickValues(meanyTicks).tickFormat(function (n) {
+	    return Math.floor(n) === n ? n : decFormat(n);
+	  });
 
 	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).tickValues(yTicks).tickFormat('').outerTickSize(0);
 
@@ -1797,7 +1803,7 @@
 	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 
-	  (0, _text.addTitle)(base.top, 'Cast Member Roles');
+	  (0, _text.addTitle)(base.top, 'Cast Member Role Percents');
 	  (0, _text.addLabel)(base.bottom, 'Season', 'bottom');
 	  (0, _legend.verticalLegend)(base.right, [{ color: roleColors[0], text: 'Repertory' }, { color: roleColors[1], text: 'Featured' }], {
 	    offset: {
@@ -2867,10 +2873,25 @@
 
 	var _totalCredits2 = _interopRequireDefault(_totalCredits);
 
+	var _totalSeasons = __webpack_require__(39);
+
+	var _totalSeasons2 = _interopRequireDefault(_totalSeasons);
+
+	var _creditsByStartAge = __webpack_require__(40);
+
+	var _creditsByStartAge2 = _interopRequireDefault(_creditsByStartAge);
+
+	var _seasonsByStartAge = __webpack_require__(41);
+
+	var _seasonsByStartAge2 = _interopRequireDefault(_seasonsByStartAge);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function render(castMembers) {
 	  (0, _totalCredits2.default)(castMembers, '#total-credits');
+	  (0, _totalSeasons2.default)(castMembers, '#total-seasons');
+	  (0, _creditsByStartAge2.default)(castMembers, '#credits-vs-start-age');
+	  (0, _seasonsByStartAge2.default)(castMembers, '#seasons-vs-start-age');
 	}
 
 /***/ },
@@ -2897,8 +2918,6 @@
 	var _legend = __webpack_require__(20);
 
 	var _round = __webpack_require__(18);
-
-	var _average = __webpack_require__(6);
 
 	var _colors = __webpack_require__(11);
 
@@ -2971,7 +2990,7 @@
 	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
 	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
 	  (0, _text.addTitle)(base.top, 'Total Credits');
-	  (0, _text.addLabel)(base.bottom, 'Credits (Rounded Down)', 'bottom');
+	  (0, _text.addLabel)(base.bottom, 'Credits (Rounded Down to Nearest 5)', 'bottom');
 	  (0, _text.addLabel)(base.left, '# of Cast Members', 'left');
 	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.lightGreen, text: 'Bottom 50%' }, { color: _colors.darkGreen, text: 'Top 50%' }], {
 	    offset: {
@@ -3040,21 +3059,315 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.default = chartTotalCredits;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(9);
+
+	var _axis = __webpack_require__(17);
+
+	var _text = __webpack_require__(10);
+
+	var _legend = __webpack_require__(20);
+
+	var _round = __webpack_require__(18);
+
+	var _colors = __webpack_require__(11);
+
+	var _date = __webpack_require__(3);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function chartTotalCredits(castMembers, holderID) {
+	  var castMemberSeasons = castMembers.map(function (cm) {
+	    return cm.total_seasons;
+	  });
+	  var maxSeasons = _d2.default.max(castMemberSeasons);
+	  var seasonCounts = Array.from(new Array(maxSeasons)).fill(0);
+	  castMemberSeasons.forEach(function (count) {
+	    seasonCounts[count - 1]++;
+	  });
+	  var maxCounts = _d2.default.max(seasonCounts);
+	  var seasonTicks = seasonCounts.map(function (u, i) {
+	    return i + 1;
+	  });
+
+	  // determine the "tipping point" where the chart represents 50% of the cast
+	  var tippingPoint = castMembers.length / 2;
+	  var triggerCount = null;
+	  seasonCounts.reduce(function (acc, curr, i) {
+	    if (triggerCount !== null) {
+	      return acc;
+	    }
+	    acc += curr;
+	    if (acc > tippingPoint) {
+	      triggerCount = i;
+	    }
+	    return acc;
+	  }, 0);
+
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 500, height: 300 },
+	    left: { width: 50 },
+	    bottom: { height: 50 },
+	    top: { height: 30 },
+	    right: { width: 110 }
+	  }, holderID);
+
+	  // SCALES
+	  //x
+	  var seasonScale = _d2.default.scale.ordinal().domain(seasonTicks).rangeRoundBands([0, base.main.width], 0.1);
+
+	  //y
+	  var countScale = _d2.default.scale.linear().domain([0, (0, _round.roundUp)(maxCounts, 5)]).range([base.main.height, 0]);
+
+	  // AXES
+	  var xAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').outerTickSize(0);
+
+	  var yAxis = _d2.default.svg.axis().scale(countScale).orient('left').ticks(10);
+
+	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
+	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
+	  (0, _text.addTitle)(base.top, 'Total Seasons');
+	  (0, _text.addLabel)(base.bottom, 'Seasons', 'bottom');
+	  (0, _text.addLabel)(base.left, '# of Cast Members', 'left');
+	  (0, _legend.verticalLegend)(base.right, [{ color: _colors.lightGreen, text: 'Bottom 50%' }, { color: _colors.darkGreen, text: 'Top 50%' }], {
+	    offset: {
+	      left: 10,
+	      top: 50
+	    }
+	  });
+	  // CHART
+	  var bandWidth = seasonScale.rangeBand();
+	  base.main.element.selectAll('rect').data(seasonCounts).enter().append('rect').attr('width', bandWidth).attr('x', function (d, i) {
+	    return seasonScale(i + 1);
+	  }).attr('y', function (d) {
+	    return countScale(d);
+	  }).attr('height', function (d) {
+	    return base.main.height - countScale(d);
+	  }).style('fill', function (d, i) {
+	    return i < triggerCount ? _colors.lightGreen : _colors.darkGreen;
+	  });
+	}
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = chartTotalCredits;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(9);
+
+	var _axis = __webpack_require__(17);
+
+	var _text = __webpack_require__(10);
+
+	var _round = __webpack_require__(18);
+
+	var _colors = __webpack_require__(11);
+
+	var _date = __webpack_require__(3);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function chartTotalCredits(castMembers, holderID) {
+	  var startingCastMembers = castMembers.filter(function (cm) {
+	    return cm.start_age !== undefined;
+	  });
+	  var ageExtent = _d2.default.extent(startingCastMembers, function (cm) {
+	    return cm.start_age;
+	  });
+	  var maxCredits = _d2.default.max(startingCastMembers, function (cm) {
+	    return cm.credits;
+	  });
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 700, height: 300 },
+	    left: { width: 50 },
+	    bottom: { height: 50 },
+	    top: { height: 30 },
+	    right: { width: 110 }
+	  }, holderID);
+
+	  // SCALES
+
+	  //x
+	  // offset by 10 so low credit marks don't overlap the y axis
+	  var creditScale = _d2.default.scale.linear().domain([0, maxCredits]).range([0, base.main.width]);
+
+	  //y
+	  var minYears = (0, _round.roundDown)((0, _date.daysToYears)(ageExtent[0]), 5);
+	  var minDays = (0, _date.yearsToDays)(minYears);
+	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(ageExtent[1]), 5);
+	  var maxDays = (0, _date.yearsToDays)(maxYears);
+	  var ageScale = _d2.default.scale.linear().domain([minDays, maxDays]).range([base.main.height, 0]);
+
+	  // AXES
+	  var xAxis = _d2.default.svg.axis().scale(creditScale).orient('bottom');
+
+	  var yTicks = Array.from(new Array(maxYears - minYears + 1)).map(function (u, i) {
+	    return i + minYears;
+	  }).filter(function (years) {
+	    return years % 5 === 0;
+	  }).map(function (years) {
+	    return (0, _date.yearsToDays)(years);
+	  });
+
+	  var noDec = _d2.default.format('.0f');
+	  var yAxis = _d2.default.svg.axis().scale(ageScale).orient('left').tickValues(yTicks).tickFormat(function (d) {
+	    return noDec((0, _date.daysToYears)(d));
+	  });
+
+	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
+	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
+	  (0, _text.addTitle)(base.top, 'Credits vs. Starting Age');
+	  (0, _text.addLabel)(base.bottom, 'Credits', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Starting Age (Years)', 'left');
+
+	  // CHART
+	  var oneDec = _d2.default.format('.1f');
+	  var castMemberCircles = base.main.element.selectAll('circle').data(startingCastMembers).enter().append('circle').attr('r', 3).style('fill', _colors.darkGreen).style('stroke', '#000').style('stroke-width', 1).attr('cx', function (d) {
+	    return creditScale(d.credits);
+	  }).attr('cy', function (d) {
+	    return ageScale(d.start_age);
+	  });
+	  castMemberCircles.append('title').text(function (d) {
+	    return d.name + ' - ' + d.credits + ' credits, started at age ' + oneDec((0, _date.daysToYears)(d.start_age));
+	  });
+	}
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = chartTotalCredits;
+
+	var _d = __webpack_require__(1);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _base = __webpack_require__(9);
+
+	var _axis = __webpack_require__(17);
+
+	var _text = __webpack_require__(10);
+
+	var _round = __webpack_require__(18);
+
+	var _colors = __webpack_require__(11);
+
+	var _date = __webpack_require__(3);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function chartTotalCredits(castMembers, holderID) {
+	  var startingCastMembers = castMembers.filter(function (cm) {
+	    return cm.start_age !== undefined;
+	  });
+	  var ageExtent = _d2.default.extent(startingCastMembers, function (cm) {
+	    return cm.start_age;
+	  });
+	  var maxSeasons = _d2.default.max(startingCastMembers, function (cm) {
+	    return cm.total_seasons;
+	  });
+	  // BASE
+	  var base = (0, _base.chartBase)({
+	    main: { width: 700, height: 300 },
+	    left: { width: 50 },
+	    bottom: { height: 50 },
+	    top: { height: 30 },
+	    right: { width: 110 }
+	  }, holderID);
+
+	  // SCALES
+
+	  //x
+	  // offset by 10 so low credit marks don't overlap the y axis
+	  var seasonScale = _d2.default.scale.linear().domain([0, maxSeasons]).range([0, base.main.width]);
+
+	  //y
+	  var minYears = (0, _round.roundDown)((0, _date.daysToYears)(ageExtent[0]), 5);
+	  var minDays = (0, _date.yearsToDays)(minYears);
+	  var maxYears = (0, _round.roundUp)((0, _date.daysToYears)(ageExtent[1]), 5);
+	  var maxDays = (0, _date.yearsToDays)(maxYears);
+	  var ageScale = _d2.default.scale.linear().domain([minDays, maxDays]).range([base.main.height, 0]);
+
+	  // AXES
+	  var xAxis = _d2.default.svg.axis().scale(seasonScale).orient('bottom').ticks(15);
+
+	  var yTicks = Array.from(new Array(maxYears - minYears + 1)).map(function (u, i) {
+	    return i + minYears;
+	  }).filter(function (years) {
+	    return years % 5 === 0;
+	  }).map(function (years) {
+	    return (0, _date.yearsToDays)(years);
+	  });
+
+	  var noDec = _d2.default.format('.0f');
+	  var yAxis = _d2.default.svg.axis().scale(ageScale).orient('left').tickValues(yTicks).tickFormat(function (d) {
+	    return noDec((0, _date.daysToYears)(d));
+	  });
+
+	  (0, _axis.drawAxis)(base.bottom, xAxis, 'top');
+	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
+	  (0, _text.addTitle)(base.top, 'Seasons vs. Starting Age');
+	  (0, _text.addLabel)(base.bottom, 'Seasons', 'bottom');
+	  (0, _text.addLabel)(base.left, 'Starting Age (Years)', 'left');
+
+	  // CHART
+	  var oneDec = _d2.default.format('.1f');
+	  var castMemberCircles = base.main.element.selectAll('circle').data(startingCastMembers).enter().append('circle').attr('r', 3).style('fill', _colors.darkGreen).style('stroke', '#000').style('stroke-width', 1).attr('cx', function (d) {
+	    return seasonScale(d.total_seasons);
+	  }).attr('cy', function (d) {
+	    return ageScale(d.start_age);
+	  });
+	  castMemberCircles.append('title').text(function (d) {
+	    return d.name + ' - ' + d.total_seasons + ' seasons, started at age ' + oneDec((0, _date.daysToYears)(d.start_age));
+	  });
+	}
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.default = render;
 
-	var _endingAges = __webpack_require__(40);
+	var _endingAges = __webpack_require__(43);
 
 	var _endingAges2 = _interopRequireDefault(_endingAges);
 
-	var _groupedEndingAges = __webpack_require__(41);
+	var _groupedEndingAges = __webpack_require__(44);
 
 	var _groupedEndingAges2 = _interopRequireDefault(_groupedEndingAges);
 
-	var _normalizedEndingAges = __webpack_require__(42);
+	var _normalizedEndingAges = __webpack_require__(45);
 
 	var _normalizedEndingAges2 = _interopRequireDefault(_normalizedEndingAges);
 
-	var _endingAgesTable = __webpack_require__(43);
+	var _endingAgesTable = __webpack_require__(46);
 
 	var _endingAgesTable2 = _interopRequireDefault(_endingAgesTable);
 
@@ -3068,7 +3381,7 @@
 	}
 
 /***/ },
-/* 40 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3146,7 +3459,7 @@
 	}
 
 /***/ },
-/* 41 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3182,7 +3495,7 @@
 	  var male = data.male;
 	  var female = data.female;
 
-	  var _mergeData = (0, _merge2.default)({ data: male.start.ages.ages, offset: male.start.ages.offset }, { data: female.start.ages.ages, offset: female.start.ages.offset });
+	  var _mergeData = (0, _merge2.default)({ data: male.end.ages.ages, offset: male.end.ages.offset }, { data: female.end.ages.ages, offset: female.end.ages.offset });
 
 	  var ages = _mergeData.data;
 	  var offset = _mergeData.offset;
@@ -3251,7 +3564,7 @@
 	}
 
 /***/ },
-/* 42 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3384,7 +3697,7 @@
 	}
 
 /***/ },
-/* 43 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3421,7 +3734,7 @@
 	}
 
 /***/ },
-/* 44 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3453,7 +3766,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var colors = [_colors.lightBlue, _colors.brightPink];
+	var colors = [_colors.lightGreen, _colors.darkGreen];
 
 	function chartStartingAndEndingAges(data, holderID) {
 	  var _data$all = data.all;
@@ -3518,8 +3831,8 @@
 	  var yGrid = _d2.default.svg.axis().scale(yScale).orient('right').tickSize(base.main.width).ticks(10).tickFormat('').outerTickSize(0);
 
 	  (0, _axis.drawAxis)(base.bottom, groupedXAxis, 'top');
-	  (0, _axis.drawAxis)(base.left, yAxis, 'right');
-	  (0, _axis.drawAxis)(base.main, yGrid, 'left');
+	  /*drawAxis(base.left, yAxis, 'right');
+	  drawAxis(base.main, yGrid, 'left');*/
 
 	  (0, _text.addTitle)(base.top, 'Starting and Ending Ages of SNL Cast Members');
 	  (0, _text.addLabel)(base.bottom, 'Age (Rounded Down)', 'bottom');

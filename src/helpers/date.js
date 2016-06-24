@@ -15,3 +15,7 @@ export function parseDate(dateString) {
 export function daysToYears(days) {
   return days / 365.2425;
 }
+
+export function yearsToDays(years) {
+  return Math.round(years * 365.2425);
+}

@@ -4,8 +4,7 @@ import { chartBase } from '../../charts/base';
 import { drawAxis } from '../../charts/axis';
 import { addTitle, addLabel } from '../../charts/text';
 import { verticalLegend } from '../../charts/legend';
-import { roundUp, roundFloat } from '../../helpers/round';
-import { meanProperty } from '../../helpers/average';
+import { roundUp } from '../../helpers/round';
 import { lightGreen, darkGreen } from '../../helpers/colors';
 import groupBy from '../../helpers/groupBy'
 
@@ -81,7 +80,7 @@ export default function chartTotalCredits(castMembers, holderID) {
   drawAxis(base.left, yAxis, 'right');
   drawAxis(base.main, yGrid, 'left');
   addTitle(base.top, 'Total Credits');
-  addLabel(base.bottom, 'Credits (Rounded Down)', 'bottom');
+  addLabel(base.bottom, 'Credits (Rounded Down to Nearest 5)', 'bottom');
   addLabel(base.left, '# of Cast Members', 'left');
   verticalLegend(base.right, [
     {color: lightGreen, text: 'Bottom 50%'},

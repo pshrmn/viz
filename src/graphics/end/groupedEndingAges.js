@@ -11,8 +11,8 @@ import mergeData from '../../helpers/merge';
 export default function chartGroupedEndingAges(data, holderID) {
   const { male, female } = data;
   const { data: ages, offset } = mergeData(
-    {data: male.start.ages.ages, offset: male.start.ages.offset},
-    {data: female.start.ages.ages, offset: female.start.ages.offset}
+    {data: male.end.ages.ages, offset: male.end.ages.offset},
+    {data: female.end.ages.ages, offset: female.end.ages.offset}
   );
   const tickValues = Array.from(new Array(ages.length)).map((u, i) => i+offset);
   const yMax = roundUp(d3.max(ages, a => Math.max(a[0], a[1])), 5);

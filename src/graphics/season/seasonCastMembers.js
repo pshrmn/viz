@@ -13,7 +13,7 @@ export default function chartCasts(seasons, holderID) {
   const yMax = roundUp(d3.max(seasons, s => s.total_cast), 5);
   const yTicks = Array.from(new Array(yMax+1))
     .map((u, i) => i)
-    .filter(n => n % 5 === 0);
+    .filter(n => n % 4 === 0);
   const meanyTicks = yTicks.concat([meanCount]).sort((a,b) => a-b);
 
   // BASE
@@ -41,13 +41,12 @@ export default function chartCasts(seasons, holderID) {
     .tickValues(tickValues)
     .outerTickSize(0);
 
-
   const decFormat = d3.format('.1f')
   const yAxis = d3.svg.axis()
     .scale(yScale)
     .orient('left')
     .tickValues(meanyTicks)
-    .tickFormat(decFormat);
+    .tickFormat(n => Math.floor(n) === n ? n : decFormat(n));
 
   const yGrid = d3.svg.axis()
     .scale(yScale)

@@ -52,7 +52,6 @@ d3.json('/stats.json', (error, data) => {
     cm.firstSeason = cm.featured.length ? cm.featured[0] : cm.repertory[0];
     cm.lastSeason = cm.repertory.length ? cm.repertory[cm.repertory.length-1] : cm.featured[cm.featured.length -1];
   });
-
   const genders = genderStats(castMembers);
 
   drawBasicGraphics(castMembers);
