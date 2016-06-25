@@ -4036,7 +4036,7 @@
 
 	function render(castMembers, genders) {
 	  (0, _startingAndEndingAges2.default)(genders, '#start-and-end');
-	  (0, _startingVsEndingAges2.default)(castMembers, '#start-vs-end');
+	  // chartStartVsEnd(castMembers, '#start-vs-end');
 	}
 
 /***/ },
