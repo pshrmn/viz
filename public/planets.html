@@ -1,12 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Planets Scale</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/planets.css">
+  <title>Planet Scale</title>
 </head>
 <body>
-<div class="content"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
-<script src="/static/js/planets.js" type="text/javascript"></script>
+<h1>Planet Scale</h1>
+
+<section id="earth">
+  <h2>Earth</h2>
+  <p>
+    If you are reading this, there is an almost 100% chance that you are on the planet Earth. Combine that percentage with the percentage of people currently orbiting Earth and surely the odds are 100% that you are near Earth. (If you are not, please feel free to contact the author to lodge a complaint.) Earth is, after all, quite a large place.
+  </p>
+  <div id="just-earth"></div>
+  <p>
+    The radius of the Earth from its center to the North and South Poles is approximately 6,357 kilometers. From the center of the Earth to the surface of the planet along the equator, the radius is about 6,378 kilometers. This difference in radii is caused by the rotation of the planet and other factors. Technically speaking, this makes Earth an oblate spheroid, not a sphere. However, because the difference between the radii is so small (~0.3%), it is hardly noticeable for the Earth to be drawn as a sphere instead. The mean radius of Earth has been measured to be 6,371 kilometers.
+  </p>
+  <p>
+    Using these radius values, we can calculate that the circumference of the equator of Earth is 40,074 kilometers while the mean circumference is 40,030 kilometers. Using a great circle to connect two points on Earth, this means that the mean furthest differenc
+  </p>
+  <p>
+    Great circles are used to compute the shortest path between two points of a sphere.
+  </p>
+  <p>
+    Those distances are long, but that shouldn't be surprising. After all, as said above, Earth is quite a large place. Perhaps it is best to look elsewhere in our planetary system to get a better idea of how large the Earth is. The first stop on our journey is the Moon.
+  </p>
+</section>
+
+<section id="moon">
+  <h2>The Moon</h2>
+  <p>
+    Compared to the Earth, the Moon is rather small. Its mean radius is 1,737 kilometers and its mean circumference is 10,914 kilometers.
+  </p>
+  <p>
+    
+  </p>
+</section>
+
+<div id="holder"></div>
+<script type="text/javascript" src="/js/polyfill.min.js"></script>
+<script type="text/javascript" src="/js/vendor.js"></script>
+<script type="text/javascript" src="/js/planets.js"></script>
 </body>
 </html>
