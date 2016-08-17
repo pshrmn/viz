@@ -1,6 +1,6 @@
 {
   "name": "scale",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A little visualization about how big the universe is, and how relatively small humans really are.",
   "main": "src/index.js",
   "scripts": {
@@ -20,6 +20,7 @@
   "dependencies": {
     "d3-scale": "^1.0.3",
     "d3-selection": "^1.0.2",
+    "d3-shape": "^1.0.2",
     "d3-transition": "^1.0.1"
   },
   "devDependencies": {

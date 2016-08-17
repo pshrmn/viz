@@ -1,50 +1,11 @@
 body {
-    background: #222233;
-    color: #fff;
-    font-family: sans-serif;
+  background: #222233;
+  color: #ccc;
 }
 
-.content {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.toggleable {
-    padding: 4px;
-    margin: 0 5px 0;
-    display: inline-block;
-    border: 2px solid #fff;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.toggleable.active {
-    background: #fff;
-    color: #222233;
-}
-
-.planet { 
-    cursor: pointer;
-}
-
-.planet rect {
-    fill: transparent;
-}
-
-.selected {
-    stroke: #fff;
-    stroke-width: 2px;
-}
-
-.specs {
-    line-height: 1.5em;
-    height: 0;
-    margin: 0 0 15px;
-    overflow: hidden;
-    transition: height 1s;
-}
-
-.specs.active {
-    height: 200px;
-    transition: height 1s;
+main {
+  display: block;
+  width: 80vw;
+  margin: 0 auto;
+  font-family: sans-serif;
 }
