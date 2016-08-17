@@ -27,14 +27,18 @@ import _Saturn from './saturn';
 import _Uranus from './uranus';
 import _Neptune from './neptune';
 
-export const Mercury = _Mercury;
-export const Venus = _Venus;
-export const Earth = _Earth;
-export const Mars = _Mars;
-export const Jupiter = _Jupiter;
-export const Saturn = _Saturn;
-export const Uranus = _Uranus;
-export const Neptune = _Neptune;
+import _Moon from './moon';
+
+export const MercuryFactory = _Mercury;
+export const VenusFactory = _Venus;
+export const EarthFactory = _Earth;
+export const MarsFactory = _Mars;
+export const JupiterFactory = _Jupiter;
+export const SaturnFactory = _Saturn;
+export const UranusFactory = _Uranus;
+export const NeptuneFactory = _Neptune;
+
+export const MoonFactory = _Moon;
 
 const planets = [
   _Mercury,

@@ -1,27 +1,25 @@
 import SpaceObject from 'shapes/spaceobject';
 
-export default function Neptune() {
+export default function NeptuneFactory(radius=100) {
   return new SpaceObject(
     'neptune',
     24766,
     4500,
     'planet',
-    renderNeptune,
+    renderNeptune.bind(null, radius),
     'img/textures/neptune.png',
-    'translate(100,100)'
+    -28.32
   );
 }
 
-function renderNeptune(planetHolder) {
-  const radius = 100;
-
-  // create the g element to hold the planet
+function renderNeptune(radius, planetHolder) {
+  const fullRadius = 100;
+  const planetScale = radius/fullRadius;
   const g = planetHolder.append('g')
-  // draw the planet
   g.append('circle')
     .classed('planet neptune', true)
-    .attr('r', radius)
+    .attr('r', fullRadius)
     .style('fill', 'url(#neptune)')
-
+    .attr('transform', `scale(${planetScale})`);
   return g;
 }

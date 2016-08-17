@@ -1,35 +1,37 @@
 import SpaceObject from 'shapes/spaceobject';
 
-export default function Saturn() {
+export default function SaturnFactory(radius=100) {
   return new SpaceObject(
     'saturn',
     60268,
     1430,
     'planet',
-    renderSaturn,
+    renderSaturn.bind(null, radius),
     'img/textures/saturn.png',
-    'translate(200,100)rotate(25)'
+    -26.73
   );
 }
 
-function renderSaturn(planetHolder) {
-  const radius = 100;
-
-  // create the g element to hold the planet
-  const g = planetHolder.append('g')
-  // draw the planet
-  g.append('circle')
+function renderSaturn(radius, planetHolder) {
+  const fullRadius = 100;
+  const planetScale = radius/fullRadius;
+  const g = planetHolder.append('g');
+  // create an extra group element that will be used to rotate saturn
+  // this is used so that other transformations do not override the rotate
+  // the planet scale can also be applied here instead of on the circle like
+  // the other objects since this has a circle and a path.
+  const rotG = g.append('g')
+    .attr('transform', `scale(${planetScale})`);
+  rotG.append('circle')
     .classed('planet saturn', true)
-    .attr('r', radius)
+    .attr('r', fullRadius)
     .style('fill', 'url(#saturn)')
-  // draw the rings
   // the ring radius numbers are just made up values that look nice, not realistic ratios
   // based on the real rings.
-  g.append('path')
+  rotG.append('path')
     .classed('rings', true)
-    .attr('d', drawRings(radius, [radius*2, radius*0.5], [radius*1.25, radius*0.25]))
+    .attr('d', drawRings(fullRadius, [fullRadius*2, fullRadius*0.5], [fullRadius*1.25, fullRadius*0.25]))
     .style('fill', '#696051');
-
   return g;
 }
 

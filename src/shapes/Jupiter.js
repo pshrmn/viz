@@ -1,27 +1,25 @@
 import SpaceObject from 'shapes/spaceobject';
 
-export default function Jupiter() {
+export default function JupiterFactory(radius=100) {
   return new SpaceObject(
     'jupiter',
     71492,
     779,
     'planet',
-    renderJupiter,
+    renderJupiter.bind(null, radius),
     'img/textures/jupiter.png',
-    'translate(100,100)'
+    -3.13
   );
 }
 
-function renderJupiter(planetHolder) {
-  const radius = 100;
-
-  // create the g element to hold the planet
+function renderJupiter(radius, planetHolder) {
+  const fullRadius = 100;
+  const planetScale = radius / fullRadius;
   const g = planetHolder.append('g')
-  // draw the planet
   g.append('circle')
     .classed('planet jupiter', true)
-    .attr('r', radius)
+    .attr('r', fullRadius)
     .style('fill', 'url(#jupiter)')
-
+    .attr('transform', `scale(${planetScale})`);
   return g;
 }

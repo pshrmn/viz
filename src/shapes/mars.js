@@ -1,27 +1,25 @@
 import SpaceObject from 'shapes/spaceobject';
 
-export default function Mars() {
+export default function MarsFactory(radius=100) {
   return new SpaceObject(
     'mars',
     3397,
     228,
     'planet',
-    renderMars,
+    renderMars.bind(null, radius),
     'img/textures/mars.png',
-    'translate(100,100)'
+    -25.19
   );
 }
 
-function renderMars(planetHolder) {
-  const radius = 100;
-
-  // create the g element to hold the planet
+function renderMars(radius, planetHolder) {
+  const fullRadius = 100;
+  const planetScale = radius / fullRadius;
   const g = planetHolder.append('g')
-  // draw the planet
   g.append('circle')
     .classed('planet mars', true)
-    .attr('r', radius)
+    .attr('r', fullRadius)
     .style('fill', 'url(#mars)')
-
+    .attr('transform', `scale(${planetScale})`);
   return g;
 }

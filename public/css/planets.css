@@ -1,6 +1,6 @@
 body {
-  background: #222233;
-  color: #ccc;
+  background: #efefef; 
+  margin: 0;
 }
 
 main {
@@ -8,4 +8,38 @@ main {
   width: 80vw;
   margin: 0 auto;
   font-family: sans-serif;
+}
+
+h1 {
+  border-bottom: 3px double #223;
+}
+
+h1, h2, h3 {
+  font-family: 'Denk One', sans-serif;
+}
+
+.example svg {
+  padding: 15px;
+  background: #223;
+}
+
+.note{
+  margin: 10px 0;
+  max-width: 750px;
+  border-bottom: 1px solid #ccc;
+  padding: 5px;
+  background: #fff;
+  color: #223;
+}
+
+.note::before{
+  content: "Note:";
+  font-weight: bold;
+  font-style: italic;
+  display: block;
+}
+
+.note p{
+  margin: 0;
+  padding: 5px 10px;
 }

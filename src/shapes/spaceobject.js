@@ -1,6 +1,6 @@
 import patternMaker from 'textures/pattern';
 
-export default function SpaceObject(name, radius, distance, type, renderer, texture, transform) {
+export default function SpaceObject(name, radius, distance, type, renderer, texture, tilt) {
   this.name = name;
   this.radius = radius;
   this.distanceFromSun = distance;
@@ -8,18 +8,20 @@ export default function SpaceObject(name, radius, distance, type, renderer, text
   this.renderer = renderer;
   // the url of the image of the object's texture
   this.texture = texture;
-  // any special transformations that should be done to the object's g element
-  this.transform = transform;
 
   this.scale = 1;
   this.rotating = false;
+  this.tilt = tilt || 0;
 }
 
 SpaceObject.prototype.render = function(planetHolder, patternHolder) {
   this.pattern = patternMaker(patternHolder, this.texture, this.name);
-  this.g = this.renderer(planetHolder);
-  this.g.attr('transform', `${this.transform}scale(${this.scale})`);
-
+  // this g element is used for positioning the space object
+  this.center = planetHolder.append('g')
+    .classed('planet-center', true);
+  this.transformer = this.center.append('g')
+    .attr('transform', `scale(${this.scale})rotate(${this.tilt})`)
+  this.planet = this.renderer(this.transformer);
 }
 
 SpaceObject.prototype.rescale = function(newScale, smooth) {
@@ -27,26 +29,46 @@ SpaceObject.prototype.rescale = function(newScale, smooth) {
   if ( this.g === undefined ) {
     return;
   }
-  this.retransform();
+  this.retransform(smooth);
 }
 
-SpaceObject.prototype.retransform = function(smooth) {
-  if ( smooth ) {
-    this.g.transition()
-      .duration(smooth)
-      .ease(easeLinear)
-      .attr('transform', `${this.transform}scale(${this.scale})`)
-  } else {
-    this.g.attr('transform', `${this.transform}scale(${this.scale})`)
-  }
-}
-
+/*
+ * scale the object based on the ratio of the object's radius
+ * to the full radius provided
+ */
 SpaceObject.prototype.radScale = function(full, smooth) {
   this.scale = this.radius / full;
   if ( this.g === undefined ) {
     return;
   }
-  this.retransform();
+  this.retransform(smooth);
+}
+
+/*
+ * scale the object based on the object's radius and how many
+ * kms fit in a pixel
+ */
+SpaceObject.prototype.kmScale = function(km, radius, smooth) {
+  const pixels = km * this.radius;
+  // 
+  this.scale = Math.max(pixels / radius, 0.05);
+  //this.scale = this.radius / full;
+  if ( this.g === undefined ) {
+    return;
+  }
+  this.retransform(smooth);
+}
+
+
+SpaceObject.prototype.retransform = function(smooth) {
+  if ( smooth ) {
+    this.transformer.transition()
+      .duration(smooth)
+      .ease(easeLinear)
+      .attr('transform', `scale(${this.scale})rotate(${this.tilt})`);
+  } else {
+    this.transformer.attr('transform', `scale(${this.scale})rotate(${this.tilt})`)
+  }
 }
 
 SpaceObject.prototype.toggleRotate = function(on) {

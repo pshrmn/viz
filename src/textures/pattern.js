@@ -5,7 +5,7 @@ import { easeLinear } from 'd3-ease';
 const patternWidth = 618;
 const patternHeight = 200;
 
-export default function(defs, texture, id) {
+export default function(defs, texture, id, delta=1) {
   const pattern = defs.append('pattern')
     .attr('id', id)
     .attr('width', patternWidth)
@@ -18,17 +18,18 @@ export default function(defs, texture, id) {
     .attr('width', patternWidth)
     .attr('height', patternHeight);
 
-  return rotater(pattern); 
+  return rotater(pattern, delta);
 }
 
-function rotater(pattern) {
+function rotater(pattern, delta) {
+  const diff = delta*618
   function recursiveTransition() {  
     pattern
       .transition()
       .duration(10000)
       .ease(easeLinear)
       .on('end', recursiveTransition)
-      .attr('x', function(d) { return parseFloat(select(this).attr('x')) - 640;})
+      .attr('x', function(d) { return parseFloat(select(this).attr('x')) + diff;})
   }
 
   return {

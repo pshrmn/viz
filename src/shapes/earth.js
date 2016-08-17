@@ -1,27 +1,25 @@
 import SpaceObject from 'shapes/spaceobject';
 
-export default function Earth() {
+export default function EarthFactory(radius=100) {
   return new SpaceObject(
     'earth',
-    6378,
+    6371,
     150,
     'planet',
-    renderEarth,
+    renderEarth.bind(null, radius),
     'img/textures/earth.png',
-    'translate(100,100)'
+    -23.45
   );
 }
 
-function renderEarth(planetHolder) {
-  const radius = 100;
-
-  // create the g element to hold the planet
+function renderEarth(radius, planetHolder) {
+  const fullRadius = 100;
+  const planetScale = radius / fullRadius;
   const g = planetHolder.append('g')
-  // draw the planet
   g.append('circle')
     .classed('planet earth', true)
-    .attr('r', radius)
+    .attr('r', fullRadius)
     .style('fill', 'url(#earth)')
-
+    .attr('transform', `scale(${planetScale})`);
   return g;
 }

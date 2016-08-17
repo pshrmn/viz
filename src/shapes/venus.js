@@ -1,27 +1,25 @@
 import SpaceObject from 'shapes/spaceobject';
 
-export default function Venus() {
+export default function VenusFactory(radius=100) {
   return new SpaceObject(
     'venus',
     6052,
     108,
     'planet',
-    renderVenus,
+    renderVenus.bind(null, radius),
     'img/textures/venus.png',
-    'translate(100,100)'
+    -177.36
   );
 }
 
-function renderVenus(planetHolder) {
-  const radius = 100;
-
-  // create the g element to hold the planet
+function renderVenus(radius, planetHolder) {
+  const fullRadius = 100;
+  const planetScale = radius/fullRadius;
   const g = planetHolder.append('g')
-  // draw the planet
   g.append('circle')
     .classed('planet venus', true)
-    .attr('r', radius)
+    .attr('r', fullRadius)
     .style('fill', 'url(#venus)')
-
+    .attr('transform', `scale(${planetScale})`);
   return g;
 }
