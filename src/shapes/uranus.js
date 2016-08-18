@@ -14,7 +14,7 @@ export default function UranusFactory(radius=100) {
 
 function renderUranus(radius, planetHolder) {
   const fullRadius = 100;
-  const planetRadius = radius/fullRadius;
+  const planetScale = radius/fullRadius;
   const g = planetHolder.append('g')
   g.append('circle')
     .classed('planet uranus', true)

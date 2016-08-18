@@ -3,7 +3,7 @@ import SpaceObject from 'shapes/spaceobject';
 export default function JupiterFactory(radius=100) {
   return new SpaceObject(
     'jupiter',
-    71492,
+    69911,
     779,
     'planet',
     renderJupiter.bind(null, radius),

@@ -11,13 +11,14 @@ export default function SpaceObject(name, radius, distance, type, renderer, text
 
   this.scale = 1;
   this.rotating = false;
+  this.tilting = false;
   this.tilt = tilt || 0;
 }
 
-SpaceObject.prototype.render = function(planetHolder, patternHolder) {
+SpaceObject.prototype.render = function(objectHolder, patternHolder) {
   this.pattern = patternMaker(patternHolder, this.texture, this.name);
   // this g element is used for positioning the space object
-  this.center = planetHolder.append('g')
+  this.center = objectHolder.append('g')
     .classed('planet-center', true);
   this.transformer = this.center.append('g')
     .attr('transform', `scale(${this.scale})rotate(${this.tilt})`)
@@ -50,7 +51,6 @@ SpaceObject.prototype.radScale = function(full, smooth) {
  */
 SpaceObject.prototype.kmScale = function(km, radius, smooth) {
   const pixels = km * this.radius;
-  // 
   this.scale = Math.max(pixels / radius, 0.05);
   //this.scale = this.radius / full;
   if ( this.g === undefined ) {

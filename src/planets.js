@@ -1,7 +1,7 @@
-import justEarth from 'vis/justEarth';
-import earthAndMoon from 'vis/earthAndMoon';
-import earthToMoon from 'vis/earthToMoon';
+import thePlanets from 'vis/thePlanets';
+import scalePlanets from 'vis/scalePlanets';
+import distancePlanets from 'vis/distancePlanets';
 
-justEarth();
-earthAndMoon();
-earthToMoon();
+thePlanets();
+scalePlanets();
+distancePlanets();

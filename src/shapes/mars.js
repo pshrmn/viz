@@ -3,7 +3,7 @@ import SpaceObject from 'shapes/spaceobject';
 export default function MarsFactory(radius=100) {
   return new SpaceObject(
     'mars',
-    3397,
+    3390,
     228,
     'planet',
     renderMars.bind(null, radius),
