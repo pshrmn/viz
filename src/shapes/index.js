@@ -28,6 +28,7 @@ import _Uranus from './uranus';
 import _Neptune from './neptune';
 
 import _Moon from './moon';
+import _Sun from './sun';
 
 export const MercuryFactory = _Mercury;
 export const VenusFactory = _Venus;
@@ -39,6 +40,7 @@ export const UranusFactory = _Uranus;
 export const NeptuneFactory = _Neptune;
 
 export const MoonFactory = _Moon;
+export const SunFactory = _Sun;
 
 const planets = [
   _Mercury,
