@@ -8,4 +8,4 @@ thePlanets();
 scalePlanets();
 distancePlanets();
 earthToMoon();
-venusToEarth();
+venusToEarth();  

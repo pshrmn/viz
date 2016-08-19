@@ -9,6 +9,7 @@ import { VenusFactory, EarthFactory } from 'shapes';
 
 export default function() {
   const holder = select('#venus-to-earth');
+  // hard code this value from the earthToMoon;
   const kmsPerPixel = 0.0018229166666666667
   const difference = 38000000;
   const width = kmsPerPixel * difference;
@@ -16,7 +17,6 @@ export default function() {
   const fullWidth = width + margin*2;
   
   const radius = 25;
-  // hard code this value from the earthToMoon;
   const svg = holder.append('svg')
     .attr('width', fullWidth)
     .attr('height', radius*2);
@@ -32,8 +32,7 @@ export default function() {
   rocks.forEach((r,i) => {
     r.kmScale(kmsPerPixel, radius);
     r.render(workarea, defs);
-    // place the "rock" using its
     r.center.attr('transform', `translate(${scale(distances[i])},${radius})`)
     r.toggleRotate(true);
-  })
+  });
 }

@@ -7,10 +7,11 @@ import { select } from 'd3-selection';
 import { extent } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import planetFactories from 'shapes';
+import mainWidth from 'helpers/width';
 
 export default function() {
   const holder = select('#distance-planets');
-  const fullWidth = 800;
+  const fullWidth = mainWidth();
   const margin = 25;
   const width = fullWidth - margin*2;
 

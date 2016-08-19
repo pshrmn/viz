@@ -6,10 +6,11 @@
 import { select } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import { EarthFactory, MoonFactory } from 'shapes';
+import mainWidth from 'helpers/width';
 
 export default function() {
   const holder = select('#earth-to-moon');
-  const fullWidth = 800;
+  const fullWidth = mainWidth();
   const margin = 50;
   const width = fullWidth - margin*2;
   const distance = 384;
