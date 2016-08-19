@@ -1,6 +1,7 @@
 import patternMaker from 'textures/pattern';
 
 export default function SpaceObject(name, radius, distance, type, renderer, texture, tilt) {
+  this.id = Math.floor(Math.random() * 10000).toString(16);
   this.name = name;
   this.radius = radius;
   this.distanceFromSun = distance;
@@ -16,13 +17,14 @@ export default function SpaceObject(name, radius, distance, type, renderer, text
 }
 
 SpaceObject.prototype.render = function(objectHolder, patternHolder) {
-  this.pattern = patternMaker(patternHolder, this.texture, this.name);
+  const fullID = `${this.name}-${this.id}`;
+  this.pattern = patternMaker(patternHolder, this.texture, fullID);
   // this g element is used for positioning the space object
   this.center = objectHolder.append('g')
     .classed('planet-center', true);
   this.transformer = this.center.append('g')
     .attr('transform', `scale(${this.scale})rotate(${this.tilt})`)
-  this.planet = this.renderer(this.transformer);
+  this.planet = this.renderer(this.transformer, fullID);
 }
 
 SpaceObject.prototype.rescale = function(newScale, smooth) {

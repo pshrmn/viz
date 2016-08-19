@@ -12,14 +12,14 @@ export default function MercuryFactory(radius=100) {
   );
 }
 
-function renderMercury(radius, planetHolder) {
+function renderMercury(radius, planetHolder, patternID) {
   const fullRadius = 100;
   const planetScale = radius/fullRadius;
   const g = planetHolder.append('g')
   g.append('circle')
     .classed('planet mercury', true)
     .attr('r', fullRadius)
-    .style('fill', 'url(#mercury)')
+    .style('fill', `url(#${patternID})`)
     .attr('transform', `scale(${planetScale})`);
   return g;
 }

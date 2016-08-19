@@ -6,12 +6,13 @@ const patternWidth = 618;
 const patternHeight = 200;
 
 export default function(defs, texture, id, delta=1) {
+  const x = Math.random() * patternWidth;
   const pattern = defs.append('pattern')
     .attr('id', id)
     .attr('width', patternWidth)
     .attr('height', patternHeight)
     .attr('y', patternHeight/2)
-    .attr('x', 0)
+    .attr('x', x)
     .attr('patternUnits', 'userSpaceOnUse');
   pattern.append('image')
     .attr('xlink:href', texture)

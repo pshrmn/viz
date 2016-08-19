@@ -12,7 +12,7 @@ export default function SaturnFactory(radius=100) {
   );
 }
 
-function renderSaturn(radius, planetHolder) {
+function renderSaturn(radius, planetHolder, patternID) {
   const fullRadius = 100;
   const planetScale = radius/fullRadius;
   const g = planetHolder.append('g');
@@ -25,7 +25,7 @@ function renderSaturn(radius, planetHolder) {
   rotG.append('circle')
     .classed('planet saturn', true)
     .attr('r', fullRadius)
-    .style('fill', 'url(#saturn)')
+    .style('fill', `url(#${patternID})`)
   // the ring radius numbers are just made up values that look nice, not realistic ratios
   // based on the real rings.
   rotG.append('path')

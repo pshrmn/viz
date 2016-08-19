@@ -12,14 +12,14 @@ export default function MoonFactory(radius=100) {
   );
 }
 
-function renderMoon(radius, planetHolder) {
+function renderMoon(radius, planetHolder, patternID) {
   const fullRadius = 100;
   const moonScale = radius/fullRadius;
   const g = planetHolder.append('g')
   g.append('circle')
     .classed('satellite moon', true)
     .attr('r', fullRadius)
-    .style('fill', 'url(#moon)')
+    .style('fill', `url(#${patternID})`)
     .attr('transform', `scale(${moonScale})`);
   return g;
 }
