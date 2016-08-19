@@ -3,7 +3,7 @@ import SpaceObject from 'shapes/spaceobject';
 export default function SaturnFactory(radius=100) {
   return new SpaceObject(
     'saturn',
-    60268,
+    58232,
     1430,
     'planet',
     renderSaturn.bind(null, radius),
@@ -15,12 +15,11 @@ export default function SaturnFactory(radius=100) {
 function renderSaturn(radius, planetHolder, patternID) {
   const fullRadius = 100;
   const planetScale = radius/fullRadius;
-  const g = planetHolder.append('g');
   // create an extra group element that will be used to rotate saturn
   // this is used so that other transformations do not override the rotate
   // the planet scale can also be applied here instead of on the circle like
   // the other objects since this has a circle and a path.
-  const rotG = g.append('g')
+  const rotG = planetHolder.append('g')
     .attr('transform', `scale(${planetScale})`);
   rotG.append('circle')
     .classed('planet saturn', true)
@@ -32,7 +31,6 @@ function renderSaturn(radius, planetHolder, patternID) {
     .classed('rings', true)
     .attr('d', drawRings(fullRadius, [fullRadius*2, fullRadius*0.5], [fullRadius*1.25, fullRadius*0.25]))
     .style('fill', '#696051');
-  return g;
 }
 
 /*

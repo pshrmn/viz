@@ -15,11 +15,9 @@ export default function VenusFactory(radius=100) {
 function renderVenus(radius, planetHolder, patternID) {
   const fullRadius = 100;
   const planetScale = radius/fullRadius;
-  const g = planetHolder.append('g')
-  g.append('circle')
+  planetHolder.append('circle')
     .classed('planet venus', true)
     .attr('r', fullRadius)
     .style('fill', `url(#${patternID})`)
     .attr('transform', `scale(${planetScale})`);
-  return g;
 }

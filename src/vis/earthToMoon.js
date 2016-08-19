@@ -31,7 +31,6 @@ export default function() {
   rocks.forEach((r,i) => {
     r.kmScale(kmsPerPixel, radius);
     r.render(workarea, defs);
-    // place the "rock" using its
     r.center.attr('transform', `translate(${scale(distances[i])},${radius})`)
     r.toggleRotate(true);
   })

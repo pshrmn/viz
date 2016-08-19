@@ -32,7 +32,6 @@ export default function() {
   planets.forEach(p => {
     p.radScale(largest);
     p.render(workarea, defs);
-    // place the "rock" using its
     p.center.attr('transform', `translate(${scale(p.distanceFromSun)},${radius})`)
     p.toggleRotate(true);
   })

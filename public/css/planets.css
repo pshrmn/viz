@@ -22,6 +22,7 @@ h1, h2, h3 {
 .example svg {
   padding: 15px;
   background: #223;
+  font-family: serif;
 }
 
 .note{

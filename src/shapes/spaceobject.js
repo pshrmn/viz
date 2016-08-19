@@ -1,4 +1,5 @@
 import patternMaker from 'textures/pattern';
+import { easeLinear } from 'd3-ease';
 
 export default function SpaceObject(name, radius, distance, type, renderer, texture, tilt) {
   this.id = Math.floor(Math.random() * 10000).toString(16);
@@ -22,14 +23,16 @@ SpaceObject.prototype.render = function(objectHolder, patternHolder) {
   // this g element is used for positioning the space object
   this.center = objectHolder.append('g')
     .classed('planet-center', true);
+  this.center.append('title')
+    .text(`${this.name[0].toUpperCase()}${this.name.slice(1)}`);
   this.transformer = this.center.append('g')
     .attr('transform', `scale(${this.scale})rotate(${this.tilt})`)
-  this.planet = this.renderer(this.transformer, fullID);
+  this.renderer(this.transformer, fullID);
 }
 
 SpaceObject.prototype.rescale = function(newScale, smooth) {
   this.scale = newScale;
-  if ( this.g === undefined ) {
+  if ( this.center === undefined ) {
     return;
   }
   this.retransform(smooth);
@@ -41,7 +44,7 @@ SpaceObject.prototype.rescale = function(newScale, smooth) {
  */
 SpaceObject.prototype.radScale = function(full, smooth) {
   this.scale = this.radius / full;
-  if ( this.g === undefined ) {
+  if ( this.center === undefined ) {
     return;
   }
   this.retransform(smooth);
@@ -55,7 +58,7 @@ SpaceObject.prototype.kmScale = function(km, radius, smooth) {
   const pixels = km * this.radius;
   this.scale = Math.max(pixels / radius, 0.05);
   //this.scale = this.radius / full;
-  if ( this.g === undefined ) {
+  if ( this.center === undefined ) {
     return;
   }
   this.retransform(smooth);

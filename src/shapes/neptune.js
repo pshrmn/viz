@@ -3,7 +3,7 @@ import SpaceObject from 'shapes/spaceobject';
 export default function NeptuneFactory(radius=100) {
   return new SpaceObject(
     'neptune',
-    24766,
+    24622,
     4500,
     'planet',
     renderNeptune.bind(null, radius),
@@ -15,11 +15,9 @@ export default function NeptuneFactory(radius=100) {
 function renderNeptune(radius, planetHolder, patternID) {
   const fullRadius = 100;
   const planetScale = radius/fullRadius;
-  const g = planetHolder.append('g')
-  g.append('circle')
+  planetHolder.append('circle')
     .classed('planet neptune', true)
     .attr('r', fullRadius)
     .style('fill', `url(#${patternID})`)
     .attr('transform', `scale(${planetScale})`);
-  return g;
 }
