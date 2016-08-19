@@ -5,7 +5,7 @@ const config = {
   context: path.join(__dirname, 'src'),
   entry: {
     planets: './planets.js',
-    vendor: ['d3-selection', 'd3-scale']
+    vendor: ['d3-selection', 'd3-scale', 'd3-transition']
   },
   resolve: {
     root: path.join(__dirname, 'src')
