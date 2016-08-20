@@ -13,7 +13,7 @@ export default function(defs, texture, id, delta=1) {
     .attr('height', patternHeight)
     .attr('y', patternHeight/2)
     .attr('x', x)
-    .attr('patternUnits', 'userSpaceOnUse');
+    .attr('patternUnits', 'userSpaceOnUse'); // ? objectBoundingBox
   pattern.append('image')
     .attr('xlink:href', texture)
     .attr('width', patternWidth)
