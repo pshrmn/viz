@@ -12,10 +12,11 @@ export default function() {
   const holder = select('#the-sun');
 
   const fullWidth = 600;
+  const fullHeight = 700;
   const mid = fullWidth/2;
   const svg = holder.append('svg')
     .attr('width', fullWidth)
-    .attr('height', fullWidth);
+    .attr('height', fullHeight);
   const defs = svg.append('defs');
   const radius = 5;
   const sun = SunFactory(radius);
@@ -40,7 +41,7 @@ export default function() {
   
   // determine the size of the sun
   const planetHolder = svg.append('g')
-    .attr('transform', `translate(${mid-sunWidth/2},${mid})`)
+    .attr('transform', `translate(${mid-sunWidth/2},${fullHeight-50})`)
   planets.forEach(p => {
     p.render(planetHolder, defs);
     p.center.attr('transform', `translate(${planetScale(p.name)+halfBand},0)`)

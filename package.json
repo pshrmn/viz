@@ -1,6 +1,6 @@
 {
   "name": "scale",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A little visualization about how big the universe is, and how relatively small humans really are.",
   "main": "src/index.js",
   "scripts": {
