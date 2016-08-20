@@ -7,7 +7,7 @@ export default function MercuryFactory(radius=100) {
     57,
     'planet',
     renderMercury.bind(null, radius),
-    'img/textures/mercury.png',
+    '/static/img/textures/mercury.png',
     0
   );
 }

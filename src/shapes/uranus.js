@@ -7,7 +7,7 @@ export default function UranusFactory(radius=100) {
     2880,
     'planet',
     renderUranus.bind(null, radius),
-    'img/textures/uranus.png',
+    '/static/img/textures/uranus.png',
     -97.77
   );
 }

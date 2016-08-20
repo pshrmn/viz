@@ -7,7 +7,7 @@ export default function JupiterFactory(radius=100) {
     779,
     'planet',
     renderJupiter.bind(null, radius),
-    'img/textures/jupiter.png',
+    '/static/img/textures/jupiter.png',
     -3.13
   );
 }

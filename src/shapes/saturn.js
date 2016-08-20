@@ -7,7 +7,7 @@ export default function SaturnFactory(radius=100) {
     1430,
     'planet',
     renderSaturn.bind(null, radius),
-    'img/textures/saturn.png',
+    '/static/img/textures/saturn.png',
     -26.73
   );
 }

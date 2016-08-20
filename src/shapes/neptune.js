@@ -7,7 +7,7 @@ export default function NeptuneFactory(radius=100) {
     4500,
     'planet',
     renderNeptune.bind(null, radius),
-    'img/textures/neptune.png',
+    '/static/img/textures/neptune.png',
     -28.32
   );
 }

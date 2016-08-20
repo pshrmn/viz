@@ -7,7 +7,7 @@ export default function SunFactory(radius=100) {
     0,
     'star',
     renderSun.bind(null, radius),
-    'img/textures/sun.png',
+    '/static/img/textures/sun.png',
     0
   );
 }

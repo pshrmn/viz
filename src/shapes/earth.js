@@ -7,7 +7,7 @@ export default function EarthFactory(radius=100) {
     150,
     'planet',
     renderEarth.bind(null, radius),
-    'img/textures/earth.png',
+    '/static/img/textures/earth.png',
     -23.45
   );
 }

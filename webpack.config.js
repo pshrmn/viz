@@ -12,7 +12,7 @@ const config = {
   },
   output: {
     path: path.join(__dirname, 'public'),
-    filename: 'js/[name].js',
+    filename: 'static/js/[name].js',
     publicPath: '/'
   },
   module: {
@@ -31,7 +31,7 @@ const config = {
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
-      filename: 'js/vendor.js',
+      filename: 'static/js/vendor.js',
       minChunks: Infinity
     })
   ]

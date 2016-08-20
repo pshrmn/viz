@@ -7,7 +7,7 @@ export default function MarsFactory(radius=100) {
     228,
     'planet',
     renderMars.bind(null, radius),
-    'img/textures/mars.png',
+    '/static/img/textures/mars.png',
     -25.19
   );
 }

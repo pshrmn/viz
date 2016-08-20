@@ -7,7 +7,7 @@ export default function VenusFactory(radius=100) {
     108,
     'planet',
     renderVenus.bind(null, radius),
-    'img/textures/venus.png',
+    '/static/img/textures/venus.png',
     -177.36
   );
 }

@@ -7,7 +7,7 @@ export default function MoonFactory(radius=100) {
     150,
     'satellite',
     renderMoon.bind(null, radius),
-    'img/textures/moon.png',
+    '/static/img/textures/moon.png',
     0
   );
 }
