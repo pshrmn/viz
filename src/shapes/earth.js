@@ -1,5 +1,7 @@
 import SpaceObject from 'shapes/spaceobject';
 
+import earthTexture from 'textures/earth.png';
+
 export default function EarthFactory(radius=100) {
   return new SpaceObject(
     'earth',
@@ -7,7 +9,7 @@ export default function EarthFactory(radius=100) {
     150,
     'planet',
     renderEarth.bind(null, radius),
-    '/static/img/textures/earth.png',
+    earthTexture,
     -23.45
   );
 }

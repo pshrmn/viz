@@ -23,8 +23,8 @@ const config = {
         loader: 'babel-loader'
       },
       {
-        test: /\.json$/,
-        loader: 'json-loader'
+        test: /\.png$/,
+        loader: 'url-loader'
       }
     ]
   },

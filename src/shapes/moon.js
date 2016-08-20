@@ -1,5 +1,7 @@
 import SpaceObject from 'shapes/spaceobject';
 
+import moonTexture from 'textures/moon.png';
+
 export default function MoonFactory(radius=100) {
   return new SpaceObject(
     'moon',
@@ -7,7 +9,7 @@ export default function MoonFactory(radius=100) {
     150,
     'satellite',
     renderMoon.bind(null, radius),
-    '/static/img/textures/moon.png',
+    moonTexture,
     0
   );
 }

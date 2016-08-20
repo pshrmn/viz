@@ -1,5 +1,7 @@
 import SpaceObject from 'shapes/spaceobject';
 
+import saturnTexture from 'textures/saturn.png';
+
 export default function SaturnFactory(radius=100) {
   return new SpaceObject(
     'saturn',
@@ -7,7 +9,7 @@ export default function SaturnFactory(radius=100) {
     1430,
     'planet',
     renderSaturn.bind(null, radius),
-    '/static/img/textures/saturn.png',
+    saturnTexture,
     -26.73
   );
 }

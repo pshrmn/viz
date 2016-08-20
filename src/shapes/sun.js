@@ -1,5 +1,7 @@
 import SpaceObject from 'shapes/spaceobject';
 
+import sunTexture from 'textures/sun.png';
+
 export default function SunFactory(radius=100) {
   return new SpaceObject(
     'sun',
@@ -7,7 +9,7 @@ export default function SunFactory(radius=100) {
     0,
     'star',
     renderSun.bind(null, radius),
-    '/static/img/textures/sun.png',
+    sunTexture,
     0
   );
 }

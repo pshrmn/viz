@@ -1,5 +1,7 @@
 import SpaceObject from 'shapes/spaceobject';
 
+import marsTexture from 'textures/mars.png';
+
 export default function MarsFactory(radius=100) {
   return new SpaceObject(
     'mars',
@@ -7,7 +9,7 @@ export default function MarsFactory(radius=100) {
     228,
     'planet',
     renderMars.bind(null, radius),
-    '/static/img/textures/mars.png',
+    marsTexture,
     -25.19
   );
 }

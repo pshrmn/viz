@@ -1,5 +1,7 @@
 import SpaceObject from 'shapes/spaceobject';
 
+import neptuneTexture from 'textures/neptune.png';
+
 export default function NeptuneFactory(radius=100) {
   return new SpaceObject(
     'neptune',
@@ -7,7 +9,7 @@ export default function NeptuneFactory(radius=100) {
     4500,
     'planet',
     renderNeptune.bind(null, radius),
-    '/static/img/textures/neptune.png',
+    neptuneTexture,
     -28.32
   );
 }

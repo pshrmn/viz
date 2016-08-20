@@ -1,5 +1,7 @@
 import SpaceObject from 'shapes/spaceobject';
 
+import venusTexture from 'textures/venus.png';
+
 export default function VenusFactory(radius=100) {
   return new SpaceObject(
     'venus',
@@ -7,7 +9,7 @@ export default function VenusFactory(radius=100) {
     108,
     'planet',
     renderVenus.bind(null, radius),
-    '/static/img/textures/venus.png',
+    venusTexture,
     -177.36
   );
 }

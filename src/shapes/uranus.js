@@ -1,5 +1,7 @@
 import SpaceObject from 'shapes/spaceobject';
 
+import uranusTexture from 'textures/uranus.png';
+
 export default function UranusFactory(radius=100) {
   return new SpaceObject(
     'uranus',
@@ -7,7 +9,7 @@ export default function UranusFactory(radius=100) {
     2880,
     'planet',
     renderUranus.bind(null, radius),
-    '/static/img/textures/uranus.png',
+    uranusTexture,
     -97.77
   );
 }

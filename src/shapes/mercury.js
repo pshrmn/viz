@@ -1,5 +1,7 @@
 import SpaceObject from 'shapes/spaceobject';
 
+import mercuryTexture from 'textures/mercury.png';
+
 export default function MercuryFactory(radius=100) {
   return new SpaceObject(
     'mercury',
@@ -7,7 +9,7 @@ export default function MercuryFactory(radius=100) {
     57,
     'planet',
     renderMercury.bind(null, radius),
-    '/static/img/textures/mercury.png',
+    mercuryTexture,
     0
   );
 }

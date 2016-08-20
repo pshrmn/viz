@@ -1,5 +1,7 @@
 import SpaceObject from 'shapes/spaceobject';
 
+import jupiterTexture from 'textures/jupiter.png';
+
 export default function JupiterFactory(radius=100) {
   return new SpaceObject(
     'jupiter',
@@ -7,7 +9,7 @@ export default function JupiterFactory(radius=100) {
     779,
     'planet',
     renderJupiter.bind(null, radius),
-    '/static/img/textures/jupiter.png',
+    jupiterTexture,
     -3.13
   );
 }
