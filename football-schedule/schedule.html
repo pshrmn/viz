@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Animated 2015 NFL Schedule</title>
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css'>
+    <style type="text/css">
+    svg{
+        font-family: "Josefin Sans";
+    }
+        .state path{
+            fill: #f0f0f0;
+            stroke: #222;
+            stroke-width: 1px;
+        }
+
+        .bye{
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+<script src="lib/d3.js" type="text/javascript"></script>
+<script src="lib/topojson.js" type="text/javascript"></script>
+<script src="lib/queue.js" type="text/javascript"></script>
+<script src="lower48.js" type="text/javascript"></script>
+<script src="teams.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var map;
+    var svg;
+    var proj;
+    queue()
+        .defer(d3.json, "./data/lower48.json")
+        .defer(d3.json, "./data/teams.json")
+        .defer(d3.json, "./data/games-2015.json")
+        .await(function(error, states, teams, games){
+            if ( error ) {
+                console.log(error);
+                return;
+            }
+            var width = 800;
+            var height = 500;
+            var scale = 1200;
+            var radius = 8;
+
+            map = usmap(states)
+                .width(width)
+                .height(height)
+                .scale(scale);
+
+            map("body");
+            svg = map.svg();
+            proj = map.projection();
+
+            // hardcode stadium locations
+            stadiums = {};
+            for ( var name in teams ) {
+                var c = teams[name].coords;
+                stadiums[name] = proj([c.long, c.lat]);
+            }
+            stadiums["london"] = [width+50, 250]
+
+            var teamNames = Object.keys(teams);
+
+            var nfl = svg.append("g")
+                .classed({"nfl": true});
+
+            var teamLines = nfl.selectAll("line.trip")
+                    .data(teamNames)
+                .enter().append("line")
+                    .classed({"trip": true})
+                    .attr("x1", function(d){
+                        return stadiums[d][0];
+                    })
+                    .attr("x2", function(d){
+                        return stadiums[d][0];
+                    })
+                    .attr("y1", function(d){
+                        return stadiums[d][1];
+                    })
+                    .attr("y2", function(d){
+                        return stadiums[d][1];
+                    })
+                    .style("stroke", function(d){
+                        return teams[d].colors.secondary;
+                    })
+                    .style("stroke-width", 1)
+                    .style("stroke-dasharray", "5,5");
+
+            var teamCircles = nfl.selectAll("circle.team")
+                    .data(teamNames)
+                .enter().append("circle")
+                    .classed({"team": true})
+                    .attr("transform", function(d){
+                        var coords = stadiums[d];
+                        return "translate(" + coords[0] + "," + coords[1] + ")";
+                    })
+                    .attr("r", radius)
+                    .style("fill", function(d){
+                          return teams[d].colors.primary;
+                        })
+                    .style("stroke", function(d){
+                          return teams[d].colors.secondary;
+                        })
+                    .style("stroke-width", 2);
+
+
+            // 0-17
+            var week = 0;
+            var weekText = svg.append("g")
+                .attr("transform", function(){
+                    return "translate(400, 0)";
+                })
+                .append("text")
+                    .text("Offseason")
+                    .style("font-size", "36px")
+                    //.style("font-family", "sans-serif")
+                    .style("text-anchor", "middle");
+
+            setInterval(function(){
+                update(week);
+                weekText.text(function(){
+                    if ( week === 0 ){
+                        return "Offseason";
+                    } else {
+                        return "Week " + week;
+                    }
+                });
+                week = (week+1)%18;
+            }, 2500);
+
+            function update(week){
+                teamCircles
+                    .classed({"bye": false})
+                    .transition()
+                    .duration(1000)
+                    .ease("in-out")
+                    .attr("transform", function(d){
+                        var game = games[d][week];
+                        // at game
+                        var long = stadiums[game.location][0];
+                        var lat = stadiums[game.location][1];
+                        if ( game.type === "away") {
+                            long -=17;
+                        }
+                        return "translate(" + long + "," + lat + ")";
+                    })
+                    .each("end", function(d){
+                        if ( games[d][week].type === "bye" ) {
+                            this.classList.add("bye");
+                        }
+                    });
+
+                teamLines
+                    .transition()
+                    .duration(1000)
+                    .ease("in-out")
+                    .attr("x2", function(d){
+                        var game = games[d][week];
+                        var long = game.type === "away" ? stadiums[game.location][0] - 17 :
+                            stadiums[game.location][0];
+                        return long;
+                    })
+                    .attr("y2", function(d){
+                        return stadiums[games[d][week].location][1];
+                    })
+            }
+        });
+
+</script>
+</body>
+</html>
