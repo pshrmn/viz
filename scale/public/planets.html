@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Planet Scale</title>
+  <link href="https://fonts.googleapis.com/css?family=Bungee+Shade" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/static/css/planets.css">
+</head>
+
+<body>
+
+<main>
+  <h1>Planet Scale</h1>
+
+  <section>
+    <p>
+      Our planetary system is made up of one star, eight planets, a handful of dwarf planets, and numerous other debris following Newton's laws of motion. Eight planets in our planetary system. Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune are their names.
+    </p>
+    <div id="the-planets" class="example"></div>
+    <p>
+      Of course, they are not all the same size.
+    </p>
+    <div id="scale-planets" class="example"></div>
+    <p>
+      Nor are they equally spaced.
+    </p>
+    <div id="distance-planets" class="example"></div>
+    <p>
+      Shrinking them down to size with respect to distance would result in a blank drawing. While Mercury, the closest planet to the Sun, has an impressive sounding orbit of 57 million kilometers from the Sun, it is a short hop when compared to the 4.5 billion kilometers away from the Sun you must travel to reach Neptune.
+    </p>
+    <p>
+      So how big are the planets when they are scaled for distance? Let's take a look at our planet, Earth, alongside the Moon. Compared to the other planets, the Moon is a measly 384,400 kilometers away.
+    </p>
+    <div id="earth-to-moon" class="example"></div>
+    <p>
+      The closest that another planet, Venus, gets to Earth is about 38 million kilometers. That is two orders of magnitude larger than the example above.
+    </p>
+    <div id="venus-to-earth" class="example"></div>
+    <p>
+      Looking at the radii of the planets, there are three distinct sizes. The terrestrial planets, Mercury, Venus, Earth, and Mars, are largely made up of rocks and metal. The gas giants, Jupiter and Saturn, mostly consist of hydrogen and helium. The ice giants, Uranus and Neptune, also mostly consist of gas, but they are dominated by elements which are heavier than hydrogen and helium.
+    </p>
+    <div id="radius-graph" class="example"></div>
+    <div class="note">
+      <p>
+        Due to the rotation of the planets, they are oblate spheroids, not spheres. This means that the distance from the center of a planet to its equator is larger than the distance from the center to its poles. However, the amount of difference between equatorial and polar radii is small enough that drawing the planets as spheres makes sense, especially when drawn at a small scale.
+      </p>
+    </div>
+    <p>
+      Light emitted from the Sun takes just over three minutes to reach Mercury, which is 57 million kilometers away. At 4.5 billion kilometers away from the Sun, an observer on Neptune wouldn't see energy emitted by the Sun until over four hours after it was emitted.
+    </p>
+    <div id="distance-graph" class="example"></div>
+    <p>
+      Speaking of the Sun, it would be helpful to add a little perspective by showing the planets in scale with it. Now, in order to make sure that everything is visible, everything must be scaled so that the smallest planet, Mercury, has a radius of 1 pixel. That will give us a Sun with a radius of of 285 pixels.
+    </p>
+    <div id="the-sun" class="example"></div>
+  </section>
+</main>
+<script type="text/javascript" src="/static/js/polyfill.min.js"></script>
+<script type="text/javascript" src="/static/js/vendor.js"></script>
+<script type="text/javascript" src="/static/js/planets.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "name": "scale",
+  "version": "0.8.0",
+  "description": "A little visualization about how big the universe is, and how relatively small humans really are.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node devServer.js",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pshrmn/scale.git"
+  },
+  "author": "Paul Sherman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pshrmn/scale/issues"
+  },
+  "homepage": "https://github.com/pshrmn/scale#readme",
+  "dependencies": {
+    "d3-scale": "^1.0.3",
+    "d3-selection": "^1.0.2",
+    "d3-transition": "^1.0.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.13.2",
+    "babel-preset-es2015": "^6.13.2",
+    "file-loader": "^0.9.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1"
+  }
+}
