@@ -1,0 +1,78 @@
+body {
+  font-family: 'Slabo 27px', serif;
+}
+
+path, line {
+  fill: none;
+  stroke: black;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+section {
+  width: 900px;
+  margin: 0 auto;
+}
+
+.main-section .tick line {
+  stroke: #bbb;
+}
+
+text.centered {
+  text-anchor: middle;
+}
+
+text.title {
+  font-weight: bold;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+thead th {
+  border-bottom: 2px solid #222;
+  padding: 5px 10px;
+}
+
+tr td {
+  border-bottom: 1px solid #222;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+td {
+  text-align: center;
+  padding: 5px 10px;
+}
+
+td:first-child {
+  text-align: left;
+  text-transform: capitalize;
+}
+
+rect {
+  shape-rendering: crispEdges;
+}
+
+.mean line {
+  stroke-dasharray: 2, 5;
+  stroke: #222;
+  stroke-width: 1;
+  fill: none;
+}
+
+.mean text {
+  font-size: 14px;
+}
+
+.scale-bars rect:nth-child(odd) {
+  fill: none;
+}
+
+.scale-bars rect:nth-child(even) {
+  fill: #efefef;
+  opacity: 0.5;
+}

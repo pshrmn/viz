@@ -1,0 +1,25 @@
+{
+  "name": "snl-charts",
+  "version": "0.1.0",
+  "description": "display data from Saturday Night Live",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pshrmn/snl-charts.git"
+  },
+  "author": "Paul Sherman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pshrmn/snl-charts/issues"
+  },
+  "homepage": "https://github.com/pshrmn/snl-charts#readme",
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.9.0",
+    "webpack": "^1.13.1"
+  }
+}
