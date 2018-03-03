@@ -1,0 +1,107 @@
+#content, header {
+    font-size: 16px;
+    font-family: 'Josefin Sans', sans-serif;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.selector {
+  margin-right: 15px;
+  display: inline-block;
+}
+
+.state path {
+  fill: #efefef;
+  stroke: #999;
+  stroke-width: 1px;
+}
+
+.hidden {
+  display: none;
+}
+
+circle.player {
+  stroke-width: 0;
+}
+
+circle.school {
+  stroke: #222;
+  stroke-width: 2;
+}
+
+.mean {
+  stroke: #666;
+  stroke-width: 1px;
+  fill-opacity: 0;
+  stroke-dasharray: 20,2;
+}
+
+.median {
+  stroke: #666;
+  stroke-dasharray: 2,2;
+  stroke-width: 1px;
+  fill-opacity: 0;
+}
+
+.active path {
+  fill: #fff;
+}
+
+.conference, .team {
+  padding: 15px;
+}
+
+.app h2 {
+  font-size: 2em;
+}
+
+.app h3 {
+  font-size: 1.25em;
+}
+
+.app h2, .app h3, .app p {
+  margin: 2px 0;
+}
+
+.team-info {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.team-info > div {
+  padding: 10px;
+  margin: 0 25px 25px 0;
+}
+
+.number {
+  font-size: 2em;
+}
+
+/*
+ * state count bar chart
+ */
+.state-bar-chart {
+  display: block;
+}
+
+.tick line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.tick text {
+  text-anchor: middle;
+}
+
+text.count {
+  text-anchor: middle;
+}
+
+.city-distances {
+
+}
+
+.city-distances svg {
+  display: block;
+}

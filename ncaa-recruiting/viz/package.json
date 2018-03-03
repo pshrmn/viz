@@ -1,0 +1,36 @@
+{
+  "name": "recruiting",
+  "version": "0.8.5",
+  "description": "Visualize the location of college football players hometowns compared to where they play",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "autoprefix": "postcss --use autoprefixer --autoprefixer.browsers \"last 2 versions\" css/index.css --dir public/css/",
+    "webpack": "webpack && webpack --config=webpack.config.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/psherman/recruiting-vis.git"
+  },
+  "author": "Paul Sherman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/psherman/recruiting-vis/issues"
+  },
+  "homepage": "https://github.com/psherman/recruiting-vis#readme",
+  "dependencies": {
+    "d3": "^3.5.6",
+    "queue-async": "^1.0.7",
+    "react": "^0.14.1",
+    "react-dom": "^0.14.1",
+    "topojson": "^1.6.19"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.0.3",
+    "babel": "^6.0.2",
+    "babel-loader": "^5.3.3",
+    "babel-runtime": "^6.0.8",
+    "postcss-cli": "^2.3.2",
+    "webpack": "^1.12.2"
+  }
+}
